@@ -10,4 +10,7 @@
 .content .content-input {
   margin-bottom: 20px;
 }
+.content .text-content {
+  word-break: break-all;
+}
 

@@ -7,7 +7,7 @@
 			<button type="primary" @click="convertData(currencyValue)">base64转换</button>
 		</view>
 		<view class="content-input">
-			<text selectable user-select>{{convertValue}}</text>
+			<text class="text-content" selectable user-select>{{convertValue}}</text>
 		</view>
 		<button type="primary" :disabled="!isCopy" @click="clipboardData">点击复制</button>
 
@@ -20,7 +20,7 @@
 			<button type="primary" @click="convertData1(currencyValue1)">base64解码</button>
 		</view>
 		<view class="content-input">
-			<text selectable user-select>{{convertValue1}}</text>
+			<text class="text-content" selectable user-select>{{convertValue1}}</text>
 		</view>
 		<button type="primary" :disabled="!isCopy1" @click="clipboardData1">点击复制</button>
 
@@ -33,7 +33,7 @@
 			<button type="primary" @click="convertData3(currencyValue3)">MD5计算</button>
 		</view>
 		<view class="content-input">
-			<text selectable user-select>{{convertValue3}}</text>
+			<text class="text-content" selectable user-select>{{convertValue3}}</text>
 		</view>
 		<button type="primary" :disabled="!isCopy3" @click="clipboardData3">点击复制</button>
 
@@ -262,6 +262,10 @@
 
 		.content-input {
 			margin-bottom: 20px;
+		}
+		
+		.text-content {
+			word-break: break-all;
 		}
 
 		.line {

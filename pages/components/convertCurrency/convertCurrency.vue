@@ -7,7 +7,7 @@
 			<button type="primary" @click="convertData(currencyValue)">转换</button>
 		</view>
 		<view class="content-input">
-			<text selectable user-select>{{convertValue}}</text>
+			<text class="text-content" selectable user-select>{{convertValue}}</text>
 		</view>
 		<button type="primary" :disabled="!isCopy" @click="clipboardData">点击复制</button>
 	</view>
@@ -110,5 +110,10 @@
 		.content-input {
 			margin-bottom: 20px;
 		}
+		
+		.text-content {
+			word-break: break-all;
+		}
+		
 	}
 </style>

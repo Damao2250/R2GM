@@ -11,6 +11,9 @@
 .content .content-input {
   margin-bottom: 20px;
 }
+.content .text-content {
+  word-break: break-all;
+}
 .content .line {
   border-bottom: 1px solid #000;
   width: 100%;
