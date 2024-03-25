@@ -1,0 +1,13 @@
+.content {
+  padding: 20px;
+}
+.content .uni-input {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 45px;
+  padding: 0 10px;
+}
+.content .content-input {
+  margin-bottom: 20px;
+}
+
