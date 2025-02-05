@@ -29,6 +29,14 @@
 				"navigationBarTitleText" : "BASE64转换",
 				"enablePullDownRefresh" : false
 			}
+		},
+		{
+			"path" : "pages/components/timeNow/timeNow",
+			"style" : 
+			{
+				"navigationBarTitleText" : "当前时间",
+				"enablePullDownRefresh" : false
+			}
 		}
 	],
 	"globalStyle": {
