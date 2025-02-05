@@ -173,6 +173,9 @@ var _default = {
       }, {
         title: 'base64/MD5',
         url: '/pages/components/base64Conver/base64Conver'
+      }, {
+        title: '当前时间',
+        url: '/pages/components/timeNow/timeNow'
       }]
     };
   },

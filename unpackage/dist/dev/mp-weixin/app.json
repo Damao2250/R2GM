@@ -3,7 +3,8 @@
     "pages/index/index",
     "pages/components/convertCurrency/convertCurrency",
     "pages/components/networkInfo/networkInfo",
-    "pages/components/base64Conver/base64Conver"
+    "pages/components/base64Conver/base64Conver",
+    "pages/components/timeNow/timeNow"
   ],
   "subPackages": [],
   "window": {
