@@ -1,0 +1,213 @@
+// 统一的颜色主题
+// 主要颜色
+$primary-color: #5677fc;
+$primary-light: #7a94ff;
+$primary-dark: #3a4fd1;
+
+// 中性色
+$text-primary: #333333;
+$text-secondary: #666666;
+$text-tertiary: #999999;
+$text-disabled: #cccccc;
+
+$bg-primary: #f5f6fa;
+$bg-secondary: #ffffff;
+
+// 功能色
+$success-color: #5dbc4c;
+$warning-color: #f5a623;
+$danger-color: #f66f6f;
+$info-color: #5677fc;
+
+// 边框和分割线
+$border-color: #e5e5e5;
+$divider-color: #f0f0f0;
+
+// 圆角
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+
+// 间距
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+// 字体大小
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-base: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 20px;
+$font-size-2xl: 24px;
+
+// 全局样式
+/* #ifndef MP */
+* {
+  box-sizing: border-box;
+}
+/* #endif */
+
+// 页面通用样式
+.page-container {
+  min-height: 100vh;
+  background-color: $bg-primary;
+}
+
+.page-header {
+  padding: $spacing-lg;
+  background-color: $primary-color;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* #ifdef H5 */
+  background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+  /* #endif */
+  
+  .page-title {
+    font-size: $font-size-2xl;
+    font-weight: 600;
+  }
+}
+
+.page-content {
+  padding: $spacing-md;
+}
+
+// 卡片样式
+.card {
+  background-color: $bg-secondary;
+  border-radius: $border-radius-md;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+// 输入框容器
+.input-group {
+  margin-bottom: $spacing-lg;
+  
+  .input-label {
+    font-size: $font-size-sm;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+    font-weight: 500;
+  }
+}
+
+// 按钮通用样式
+.btn-primary {
+  background-color: $primary-color;
+  color: #ffffff;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  
+  &:active {
+    background-color: $primary-dark;
+  }
+}
+
+.btn-secondary {
+  background-color: #f0f0f0;
+  color: $text-primary;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+}
+
+// 文本内容显示
+.text-display {
+  background-color: $bg-primary;
+  padding: $spacing-md;
+  border-radius: $border-radius-md;
+  margin: $spacing-md 0;
+  border-left: 4px solid $primary-color;
+  word-break: break-all;
+  
+  &.disabled {
+    opacity: 0.6;
+  }
+}
+
+// 分割线
+.divider {
+  height: 1px;
+  background-color: $divider-color;
+  margin: $spacing-lg 0;
+}
+
+// 信息列表项
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md 0;
+  border-bottom: 1px solid $divider-color;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  .label {
+    color: $text-secondary;
+    font-size: $font-size-sm;
+  }
+  
+  .value {
+    color: $text-primary;
+    font-size: $font-size-sm;
+    font-weight: 500;
+    flex: 1;
+    text-align: right;
+    margin-left: $spacing-md;
+    word-break: break-all;
+  }
+}
+
+// 工具网格
+.tools-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  margin-top: $spacing-md;
+  
+  .tool-item {
+    background-color: $bg-secondary;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    width: calc(50% - #{$spacing-md * 0.5});
+    
+    /* #ifndef MP */
+    transition: all 0.3s ease;
+    /* #endif */
+    
+    &:active {
+      /* #ifdef H5 */
+      transform: scale(0.95);
+      /* #endif */
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    }
+    
+    .tool-icon {
+      font-size: 32px;
+      color: $primary-color;
+      margin-bottom: $spacing-sm;
+    }
+    
+    .tool-name {
+      font-size: $font-size-sm;
+      color: $text-primary;
+      font-weight: 500;
+    }
+  }
+}
