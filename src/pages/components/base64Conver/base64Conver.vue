@@ -247,16 +247,16 @@ const clipboardData3 = () => {
 
 .page-container {
   min-height: 100vh;
-  background-color: $bg-primary;
+  background-color: $app-bg-primary;
 }
 
 .page-header {
-  padding: $spacing-lg;
+  padding: $app-spacing-lg;
   background-color: #f5f6fa;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $text-primary;
+  color: $app-text-primary;
   border-bottom: 1px solid #e5e5e5;
   position: relative;
   /* #ifdef H5 */
@@ -264,7 +264,7 @@ const clipboardData3 = () => {
   /* #endif */
 
   .page-title {
-    font-size: $font-size-2xl;
+    font-size: $app-font-size-2xl;
     font-weight: 600;
     letter-spacing: 0.5px;
     color: #4a63d2;
@@ -273,85 +273,55 @@ const clipboardData3 = () => {
 }
 
 .page-content {
-  padding: $spacing-lg;
+  padding: $app-spacing-lg;
 }
 
 .card {
-  background-color: $bg-secondary;
-  border-radius: $border-radius-md;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-lg;
+  background-color: $app-bg-secondary;
+  border-radius: $app-border-radius-md;
+  padding: $app-spacing-lg;
+  margin-bottom: $app-spacing-lg;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   .card-title {
-    font-size: $font-size-lg;
-    color: $text-primary;
+    font-size: $app-font-size-lg;
+    color: $app-text-primary;
     font-weight: 600;
-    margin-bottom: $spacing-lg;
-    padding-bottom: $spacing-md;
-    border-bottom: 2px solid $divider-color;
+    margin-bottom: $app-spacing-lg;
+    padding-bottom: $app-spacing-md;
+    border-bottom: 2px solid $app-divider-color;
   }
 }
 
 .input-group {
-  margin-bottom: $spacing-lg;
+  margin-bottom: $app-spacing-lg;
 
   :deep(.wd-input__textarea) {
-    padding: $spacing-md;
+    padding: $app-spacing-md;
     min-height: 100px;
   }
 }
 
-.wd-button {
-  width: 100%;
-  padding: 10px $spacing-md;
-  border-radius: $border-radius-md;
-  border: none;
-  font-size: $font-size-base;
-  font-weight: 500;
-  /* #ifndef MP */
-  transition: all 0.3s ease;
-  /* #endif */
-  margin-bottom: $spacing-md;
-
-  &.primary {
-    background-color: $primary-color;
-    color: #ffffff;
-
-    &:active {
-      background-color: $primary-dark;
-    }
-
-    &:disabled {
-      background-color: $text-disabled;
-      color: $text-tertiary;
-    }
-  }
-
-  &.full-width {
-    width: 100%;
-  }
-}
 
 .result-container {
-  margin-top: $spacing-lg;
-  padding-top: $spacing-lg;
-  border-top: 1px solid $divider-color;
+  margin-top: $app-spacing-lg;
+  padding-top: $app-spacing-lg;
+  border-top: 1px solid $app-divider-color;
 }
 
 .text-display {
-  background-color: $bg-primary;
-  padding: $spacing-md;
-  border-radius: $border-radius-md;
-  margin-bottom: $spacing-lg;
-  border-left: 4px solid $primary-color;
+  background-color: $app-bg-primary;
+  padding: $app-spacing-md;
+  border-radius: $app-border-radius-md;
+  margin-bottom: $app-spacing-lg;
+  border-left: 4px solid $app-primary-color;
   word-break: break-all;
   min-height: 60px;
   display: flex;
   align-items: flex-start;
-  padding-top: $spacing-lg;
-  font-size: $font-size-sm;
-  color: $text-primary;
+  padding-top: $app-spacing-lg;
+  font-size: $app-font-size-sm;
+  color: $app-text-primary;
   max-height: 300px;
   overflow-y: auto;
 }

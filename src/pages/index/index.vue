@@ -70,15 +70,15 @@ const gotoPage = (item: ToolItem) => {
 
 .page-container {
   min-height: 100vh;
-  background-color: $bg-primary;
+  background-color: $app-bg-primary;
 }
 .page-header {
-  padding: $spacing-lg;
+  padding: $app-spacing-lg;
   background-color: #f5f6fa;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $text-primary;
+  color: $app-text-primary;
   border-bottom: 1px solid #e5e5e5;
   position: relative;
   /* #ifdef H5 */
@@ -89,14 +89,14 @@ const gotoPage = (item: ToolItem) => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: $text-primary;
+    color: $app-text-primary;
     position: relative;
     z-index: 1;
 
     .logo {
       height: 60rpx;
       width: 60rpx;
-      margin-bottom: $spacing-sm;
+      margin-bottom: $app-spacing-sm;
       border-radius: 12rpx;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
@@ -113,19 +113,19 @@ const gotoPage = (item: ToolItem) => {
 }
 
 .page-content {
-  padding: $spacing-md;
+  padding: $app-spacing-md;
 }
 
 .tools-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-md;
-  margin-top: $spacing-sm;
+  gap: $app-spacing-md;
+  margin-top: $app-spacing-sm;
 
   .tool-item {
-    background-color: $bg-secondary;
-    border-radius: $border-radius-lg;
-    padding: $spacing-md;
+    background-color: $app-bg-secondary;
+    border-radius: $app-border-radius-lg;
+    padding: $app-spacing-md;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -147,8 +147,8 @@ const gotoPage = (item: ToolItem) => {
     }
 
     .tool-name {
-      font-size: $font-size-base;
-      color: $text-primary;
+      font-size: $app-font-size-base;
+      color: $app-text-primary;
       font-weight: 500;
     }
   }

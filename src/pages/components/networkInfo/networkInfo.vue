@@ -91,16 +91,16 @@ const getNetworkInfo = async () => {
 
 .page-container {
   min-height: 100vh;
-  background-color: $bg-primary;
+  background-color: $app-bg-primary;
 }
 
 .page-header {
-  padding: $spacing-lg;
+  padding: $app-spacing-lg;
   background-color: #f5f6fa;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $text-primary;
+  color: $app-text-primary;
   border-bottom: 1px solid #e5e5e5;
   position: relative;
   /* #ifdef H5 */
@@ -108,7 +108,7 @@ const getNetworkInfo = async () => {
   /* #endif */
 
   .page-title {
-    font-size: $font-size-2xl;
+    font-size: $app-font-size-2xl;
     font-weight: 600;
     letter-spacing: 0.5px;
     color: #4a63d2;
@@ -117,50 +117,50 @@ const getNetworkInfo = async () => {
 }
 
 .page-content {
-  padding: $spacing-lg;
+  padding: $app-spacing-lg;
 }
 
 .card {
-  background-color: $bg-secondary;
-  border-radius: $border-radius-md;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-lg;
+  background-color: $app-bg-secondary;
+  border-radius: $app-border-radius-md;
+  padding: $app-spacing-lg;
+  margin-bottom: $app-spacing-lg;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   .card-title {
-    font-size: $font-size-lg;
-    color: $text-primary;
+    font-size: $app-font-size-lg;
+    color: $app-text-primary;
     font-weight: 600;
-    margin-bottom: $spacing-lg;
-    padding-bottom: $spacing-md;
-    border-bottom: 2px solid $divider-color;
+    margin-bottom: $app-spacing-lg;
+    padding-bottom: $app-spacing-md;
+    border-bottom: 2px solid $app-divider-color;
   }
 }
 
 .info-list {
-  margin-bottom: $spacing-lg;
+  margin-bottom: $app-spacing-lg;
 
   .info-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: $spacing-lg 0;
-    border-bottom: 1px solid $divider-color;
+    padding: $app-spacing-lg 0;
+    border-bottom: 1px solid $app-divider-color;
 
     &:last-child {
       border-bottom: none;
     }
 
     .label {
-      color: $text-secondary;
-      font-size: $font-size-base;
+      color: $app-text-secondary;
+      font-size: $app-font-size-base;
       font-weight: 500;
       min-width: 100px;
     }
 
     .value {
-      color: $primary-color;
-      font-size: $font-size-base;
+      color: $app-primary-color;
+      font-size: $app-font-size-base;
       flex: 1;
       text-align: right;
       word-break: break-all;
@@ -168,30 +168,6 @@ const getNetworkInfo = async () => {
   }
 }
 
-.wd-button {
-  width: 100%;
-  padding: 10px $spacing-md;
-  border-radius: $border-radius-md;
-  border: none;
-  font-size: $font-size-base;
-  font-weight: 500;
-  /* #ifndef MP */
-  transition: all 0.3s ease;
-  /* #endif */
-
-  &.primary {
-    background-color: $primary-color;
-    color: #ffffff;
-
-    &:active {
-      background-color: $primary-dark;
-    }
-  }
-
-  &.full-width {
-    width: 100%;
-  }
-}
 
 .status-card {
   display: flex;
@@ -203,7 +179,7 @@ const getNetworkInfo = async () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: $spacing-lg;
+    gap: $app-spacing-lg;
 
     .status-indicator {
       width: 20px;
@@ -214,18 +190,18 @@ const getNetworkInfo = async () => {
       /* #endif */
 
       &.connected {
-        background-color: $success-color;
+        background-color: $app-success-color;
       }
 
       &.disconnected {
-        background-color: $danger-color;
+        background-color: $app-danger-color;
       }
     }
 
     .status-text {
-      font-size: $font-size-lg;
+      font-size: $app-font-size-lg;
       font-weight: 600;
-      color: $text-primary;
+      color: $app-text-primary;
     }
   }
 }

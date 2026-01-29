@@ -156,16 +156,16 @@ const convertCurrency = (currencyDigits: string | number): string => {
 
 .page-container {
   min-height: 100vh;
-  background-color: $bg-primary;
+  background-color: $app-bg-primary;
 }
 
 .page-header {
-  padding: $spacing-lg;
+  padding: $app-spacing-lg;
   background-color: #f5f6fa;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $text-primary;
+  color: $app-text-primary;
   border-bottom: 1px solid #e5e5e5;
   position: relative;
   /* #ifdef H5 */
@@ -173,7 +173,7 @@ const convertCurrency = (currencyDigits: string | number): string => {
   /* #endif */
 
   .page-title {
-    font-size: $font-size-2xl;
+    font-size: $app-font-size-2xl;
     font-weight: 600;
     letter-spacing: 0.5px;
     color: #4a63d2;
@@ -182,85 +182,56 @@ const convertCurrency = (currencyDigits: string | number): string => {
 }
 
 .page-content {
-  padding: $spacing-lg;
+  padding: $app-spacing-lg;
 }
 
 .card {
-  background-color: $bg-secondary;
-  border-radius: $border-radius-md;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-lg;
+  background-color: $app-bg-secondary;
+  border-radius: $app-border-radius-md;
+  padding: $app-spacing-lg;
+  margin-bottom: $app-spacing-lg;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .input-group {
-  margin-bottom: $spacing-lg;
+  margin-bottom: $app-spacing-lg;
 
   .input-label {
-    font-size: $font-size-sm;
-    color: $text-primary;
-    margin-bottom: $spacing-sm;
+    font-size: $app-font-size-sm;
+    color: $app-text-primary;
+    margin-bottom: $app-spacing-sm;
     font-weight: 500;
   }
 
   :deep(.wd-input__input) {
-    padding: 10px $spacing-md;
+    padding: 10px $app-spacing-md;
   }
 }
 
 .button-group {
   display: flex;
-  gap: $spacing-md;
+  gap: $app-spacing-md;
 }
 
-.wd-button {
-  flex: 1;
-  padding: 10px $spacing-md;
-  border-radius: $border-radius-md;
-  border: none;
-  font-size: $font-size-base;
-  font-weight: 500;
-  /* #ifndef MP */
-  transition: all 0.3s ease;
-  /* #endif */
-
-  &.primary {
-    background-color: $primary-color;
-    color: #ffffff;
-
-    &:active {
-      background-color: $primary-dark;
-    }
-
-    &:disabled {
-      background-color: $text-disabled;
-      color: $text-tertiary;
-    }
-  }
-
-  &.full-width {
-    width: 100%;
-  }
-}
 
 .result-label {
-  font-size: $font-size-sm;
-  color: $text-primary;
+  font-size: $app-font-size-sm;
+  color: $app-text-primary;
   font-weight: 500;
-  margin-bottom: $spacing-md;
+  margin-bottom: $app-spacing-md;
 }
 
 .text-display {
-  background-color: $bg-primary;
-  padding: $spacing-md;
-  border-radius: $border-radius-md;
-  margin-bottom: $spacing-lg;
-  border-left: 4px solid $primary-color;
+  background-color: $app-bg-primary;
+  padding: $app-spacing-md;
+  border-radius: $app-border-radius-md;
+  margin-bottom: $app-spacing-lg;
+  border-left: 4px solid $app-primary-color;
   word-break: break-all;
   min-height: 60px;
   display: flex;
   align-items: center;
-  font-size: $font-size-base;
-  color: $text-primary;
+  font-size: $app-font-size-base;
+  color: $app-text-primary;
 }
 </style>

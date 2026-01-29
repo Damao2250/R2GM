@@ -3,6 +3,8 @@ import path from 'node:path'
 import process from 'node:process'
 import { defineConfig, loadEnv } from 'vite'
 import UniPages from '@uni-helper/vite-plugin-uni-pages'
+import UniComponents from '@uni-helper/vite-plugin-uni-components'
+import { WotResolver } from '@uni-helper/vite-plugin-uni-components/resolvers'
 
 export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
   // 动态导入插件
@@ -16,6 +18,9 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
     envDir: './env',
     plugins: [
       UniPages(),
+      UniComponents({
+        resolvers: [WotResolver()]
+      }),
       Uni(),
     ],
     resolve: {
@@ -30,6 +35,14 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
     build: {
       target: 'es6',
       minify: 'esbuild',
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          quietDeps: true, // 禁用来自依赖包的弃用警告
+          silenceDeprecations: ["legacy-js-api", "import", "global-builtin"]
+        }
+      }
     },
   })
 }

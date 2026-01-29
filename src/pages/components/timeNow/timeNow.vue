@@ -75,16 +75,16 @@ const formatTime = (time: Date): string => {
 
 .page-container {
   min-height: 100vh;
-  background-color: $bg-primary;
+  background-color: $app-bg-primary;
 }
 
 .page-header {
-  padding: $spacing-lg;
+  padding: $app-spacing-lg;
   background-color: #f5f6fa;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $text-primary;
+  color: $app-text-primary;
   border-bottom: 1px solid #e5e5e5;
   position: relative;
   /* #ifdef H5 */
@@ -92,7 +92,7 @@ const formatTime = (time: Date): string => {
   /* #endif */
 
   .page-title {
-    font-size: $font-size-2xl;
+    font-size: $app-font-size-2xl;
     font-weight: 600;
     letter-spacing: 0.5px;
     color: #4a63d2;
@@ -101,14 +101,14 @@ const formatTime = (time: Date): string => {
 }
 
 .page-content {
-  padding: $spacing-lg;
+  padding: $app-spacing-lg;
 }
 
 .card {
-  background-color: $bg-secondary;
-  border-radius: $border-radius-md;
-  padding: $spacing-lg;
-  margin-bottom: $spacing-lg;
+  background-color: $app-bg-secondary;
+  border-radius: $app-border-radius-md;
+  padding: $app-spacing-lg;
+  margin-bottom: $app-spacing-lg;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -122,26 +122,26 @@ const formatTime = (time: Date): string => {
   .time-display {
     font-size: 28px;
     font-weight: 700;
-    color: $primary-color;
+    color: $app-primary-color;
     font-family: 'Courier New', monospace;
     text-align: center;
     letter-spacing: 1px;
   }
 
   .time-info {
-    margin-top: $spacing-lg;
-    font-size: $font-size-sm;
-    color: $text-tertiary;
+    margin-top: $app-spacing-lg;
+    font-size: $app-font-size-sm;
+    color: $app-text-tertiary;
   }
 }
 
 .card-title {
-  font-size: $font-size-lg;
-  color: $text-primary;
+  font-size: $app-font-size-lg;
+  color: $app-text-primary;
   font-weight: 600;
-  margin-bottom: $spacing-lg;
-  padding-bottom: $spacing-md;
-  border-bottom: 2px solid $divider-color;
+  margin-bottom: $app-spacing-lg;
+  padding-bottom: $app-spacing-md;
+  border-bottom: 2px solid $app-divider-color;
 }
 
 .format-card {
@@ -149,27 +149,27 @@ const formatTime = (time: Date): string => {
     .format-item {
       display: flex;
       flex-direction: column;
-      padding: $spacing-lg 0;
-      border-bottom: 1px solid $divider-color;
+      padding: $app-spacing-lg 0;
+      border-bottom: 1px solid $app-divider-color;
 
       &:last-child {
         border-bottom: none;
       }
 
       .format-label {
-        color: $text-secondary;
-        font-size: $font-size-sm;
+        color: $app-text-secondary;
+        font-size: $app-font-size-sm;
         font-weight: 500;
-        margin-bottom: $spacing-sm;
+        margin-bottom: $app-spacing-sm;
       }
 
       .format-value {
-        color: $primary-color;
-        font-size: $font-size-base;
+        color: $app-primary-color;
+        font-size: $app-font-size-base;
         font-family: 'Courier New', monospace;
-        padding: $spacing-sm;
-        background-color: $bg-primary;
-        border-radius: $border-radius-sm;
+        padding: $app-spacing-sm;
+        background-color: $app-bg-primary;
+        border-radius: $app-border-radius-sm;
       }
     }
   }

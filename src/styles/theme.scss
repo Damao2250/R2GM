@@ -1,47 +1,47 @@
 // 统一的颜色主题
 // 主要颜色
-$primary-color: #5677fc;
-$primary-light: #7a94ff;
-$primary-dark: #3a4fd1;
+$app-primary-color: #5677fc;
+$app-primary-light: #7a94ff;
+$app-primary-dark: #3a4fd1;
 
 // 中性色
-$text-primary: #333333;
-$text-secondary: #666666;
-$text-tertiary: #999999;
-$text-disabled: #cccccc;
+$app-text-primary: #333333;
+$app-text-secondary: #666666;
+$app-text-tertiary: #999999;
+$app-text-disabled: #cccccc;
 
-$bg-primary: #f5f6fa;
-$bg-secondary: #ffffff;
+$app-bg-primary: #f5f6fa;
+$app-bg-secondary: #ffffff;
 
 // 功能色
-$success-color: #5dbc4c;
-$warning-color: #f5a623;
-$danger-color: #f66f6f;
-$info-color: #5677fc;
+$app-success-color: #5dbc4c;
+$app-warning-color: #f5a623;
+$app-danger-color: #f66f6f;
+$app-info-color: #5677fc;
 
 // 边框和分割线
-$border-color: #e5e5e5;
-$divider-color: #f0f0f0;
+$app-border-color: #e5e5e5;
+$app-divider-color: #f0f0f0;
 
 // 圆角
-$border-radius-sm: 4px;
-$border-radius-md: 8px;
-$border-radius-lg: 12px;
+$app-border-radius-sm: 4px;
+$app-border-radius-md: 8px;
+$app-border-radius-lg: 12px;
 
 // 间距
-$spacing-xs: 4px;
-$spacing-sm: 8px;
-$spacing-md: 16px;
-$spacing-lg: 24px;
-$spacing-xl: 32px;
+$app-spacing-xs: 4px;
+$app-spacing-sm: 8px;
+$app-spacing-md: 16px;
+$app-spacing-lg: 24px;
+$app-spacing-xl: 32px;
 
 // 字体大小
-$font-size-xs: 12px;
-$font-size-sm: 14px;
-$font-size-base: 16px;
-$font-size-lg: 18px;
-$font-size-xl: 20px;
-$font-size-2xl: 24px;
+$app-font-size-xs: 12px;
+$app-font-size-sm: 14px;
+$app-font-size-base: 16px;
+$app-font-size-lg: 18px;
+$app-font-size-xl: 20px;
+$app-font-size-2xl: 24px;
 
 // 全局样式
 /* #ifndef MP */
@@ -53,79 +53,79 @@ $font-size-2xl: 24px;
 // 页面通用样式
 .page-container {
   min-height: 100vh;
-  background-color: $bg-primary;
+  background-color: $app-bg-primary;
 }
 
 .page-header {
-  padding: $spacing-lg;
-  background-color: $primary-color;
+  padding: $app-spacing-lg;
+  background-color: $app-primary-color;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   /* #ifdef H5 */
-  background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+  background: linear-gradient(135deg, $app-primary-color 0%, $app-primary-light 100%);
   /* #endif */
   
   .page-title {
-    font-size: $font-size-2xl;
+    font-size: $app-font-size-2xl;
     font-weight: 600;
   }
 }
 
 .page-content {
-  padding: $spacing-md;
+  padding: $app-spacing-md;
 }
 
 // 卡片样式
 .card {
-  background-color: $bg-secondary;
-  border-radius: $border-radius-md;
-  padding: $spacing-md;
-  margin-bottom: $spacing-md;
+  background-color: $app-bg-secondary;
+  border-radius: $app-border-radius-md;
+  padding: $app-spacing-md;
+  margin-bottom: $app-spacing-md;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 // 输入框容器
 .input-group {
-  margin-bottom: $spacing-lg;
+  margin-bottom: $app-spacing-lg;
   
   .input-label {
-    font-size: $font-size-sm;
-    color: $text-primary;
-    margin-bottom: $spacing-sm;
+    font-size: $app-font-size-sm;
+    color: $app-text-primary;
+    margin-bottom: $app-spacing-sm;
     font-weight: 500;
   }
 }
 
 // 按钮通用样式
 .btn-primary {
-  background-color: $primary-color;
+  background-color: $app-primary-color;
   color: #ffffff;
-  padding: $spacing-sm $spacing-lg;
-  border-radius: $border-radius-md;
-  font-size: $font-size-base;
+  padding: $app-spacing-sm $app-spacing-lg;
+  border-radius: $app-border-radius-md;
+  font-size: $app-font-size-base;
   
   &:active {
-    background-color: $primary-dark;
+    background-color: $app-primary-dark;
   }
 }
 
 .btn-secondary {
   background-color: #f0f0f0;
-  color: $text-primary;
-  padding: $spacing-sm $spacing-lg;
-  border-radius: $border-radius-md;
-  font-size: $font-size-base;
+  color: $app-text-primary;
+  padding: $app-spacing-sm $app-spacing-lg;
+  border-radius: $app-border-radius-md;
+  font-size: $app-font-size-base;
 }
 
 // 文本内容显示
 .text-display {
-  background-color: $bg-primary;
-  padding: $spacing-md;
-  border-radius: $border-radius-md;
-  margin: $spacing-md 0;
-  border-left: 4px solid $primary-color;
+  background-color: $app-bg-primary;
+  padding: $app-spacing-md;
+  border-radius: $app-border-radius-md;
+  margin: $app-spacing-md 0;
+  border-left: 4px solid $app-primary-color;
   word-break: break-all;
   
   &.disabled {
@@ -136,8 +136,8 @@ $font-size-2xl: 24px;
 // 分割线
 .divider {
   height: 1px;
-  background-color: $divider-color;
-  margin: $spacing-lg 0;
+  background-color: $app-divider-color;
+  margin: $app-spacing-lg 0;
 }
 
 // 信息列表项
@@ -145,25 +145,25 @@ $font-size-2xl: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: $spacing-md 0;
-  border-bottom: 1px solid $divider-color;
+  padding: $app-spacing-md 0;
+  border-bottom: 1px solid $app-divider-color;
   
   &:last-child {
     border-bottom: none;
   }
   
   .label {
-    color: $text-secondary;
-    font-size: $font-size-sm;
+    color: $app-text-secondary;
+    font-size: $app-font-size-sm;
   }
   
   .value {
-    color: $text-primary;
-    font-size: $font-size-sm;
+    color: $app-text-primary;
+    font-size: $app-font-size-sm;
     font-weight: 500;
     flex: 1;
     text-align: right;
-    margin-left: $spacing-md;
+    margin-left: $app-spacing-md;
     word-break: break-all;
   }
 }
@@ -172,20 +172,20 @@ $font-size-2xl: 24px;
 .tools-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: $spacing-md;
-  margin-top: $spacing-md;
+  gap: $app-spacing-md;
+  margin-top: $app-spacing-md;
   
   .tool-item {
-    background-color: $bg-secondary;
-    border-radius: $border-radius-md;
-    padding: $spacing-lg;
+    background-color: $app-bg-secondary;
+    border-radius: $app-border-radius-md;
+    padding: $app-spacing-lg;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    width: calc(50% - #{$spacing-md * 0.5});
+    width: calc(50% - #{$app-spacing-md * 0.5});
     
     /* #ifndef MP */
     transition: all 0.3s ease;
@@ -200,13 +200,13 @@ $font-size-2xl: 24px;
     
     .tool-icon {
       font-size: 32px;
-      color: $primary-color;
-      margin-bottom: $spacing-sm;
+      color: $app-primary-color;
+      margin-bottom: $app-spacing-sm;
     }
     
     .tool-name {
-      font-size: $font-size-sm;
-      color: $text-primary;
+      font-size: $app-font-size-sm;
+      color: $app-text-primary;
       font-weight: 500;
     }
   }
