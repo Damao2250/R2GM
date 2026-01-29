@@ -1,10 +1,13 @@
-import App from './App'
+import App from './App.vue'
 
 // #ifndef VUE3
-import Vue from 'vue'
+// @ts-ignore
+import * as Vue from 'vue'
 import './uni.promisify.adaptor'
+// @ts-ignore
 Vue.config.productionTip = false
 App.mpType = 'app'
+// @ts-ignore
 const app = new Vue({
   ...App
 })
