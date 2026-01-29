@@ -1,4 +1,5 @@
 import App from './App.vue'
+import './styles/theme.scss'
 
 // #ifndef VUE3
 // @ts-ignore

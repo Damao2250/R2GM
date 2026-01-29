@@ -1,45 +1,37 @@
 {
-  "pages": [
-    {
-      "path": "pages/index/index",
-      "style": {
-        "navigationBarTitleText": "R2DM"
-      }
-    },
-    {
-      "path": "pages/components/convertCurrency/convertCurrency",
-      "style": {
-        "navigationBarTitleText": "金额转大写",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/components/networkInfo/networkInfo",
-      "style": {
-        "navigationBarTitleText": "网络信息",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/components/base64Conver/base64Conver",
-      "style": {
-        "navigationBarTitleText": "BASE64转换",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/components/timeNow/timeNow",
-      "style": {
-        "navigationBarTitleText": "当前时间",
-        "enablePullDownRefresh": false
-      }
-    }
-  ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "R2DM",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
-  "uniIdRouter": {}
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "type": "home"
+    },
+    {
+      "path": "pages/components/base64Conver/base64Conver",
+      "type": "page"
+    },
+    {
+      "path": "pages/components/convertCurrency/convertCurrency",
+      "type": "page"
+    },
+    {
+      "path": "pages/components/networkInfo/networkInfo",
+      "type": "page"
+    },
+    {
+      "path": "pages/components/timeNow/timeNow",
+      "type": "page"
+    }
+  ],
+  "subPackages": []
 }

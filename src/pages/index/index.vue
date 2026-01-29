@@ -1,25 +1,26 @@
 <template>
-  <view class="content">
-    <image class="logo" src="/static/dm-logo.png"></image>
-    <view class="text-area">
-      <text class="title">DM工具箱</text>
+  <view class="page-container">
+    <!-- 页面头部 -->
+    <view class="page-header">
+      <view class="header-content">
+        <image class="logo" src="/static/dm-logo.png"></image>
+        <text class="page-title">DM工具箱</text>
+      </view>
     </view>
-    <view class="tools-list">
-      <view
-        class="flex-item"
-        v-for="(item, index) in toolsList"
-        :key="index"
-        @click="gotoPage(item)"
-      >
-        {{ item.title }}</view
-      >
-      <view class="flex-item">B</view>
-      <view class="flex-item">C</view>
-      <view class="flex-item">D</view>
-      <view class="flex-item">E</view>
-      <view class="flex-item">F</view>
-      <view class="flex-item">G</view>
-      <view class="flex-item">H</view>
+
+    <!-- 页面内容 -->
+    <view class="page-content">
+      <!-- 工具网格 -->
+      <view class="tools-grid">
+        <view
+          class="tool-item"
+          v-for="(item, index) in toolsList"
+          :key="index"
+          @click="gotoPage(item)"
+        >
+          <text class="tool-name">{{ item.title }}</text>
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -64,45 +65,92 @@ const gotoPage = (item: ToolItem) => {
 }
 </script>
 
-<style>
-.content {
-  padding: 20px;
-  /* 		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center; */
-}
+<style lang="scss" scoped>
+@use '../../styles/theme.scss' as *;
 
-.logo {
-  height: 80rpx;
-  width: 80rpx;
-  padding: 5px;
-  margin-bottom: 10rpx;
+.page-container {
+  min-height: 100vh;
+  background-color: $bg-primary;
 }
-
-.text-area {
+.page-header {
+  padding: $spacing-lg;
+  background-color: #f5f6fa;
   display: flex;
+  align-items: center;
   justify-content: center;
+  color: $text-primary;
+  border-bottom: 1px solid #e5e5e5;
+  position: relative;
+  /* #ifdef H5 */
+  background: linear-gradient(180deg, #ffffff 0%, #f5f6fa 100%);
+  /* #endif */
+
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: $text-primary;
+    position: relative;
+    z-index: 1;
+
+    .logo {
+      height: 60rpx;
+      width: 60rpx;
+      margin-bottom: $spacing-sm;
+      border-radius: 12rpx;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin: 0;
+      line-height: 1.2;
+      color: #4a63d2;
+    }
+  }
 }
 
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
+.page-content {
+  padding: $spacing-md;
 }
 
-.tools-list {
+.tools-grid {
   display: flex;
   flex-wrap: wrap;
-}
+  gap: $spacing-md;
+  margin-top: $spacing-sm;
 
-.flex-item {
-  margin: 5px 10px;
-  padding: 0 15px;
-  background-color: #ebebeb;
-  height: 35px;
-  line-height: 35px;
-  text-align: center;
-  color: #777;
-  font-size: 13px;
+  .tool-item {
+    background-color: $bg-secondary;
+    border-radius: $border-radius-lg;
+    padding: $spacing-md;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    flex: 1;
+    min-width: 120px;
+    min-height: 90px;
+    /* #ifndef MP */
+    transition: all 0.3s ease;
+    /* #endif */
+
+    &:active {
+      /* #ifdef H5 */
+      transform: scale(0.95);
+      /* #endif */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .tool-name {
+      font-size: $font-size-base;
+      color: $text-primary;
+      font-weight: 500;
+    }
+  }
 }
 </style>

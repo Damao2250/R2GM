@@ -2,6 +2,7 @@ import type { UserConfig, ConfigEnv } from 'vite'
 import path from 'node:path'
 import process from 'node:process'
 import { defineConfig, loadEnv } from 'vite'
+import UniPages from '@uni-helper/vite-plugin-uni-pages'
 
 export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
   // 动态导入插件
@@ -14,6 +15,7 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
   return defineConfig({
     envDir: './env',
     plugins: [
+      UniPages(),
       Uni(),
     ],
     resolve: {

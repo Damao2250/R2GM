@@ -1,61 +1,93 @@
 <template>
-  <view class="content">
-    <view class="content-input">
-      <textarea
-        class="uni-input"
-        cursor-spacing="100"
-        v-model="currencyValue"
-        auto-height
-        placeholder="请输入内容"
-      />
+  <view class="page-container">
+    <!-- 页面头部 -->
+    <view class="page-header">
+      <text class="page-title">Base64 / MD5 转换</text>
     </view>
-    <view class="content-input">
-      <button type="primary" @click="convertData(currencyValue)">base64转换</button>
-    </view>
-    <view class="content-input">
-      <text class="text-content" selectable user-select>{{ convertValue }}</text>
-    </view>
-    <button type="primary" :disabled="!isCopy" @click="clipboardData">点击复制</button>
 
-    <div class="line"></div>
+    <!-- 页面内容 -->
+    <view class="page-content">
+      <!-- Base64 编码 -->
+      <view class="card">
+        <view class="card-title">Base64 编码</view>
+        <view class="input-group">
+          <wd-input
+            v-model="currencyValue"
+            type="textarea"
+            placeholder="请输入要编码的内容"
+          />
+        </view>
+        <button class="wd-button primary full-width" @click="convertData(currencyValue)">
+          编码
+        </button>
+        <view v-if="convertValue" class="result-container">
+          <view class="text-display" selectable user-select>
+            {{ convertValue }}
+          </view>
+          <button
+            class="wd-button primary full-width"
+            :disabled="!isCopy"
+            @click="clipboardData"
+          >
+            复制
+          </button>
+        </view>
+      </view>
 
-    <view class="content-input">
-      <textarea
-        class="uni-input"
-        cursor-spacing="100"
-        v-model="currencyValue1"
-        auto-height
-        placeholder="请输入内容"
-      />
-    </view>
-    <view class="content-input">
-      <button type="primary" @click="convertData1(currencyValue1)">base64解码</button>
-    </view>
-    <view class="content-input">
-      <text class="text-content" selectable user-select>{{ convertValue1 }}</text>
-    </view>
-    <button type="primary" :disabled="!isCopy1" @click="clipboardData1">点击复制</button>
+      <!-- Base64 解码 -->
+      <view class="card">
+        <view class="card-title">Base64 解码</view>
+        <view class="input-group">
+          <wd-input
+            v-model="currencyValue1"
+            type="textarea"
+            placeholder="请输入要解码的内容"
+          />
+        </view>
+        <button class="wd-button primary full-width" @click="convertData1(currencyValue1)">
+          解码
+        </button>
+        <view v-if="convertValue1" class="result-container">
+          <view class="text-display" selectable user-select>
+            {{ convertValue1 }}
+          </view>
+          <button
+            class="wd-button primary full-width"
+            :disabled="!isCopy1"
+            @click="clipboardData1"
+          >
+            复制
+          </button>
+        </view>
+      </view>
 
-    <div class="line"></div>
-
-    <view class="content-input">
-      <textarea
-        class="uni-input"
-        cursor-spacing="100"
-        v-model="currencyValue3"
-        auto-height
-        placeholder="请输入内容"
-      />
+      <!-- MD5 计算 -->
+      <view class="card">
+        <view class="card-title">MD5 计算</view>
+        <view class="input-group">
+          <wd-input
+            v-model="currencyValue3"
+            type="textarea"
+            placeholder="请输入要计算的内容"
+          />
+        </view>
+        <button class="wd-button primary full-width" @click="convertData3(currencyValue3)">
+          计算
+        </button>
+        <view v-if="convertValue3" class="result-container">
+          <view class="text-display" selectable user-select>
+            {{ convertValue3 }}
+          </view>
+          <button
+            class="wd-button primary full-width"
+            :disabled="!isCopy3"
+            @click="clipboardData3"
+          >
+            复制
+          </button>
+        </view>
+      </view>
     </view>
-    <view class="content-input">
-      <button type="primary" @click="convertData3(currencyValue3)">MD5计算</button>
-    </view>
-    <view class="content-input">
-      <text class="text-content" selectable user-select>{{ convertValue3 }}</text>
-    </view>
-    <button type="primary" :disabled="!isCopy3" @click="clipboardData3">点击复制</button>
-
-    <div class="line"></div>
   </view>
 </template>
 
@@ -210,30 +242,117 @@ const clipboardData3 = () => {
 }
 </script>
 
-<style lang="less">
-.content {
-  padding: 20px;
+<style lang="scss" scoped>
+@use '../../../styles/theme.scss' as *;
 
-  .uni-input {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    min-height: 25px;
-    width: 93.333%;
-    padding: 10px;
+.page-container {
+  min-height: 100vh;
+  background-color: $bg-primary;
+}
+
+.page-header {
+  padding: $spacing-lg;
+  background-color: #f5f6fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-primary;
+  border-bottom: 1px solid #e5e5e5;
+  position: relative;
+  /* #ifdef H5 */
+  background: linear-gradient(180deg, #ffffff 0%, #f5f6fa 100%);
+  /* #endif */
+
+  .page-title {
+    font-size: $font-size-2xl;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #4a63d2;
+    margin: 0;
+  }
+}
+
+.page-content {
+  padding: $spacing-lg;
+}
+
+.card {
+  background-color: $bg-secondary;
+  border-radius: $border-radius-md;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  .card-title {
+    font-size: $font-size-lg;
+    color: $text-primary;
+    font-weight: 600;
+    margin-bottom: $spacing-lg;
+    padding-bottom: $spacing-md;
+    border-bottom: 2px solid $divider-color;
+  }
+}
+
+.input-group {
+  margin-bottom: $spacing-lg;
+
+  :deep(.wd-input__textarea) {
+    padding: $spacing-md;
+    min-height: 100px;
+  }
+}
+
+.wd-button {
+  width: 100%;
+  padding: 10px $spacing-md;
+  border-radius: $border-radius-md;
+  border: none;
+  font-size: $font-size-base;
+  font-weight: 500;
+  /* #ifndef MP */
+  transition: all 0.3s ease;
+  /* #endif */
+  margin-bottom: $spacing-md;
+
+  &.primary {
+    background-color: $primary-color;
+    color: #ffffff;
+
+    &:active {
+      background-color: $primary-dark;
+    }
+
+    &:disabled {
+      background-color: $text-disabled;
+      color: $text-tertiary;
+    }
   }
 
-  .content-input {
-    margin-bottom: 20px;
-  }
-
-  .text-content {
-    word-break: break-all;
-  }
-
-  .line {
-    border-bottom: 1px solid #000;
+  &.full-width {
     width: 100%;
-    margin: 50px 0;
   }
+}
+
+.result-container {
+  margin-top: $spacing-lg;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $divider-color;
+}
+
+.text-display {
+  background-color: $bg-primary;
+  padding: $spacing-md;
+  border-radius: $border-radius-md;
+  margin-bottom: $spacing-lg;
+  border-left: 4px solid $primary-color;
+  word-break: break-all;
+  min-height: 60px;
+  display: flex;
+  align-items: flex-start;
+  padding-top: $spacing-lg;
+  font-size: $font-size-sm;
+  color: $text-primary;
+  max-height: 300px;
+  overflow-y: auto;
 }
 </style>

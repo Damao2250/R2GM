@@ -1,22 +1,43 @@
 <template>
-  <view class="content">
-    <view class="content-input">
-      <input
-        class="uni-input"
-        v-model="currencyValue"
-        type="digit"
-        :maxlength="15"
-        focus
-        placeholder="请输入金额数字"
-      />
+  <view class="page-container">
+    <!-- 页面头部 -->
+    <view class="page-header">
+      <text class="page-title">金额转大写</text>
     </view>
-    <view class="content-input">
-      <button type="primary" @click="convertData(currencyValue)">转换</button>
+
+    <!-- 页面内容 -->
+    <view class="page-content">
+      <view class="card">
+        <view class="input-group">
+          <view class="input-label">请输入数字金额</view>
+          <wd-input
+            v-model="currencyValue"
+            placeholder="请输入数字金额，如：123.45"
+          />
+        </view>
+
+        <view class="button-group">
+          <button class="wd-button primary" @click="convertData(currencyValue)">
+            转换123
+          </button>
+        </view>
+      </view>
+
+      <!-- 结果显示卡片 -->
+      <view v-if="convertValue" class="card">
+        <view class="result-label">转换结果：</view>
+        <view class="text-display" selectable user-select>
+          {{ convertValue }}
+        </view>
+        <button
+          class="wd-button primary full-width"
+          :disabled="!isCopy"
+          @click="clipboardData"
+        >
+          {{ isCopy ? '点击复制' : '无法复制' }}
+        </button>
+      </view>
     </view>
-    <view class="content-input">
-      <text class="text-content" selectable user-select>{{ convertValue }}</text>
-    </view>
-    <button type="primary" :disabled="!isCopy" @click="clipboardData">点击复制</button>
   </view>
 </template>
 
@@ -130,23 +151,116 @@ const convertCurrency = (currencyDigits: string | number): string => {
 }
 </script>
 
-<style lang="less">
-.content {
-  padding: 20px;
+<style lang="scss" scoped>
+@use '../../../styles/theme.scss' as *;
 
-  .uni-input {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 45px;
-    padding: 0 10px;
+.page-container {
+  min-height: 100vh;
+  background-color: $bg-primary;
+}
+
+.page-header {
+  padding: $spacing-lg;
+  background-color: #f5f6fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-primary;
+  border-bottom: 1px solid #e5e5e5;
+  position: relative;
+  /* #ifdef H5 */
+  background: linear-gradient(180deg, #ffffff 0%, #f5f6fa 100%);
+  /* #endif */
+
+  .page-title {
+    font-size: $font-size-2xl;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #4a63d2;
+    margin: 0;
+  }
+}
+
+.page-content {
+  padding: $spacing-lg;
+}
+
+.card {
+  background-color: $bg-secondary;
+  border-radius: $border-radius-md;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
+  margin-bottom: $spacing-lg;
+
+  .input-label {
+    font-size: $font-size-sm;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+    font-weight: 500;
   }
 
-  .content-input {
-    margin-bottom: 20px;
+  :deep(.wd-input__input) {
+    padding: 10px $spacing-md;
+  }
+}
+
+.button-group {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.wd-button {
+  flex: 1;
+  padding: 10px $spacing-md;
+  border-radius: $border-radius-md;
+  border: none;
+  font-size: $font-size-base;
+  font-weight: 500;
+  /* #ifndef MP */
+  transition: all 0.3s ease;
+  /* #endif */
+
+  &.primary {
+    background-color: $primary-color;
+    color: #ffffff;
+
+    &:active {
+      background-color: $primary-dark;
+    }
+
+    &:disabled {
+      background-color: $text-disabled;
+      color: $text-tertiary;
+    }
   }
 
-  .text-content {
-    word-break: break-all;
+  &.full-width {
+    width: 100%;
   }
+}
+
+.result-label {
+  font-size: $font-size-sm;
+  color: $text-primary;
+  font-weight: 500;
+  margin-bottom: $spacing-md;
+}
+
+.text-display {
+  background-color: $bg-primary;
+  padding: $spacing-md;
+  border-radius: $border-radius-md;
+  margin-bottom: $spacing-lg;
+  border-left: 4px solid $primary-color;
+  word-break: break-all;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  font-size: $font-size-base;
+  color: $text-primary;
 }
 </style>
