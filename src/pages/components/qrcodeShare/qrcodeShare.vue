@@ -1,60 +1,56 @@
 <template>
-  <view class="page-container">
+  <view class="container">
     <!-- 页面头部 -->
-    <view class="page-header">
-      <text class="page-title">📱 二维码分享</text>
-    </view>
+    <PageHeader title="📲 二维码分享" subtitle="扫描·生成·分享" />
 
     <!-- 页面内容 -->
     <view class="page-content">
-      <!-- 输入区域 -->
-      <view class="input-section">
-        <text class="section-label">输入要分享的文本</text>
-        <textarea
-          class="input-textarea"
-          v-model="inputText"
-          placeholder="输入文本或粘贴内容..."
-          @input="onInput"
-          maxlength="1000"
-        ></textarea>
-        <view class="char-count">{{ inputText.length }}/1000</view>
-      </view>
-      <view class="button-group">
-        <button class="btn btn-secondary" @click="scanQrcode">📸 扫描</button>
-        <button class="btn btn-secondary" @click="pasteText">📋 粘贴</button>
-        <button class="btn btn-secondary" @click="clearText">🗑️ 清空</button>
-        <button class="btn btn-primary" @click="generateQrcode" :disabled="!inputText">生成二维码</button>
+      <!-- 输入卡片 -->
+      <view class="input-card">
+        <view class="section-title">📝 输入文本</view>
+        <textarea class="text-input" v-model="inputText" placeholder="输入要生成二维码的文本内容..." maxlength="1000"></textarea>
+        <view class="char-counter">{{ inputText.length }}/1000</view>
+
+        <!-- 操作按钮 -->
+        <view class="action-buttons">
+          <view class="action-btn secondary-btn" @tap="scanQrcode"> 📸 扫描 </view>
+          <view class="action-btn secondary-btn" @tap="pasteText"> 📋 粘贴 </view>
+          <view class="action-btn secondary-btn" @tap="clearText"> 🗑️ 清空 </view>
+        </view>
+
+        <view class="generate-btn" :class="{ disabled: !inputText }" @tap="generateQrcode">
+          ✨ 生成二维码
+        </view>
       </view>
 
       <!-- Canvas 容器 -->
       <canvas canvas-id="qrcodeCanvas" class="qrcode-canvas"></canvas>
 
-      <!-- 二维码显示区域 -->
-      <view v-if="qrcodeUrl" class="qrcode-section">
-        <text class="section-title">📲 二维码</text>
-        <view class="qrcode-container">
-          <image :src="qrcodeUrl" class="qrcode-image" mode="aspectFit"></image>
+      <!-- 二维码结果卡片 -->
+      <view v-if="qrcodeUrl" class="qrcode-card">
+        <view class="section-title">📲 二维码结果</view>
+        <view class="qrcode-display">
+          <image :src="qrcodeUrl" class="qrcode-img" mode="aspectFit"></image>
         </view>
 
-        <!-- 二维码操作 -->
+        <!-- 操作按钮 -->
         <view class="qrcode-actions">
-          <button class="action-btn" @click="copyText">📋 复制文本</button>
-          <button class="action-btn" @click="saveQrcode">💾 保存二维码</button>
+          <view class="qr-action-btn" @tap="saveQrcode"> 💾 保存图片 </view>
+          <view class="qr-action-btn" @tap="copyText"> 📋 复制文本 </view>
         </view>
 
         <!-- 文本预览 -->
         <view class="text-preview">
-          <text class="preview-label">📝 文本预览</text>
-          <view class="preview-box">
-            <text class="preview-text">{{ inputText }}</text>
-          </view>
+          <view class="preview-title">预览内容</view>
+          <text class="preview-content">{{ inputText }}</text>
         </view>
       </view>
 
       <!-- 空状态 -->
       <view v-else class="empty-state">
-        <text class="empty-icon">🔍</text>
-        <text class="empty-text">输入文本并点击"生成二维码"</text>
+        <text class="empty-icon">💡</text>
+        <text class="empty-text">输入文本后点击"生成二维码"</text>
+        <text class="empty-hint">支持最多 1000 个字符</text>
       </view>
     </view>
   </view>
@@ -63,6 +59,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import PageHeader from '@/components/PageHeader.vue'
 import drawQrcode from 'weapp-qrcode'
 
 // 类型定义
@@ -94,7 +91,7 @@ const scanQrcode = async () => {
       onlyFromCamera: true,
       scanType: ['qrCode']
     })
-    
+
     if (result.result) {
       inputText.value = result.result
       qrcodeUrl.value = ''
@@ -245,231 +242,207 @@ const saveQrcode = async () => {
 <style lang="scss" scoped>
 @use '../../../styles/theme.scss' as *;
 
-.page-container {
+.container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-}
-
-.page-header {
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-
-  .page-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #ffffff;
-  }
+  background: #f5f7fa;
+  padding: 0 0 40rpx 0;
 }
 
 .page-content {
-  padding: 16px;
+  padding: 30rpx;
+}
+
+/* 输入卡片 */
+.input-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
+}
+
+.text-input {
+  width: 100%;
+  min-height: 280rpx;
+  padding: 24rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  color: #333;
+  line-height: 1.6;
+  border: none;
+  box-sizing: border-box;
+  display: block;
+}
+
+.char-counter {
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 16rpx;
+  margin-bottom: 30rpx;
+}
+
+.action-buttons {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
 }
 
-/* 输入区域 */
-.input-section {
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: $app-spacing-lg;
-  margin-bottom: $app-spacing-lg;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-
-  .section-label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: $app-spacing-md;
-  }
-
-  .input-textarea {
-    width: 100%;
-    height: 150px;
-    padding: 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #333;
-    background-color: #fafafa;
-    box-sizing: border-box;
-    line-height: 1.5;
-  }
-
-  .char-count {
-    text-align: right;
-    font-size: 12px;
-    color: #999;
-    margin-top: 8px;
-  }
-}
-
-/* 按钮组 */
-.button-group {
+.action-btn {
+  flex: 1;
+  height: 80rpx;
   display: flex;
-  flex-wrap: wrap;
-  gap: $app-spacing-md;
-  margin-bottom: $app-spacing-lg;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  transition: all 0.3s;
 
-  .btn {
-    flex: 1;
-    min-width: 70px;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    font-size: 13px;
-    font-weight: 600;
-    transition: all 0.3s ease;
+  &.secondary-btn {
+    background: white;
+    color: #667eea;
+    border: 2rpx solid #667eea;
+  }
 
-    &.btn-primary {
-      flex-basis: 100%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #ffffff;
-
-      &:active {
-        opacity: 0.8;
-        transform: scale(0.98);
-      }
-
-      &:disabled {
-        opacity: 0.5;
-      }
-    }
-
-    &.btn-secondary {
-      background-color: #f0f0f0;
-      color: #333;
-      border: 1px solid #e0e0e0;
-
-      &:active {
-        background-color: #e8e8e8;
-      }
-    }
+  &:active {
+    transform: scale(0.95);
   }
 }
 
-/* 二维码区域 */
-.qrcode-section {
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: $app-spacing-lg;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.generate-btn {
+  width: 100%;
+  height: 100rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.3);
+  transition: all 0.3s;
 
-  .section-title {
-    display: block;
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: $app-spacing-lg;
+  &.disabled {
+    opacity: 0.5;
+  }
+
+  &:active:not(.disabled) {
+    transform: scale(0.98);
   }
 }
 
-.qrcode-container {
+/* 二维码卡片 */
+.qrcode-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.qrcode-display {
+  padding: 40rpx;
+  background: #f5f5f5;
+  border-radius: 16rpx;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: $app-spacing-lg;
-  padding: $app-spacing-lg;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  border: 2px dashed #e0e0e0;
-
-  .qrcode-image {
-    width: 250px;
-    height: 250px;
-    border-radius: 8px;
-  }
+  margin-bottom: 30rpx;
 }
 
-/* 二维码操作按钮 */
+.qrcode-img {
+  width: 500rpx;
+  height: 500rpx;
+}
+
 .qrcode-actions {
   display: flex;
-  gap: $app-spacing-md;
-  margin-bottom: $app-spacing-lg;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
 
-  .action-btn {
-    flex: 1;
-    padding: 12px;
-    background-color: #f0f0f0;
-    color: #333;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.3s ease;
+.qr-action-btn {
+  flex: 1;
+  height: 80rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+  transition: all 0.3s;
 
-    &:active {
-      background-color: #e8e8e8;
-      transform: scale(0.98);
-    }
+  &:active {
+    transform: scale(0.95);
   }
 }
 
-/* 文本预览 */
 .text-preview {
-  margin-top: $app-spacing-lg;
-  padding-top: $app-spacing-lg;
-  border-top: 1px solid #f0f0f0;
+  padding: 24rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+}
 
-  .preview-label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: $app-spacing-md;
-  }
+.preview-title {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+  font-weight: bold;
+}
 
-  .preview-box {
-    background-color: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: $app-spacing-md;
-    max-height: 200px;
-    overflow-y: auto;
-
-    .preview-text {
-      font-size: 13px;
-      color: #666;
-      line-height: 1.6;
-      word-break: break-all;
-    }
-  }
+.preview-content {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+  word-break: break-all;
 }
 
 /* 空状态 */
 .empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px $app-spacing-lg;
+  background: white;
+  border-radius: 20rpx;
+  padding: 120rpx 40rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
   text-align: center;
-
-  .empty-icon {
-    font-size: 48px;
-    margin-bottom: $app-spacing-lg;
-  }
-
-  .empty-text {
-    font-size: 14px;
-    color: #999;
-  }
 }
 
-/* Canvas 容器（隐藏） */
+.empty-icon {
+  font-size: 120rpx;
+  display: block;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #666;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #999;
+  display: block;
+}
+
+/* 隐藏的Canvas */
 .qrcode-canvas {
   position: absolute;
-  left: -9999px;
-  width: 250px;
-  height: 250px;
+  left: -9999rpx;
+  width: 500rpx;
+  height: 500rpx;
 }
 </style>

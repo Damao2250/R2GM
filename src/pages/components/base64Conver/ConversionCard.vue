@@ -11,12 +11,7 @@
 
     <!-- 输入框 -->
     <view class="input-group">
-      <wd-input
-        v-model="localInput"
-        type="textarea"
-        :placeholder="`请输入内容...`"
-        clearable
-      />
+      <wd-input v-model="localInput" type="textarea" :placeholder="`请输入内容...`" clearable />
       <view class="char-stats">
         <text class="stat-item">字符数: {{ localInput.length }}</text>
         <text class="stat-item">字节数: {{ getByteLength(localInput) }}</text>
@@ -25,12 +20,8 @@
 
     <!-- 操作按钮 -->
     <view class="action-buttons">
-      <wd-button block type="primary" @click="$emit('convert')">
-        🔄 转换
-      </wd-button>
-      <wd-button block type="default" @click="$emit('clear')">
-        🗑️ 清空
-      </wd-button>
+      <wd-button block type="primary" @click="$emit('convert')"> 🔄 转换 </wd-button>
+      <wd-button block type="default" @click="$emit('clear')"> 🗑️ 清空 </wd-button>
     </view>
 
     <!-- 输出结果 -->
@@ -46,9 +37,7 @@
         <text class="stat-item">字节数: {{ getByteLength(outputValue) }}</text>
       </view>
       <view class="button-group">
-        <wd-button block type="success" @click="$emit('copy')">
-          📋 复制结果
-        </wd-button>
+        <wd-button block type="success" @click="$emit('copy')"> 📋 复制结果 </wd-button>
       </view>
     </view>
   </view>
@@ -82,12 +71,15 @@ const emit = defineEmits<Emits>()
 const localInput = ref(props.inputValue)
 
 // 监听 prop 变化
-watch(() => props.inputValue, (newVal) => {
-  localInput.value = newVal
-})
+watch(
+  () => props.inputValue,
+  newVal => {
+    localInput.value = newVal
+  }
+)
 
 // 当 localInput 变化时，触发 update:input 事件
-watch(localInput, (newVal) => {
+watch(localInput, newVal => {
   emit('update:input', newVal)
 })
 
@@ -111,33 +103,31 @@ const getByteLength = (str: string): number => {
 </script>
 
 <style lang="scss" scoped>
-@use '../../../styles/theme.scss' as *;
-
 .card {
-  background-color: $app-bg-secondary;
-  border-radius: 12px;
-  padding: $app-spacing-lg;
-  margin-bottom: $app-spacing-lg;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  border-top: 4px solid #4a63d2;
+  border-top: 8rpx solid #667eea;
   overflow: hidden;
 
   &:active {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4rpx);
+    box-shadow: 0 16rpx 32rpx rgba(0, 0, 0, 0.12);
   }
 }
 
 .card-header {
   display: flex;
   align-items: flex-start;
-  gap: $app-spacing-md;
-  margin-bottom: $app-spacing-lg;
+  gap: 30rpx;
+  margin-bottom: 40rpx;
 }
 
 .card-icon {
-  font-size: 28px;
+  font-size: 56rpx;
   flex-shrink: 0;
   line-height: 1;
 }
@@ -147,15 +137,15 @@ const getByteLength = (str: string): number => {
 }
 
 .card-title {
-  font-size: $app-font-size-lg;
-  color: $app-text-primary;
+  font-size: 32rpx;
+  color: #333;
   font-weight: 700;
-  margin-bottom: $app-spacing-xs;
+  margin-bottom: 12rpx;
   display: block;
 }
 
 .card-desc {
-  font-size: $app-font-size-xs;
+  font-size: 24rpx;
   color: #999;
   margin-bottom: 0;
   font-weight: 400;
@@ -163,20 +153,20 @@ const getByteLength = (str: string): number => {
 }
 
 .input-group {
-  margin-bottom: $app-spacing-lg;
+  margin-bottom: 40rpx;
 
   :deep(.wd-input__textarea) {
-    padding: $app-spacing-md;
-    min-height: 100px;
-    background-color: #f9f9f9;
+    padding: 30rpx;
+    min-height: 200rpx;
+    background-color: #f5f5f5;
     border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: $app-font-size-sm;
+    border-radius: 16rpx;
+    font-size: 28rpx;
     transition: all 0.2s ease;
     font-family: 'Courier New', monospace;
 
     &:focus {
-      border-color: #4a63d2;
+      border-color: #667eea;
       background-color: #fafbfc;
     }
   }
@@ -184,9 +174,9 @@ const getByteLength = (str: string): number => {
 
 .char-stats {
   display: flex;
-  gap: $app-spacing-md;
-  margin-top: $app-spacing-sm;
-  font-size: $app-font-size-xs;
+  gap: 30rpx;
+  margin-top: 20rpx;
+  font-size: 24rpx;
   color: #999;
 }
 
@@ -196,8 +186,8 @@ const getByteLength = (str: string): number => {
 
 .action-buttons {
   display: flex;
-  gap: $app-spacing-md;
-  margin-bottom: $app-spacing-lg;
+  gap: 30rpx;
+  margin-bottom: 40rpx;
 
   :deep(.wd-button) {
     flex: 1;
@@ -205,9 +195,9 @@ const getByteLength = (str: string): number => {
 }
 
 .result-container {
-  margin-top: $app-spacing-lg;
-  padding-top: $app-spacing-lg;
-  border-top: 1px solid $app-divider-color;
+  margin-top: 40rpx;
+  padding-top: 40rpx;
+  border-top: 1px solid #f0f0f0;
   animation: slideIn 0.3s ease;
 }
 
@@ -215,38 +205,38 @@ const getByteLength = (str: string): number => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: $app-spacing-md;
+  margin-bottom: 30rpx;
 }
 
 .result-label {
-  font-size: $app-font-size-sm;
+  font-size: 28rpx;
   color: #5dbc4c;
   font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 12rpx;
 }
 
 .text-display {
   background: linear-gradient(135deg, #f0f4ff 0%, #f5f9ff 100%);
-  border-radius: 8px;
-  margin-bottom: $app-spacing-sm;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
   border: 1px solid #dfe8ff;
-  border-left: 4px solid #4a63d2;
+  border-left: 8rpx solid #667eea;
   word-break: break-all;
-  min-height: 10px;
+  min-height: 20rpx;
   display: block;
-  font-size: $app-font-size-sm;
-  color: $app-text-primary;
-  max-height: 500px;
+  font-size: 28rpx;
+  color: #333;
+  max-height: 1000rpx;
   overflow-y: auto;
   font-family: 'Courier New', monospace;
   line-height: 1.6;
-  padding: 8px;
+  padding: 16rpx;
 
   // 美化滚动条
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 8rpx;
   }
 
   &::-webkit-scrollbar-track {
@@ -255,7 +245,7 @@ const getByteLength = (str: string): number => {
 
   &::-webkit-scrollbar-thumb {
     background: #d0d0d0;
-    border-radius: 2px;
+    border-radius: 4rpx;
 
     &:hover {
       background: #b0b0b0;
@@ -265,22 +255,22 @@ const getByteLength = (str: string): number => {
 
 .result-stats {
   display: flex;
-  gap: $app-spacing-md;
-  margin-bottom: $app-spacing-md;
-  font-size: $app-font-size-xs;
+  gap: 30rpx;
+  margin-bottom: 30rpx;
+  font-size: 24rpx;
   color: #999;
 }
 
 .button-group {
   display: flex;
-  gap: $app-spacing-md;
+  gap: 30rpx;
   flex-direction: column;
 }
 
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-20rpx);
   }
 
   to {

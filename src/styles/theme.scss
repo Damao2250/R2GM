@@ -1,213 +1,125 @@
-// 统一的颜色主题
+// 统一设计系统 - 紫色渐变主题
 // 主要颜色
-$app-primary-color: #5677fc;
-$app-primary-light: #7a94ff;
-$app-primary-dark: #3a4fd1;
+$app-primary-color: #667eea;
+$app-primary-dark: #764ba2;
 
 // 中性色
-$app-text-primary: #333333;
-$app-text-secondary: #666666;
-$app-text-tertiary: #999999;
-$app-text-disabled: #cccccc;
+$app-text-primary: #333;
+$app-text-secondary: #666;
+$app-text-tertiary: #999;
 
-$app-bg-primary: #f5f6fa;
-$app-bg-secondary: #ffffff;
+// 背景色
+$app-bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$app-bg-primary: #f5f5f5;
+$app-bg-card: #ffffff;
 
 // 功能色
 $app-success-color: #5dbc4c;
 $app-warning-color: #f5a623;
 $app-danger-color: #f66f6f;
-$app-info-color: #5677fc;
 
-// 边框和分割线
-$app-border-color: #e5e5e5;
-$app-divider-color: #f0f0f0;
+// 圆角 (rpx)
+$app-radius-sm: 12rpx;
+$app-radius-md: 16rpx;
+$app-radius-lg: 20rpx;
 
-// 圆角
-$app-border-radius-sm: 4px;
-$app-border-radius-md: 8px;
-$app-border-radius-lg: 12px;
+// 间距 (rpx)
+$app-spacing-sm: 20rpx;
+$app-spacing-md: 30rpx;
+$app-spacing-lg: 40rpx;
 
-// 间距
-$app-spacing-xs: 4px;
-$app-spacing-sm: 8px;
-$app-spacing-md: 16px;
-$app-spacing-lg: 24px;
-$app-spacing-xl: 32px;
-
-// 字体大小
-$app-font-size-xs: 12px;
-$app-font-size-sm: 14px;
-$app-font-size-base: 16px;
-$app-font-size-lg: 18px;
-$app-font-size-xl: 20px;
-$app-font-size-2xl: 24px;
+// 字体大小 (rpx)
+$app-font-size-sm: 24rpx;
+$app-font-size-base: 28rpx;
+$app-font-size-lg: 32rpx;
+$app-font-size-xl: 36rpx;
+$app-font-size-2xl: 40rpx;
+$app-font-size-3xl: 48rpx;
 
 // 全局样式
-/* #ifndef MP */
-* {
-  box-sizing: border-box;
+page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
 }
-/* #endif */
 
-// 页面通用样式
+// 页面容器
 .page-container {
   min-height: 100vh;
-  background-color: $app-bg-primary;
-}
-
-.page-header {
-  padding: $app-spacing-lg;
-  background-color: $app-primary-color;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* #ifdef H5 */
-  background: linear-gradient(135deg, $app-primary-color 0%, $app-primary-light 100%);
-  /* #endif */
-  
-  .page-title {
-    font-size: $app-font-size-2xl;
-    font-weight: 600;
-  }
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0 0 40rpx 0;
 }
 
 .page-content {
-  padding: $app-spacing-md;
+  padding: 30rpx;
 }
 
 // 卡片样式
 .card {
-  background-color: $app-bg-secondary;
-  border-radius: $app-border-radius-md;
-  padding: $app-spacing-md;
-  margin-bottom: $app-spacing-md;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 }
 
-// 输入框容器
-.input-group {
-  margin-bottom: $app-spacing-lg;
-  
-  .input-label {
-    font-size: $app-font-size-sm;
-    color: $app-text-primary;
-    margin-bottom: $app-spacing-sm;
-    font-weight: 500;
-  }
+// 标题
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
 }
 
-// 按钮通用样式
+// 按钮
 .btn-primary {
-  background-color: $app-primary-color;
-  color: #ffffff;
-  padding: $app-spacing-sm $app-spacing-lg;
-  border-radius: $app-border-radius-md;
-  font-size: $app-font-size-base;
+  height: 100rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: bold;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.3);
+  transition: all 0.3s;
+  border: none;
   
   &:active {
-    background-color: $app-primary-dark;
+    transform: scale(0.98);
+  }
+  
+  &.disabled {
+    opacity: 0.5;
   }
 }
 
 .btn-secondary {
-  background-color: #f0f0f0;
-  color: $app-text-primary;
-  padding: $app-spacing-sm $app-spacing-lg;
-  border-radius: $app-border-radius-md;
-  font-size: $app-font-size-base;
-}
-
-// 文本内容显示
-.text-display {
-  background-color: $app-bg-primary;
-  padding: $app-spacing-md;
-  border-radius: $app-border-radius-md;
-  margin: $app-spacing-md 0;
-  border-left: 4px solid $app-primary-color;
-  word-break: break-all;
-  
-  &.disabled {
-    opacity: 0.6;
-  }
-}
-
-// 分割线
-.divider {
-  height: 1px;
-  background-color: $app-divider-color;
-  margin: $app-spacing-lg 0;
-}
-
-// 信息列表项
-.info-item {
+  height: 80rpx;
+  background: white;
+  color: #667eea;
+  border: 2rpx solid #667eea;
+  border-radius: 12rpx;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: $app-spacing-md 0;
-  border-bottom: 1px solid $app-divider-color;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  transition: all 0.3s;
   
-  &:last-child {
-    border-bottom: none;
-  }
-  
-  .label {
-    color: $app-text-secondary;
-    font-size: $app-font-size-sm;
-  }
-  
-  .value {
-    color: $app-text-primary;
-    font-size: $app-font-size-sm;
-    font-weight: 500;
-    flex: 1;
-    text-align: right;
-    margin-left: $app-spacing-md;
-    word-break: break-all;
+  &:active {
+    transform: scale(0.95);
   }
 }
 
-// 工具网格
-.tools-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $app-spacing-md;
-  margin-top: $app-spacing-md;
-  
-  .tool-item {
-    background-color: $app-bg-secondary;
-    border-radius: $app-border-radius-md;
-    padding: $app-spacing-lg;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    width: calc(50% - #{$app-spacing-md * 0.5});
-    
-    /* #ifndef MP */
-    transition: all 0.3s ease;
-    /* #endif */
-    
-    &:active {
-      /* #ifdef H5 */
-      transform: scale(0.95);
-      /* #endif */
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-    }
-    
-    .tool-icon {
-      font-size: 32px;
-      color: $app-primary-color;
-      margin-bottom: $app-spacing-sm;
-    }
-    
-    .tool-name {
-      font-size: $app-font-size-sm;
-      color: $app-text-primary;
-      font-weight: 500;
-    }
-  }
+// 输入框
+.input-field {
+  width: 100%;
+  height: 100rpx;
+  padding: 0 24rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  color: #333;
+  border: none;
 }

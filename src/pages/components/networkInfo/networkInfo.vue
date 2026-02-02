@@ -1,136 +1,130 @@
 <template>
-  <view class="page-container">
+  <view class="container">
     <!-- 页面头部 -->
-    <view class="page-header">
-      <text class="page-title">网络信息</text>
-    </view>
+    <PageHeader title="🌐 网络信息" subtitle="实时网络状态监测" />
 
     <!-- 页面内容 -->
     <view class="page-content">
-      <!-- 网络状态卡片 -->
-      <view class="card status-card">
-        <view class="status-item">
-          <view class="status-indicator" :class="networkType ? 'connected' : 'disconnected'"></view>
-          <view class="status-text">
-            {{ networkType ? '已连接' : '未连接' }}
+      <!-- 网络状态主卡片 -->
+      <view class="main-status-card">
+        <view class="status-icon-wrapper">
+          <view class="status-pulse" :class="networkType ? 'connected' : 'disconnected'"></view>
+          <text class="status-icon">{{ networkType ? '📶' : '📵' }}</text>
+        </view>
+        <view class="status-info">
+          <text class="status-title">{{ networkType ? '网络已连接' : '网络未连接' }}</text>
+          <text class="status-subtitle">{{ networkTypeLabel }}</text>
+        </view>
+      </view>
+
+      <!-- 快速信息卡片组 -->
+      <view class="quick-info-grid">
+        <view class="quick-info-card">
+          <text class="quick-icon">📍</text>
+          <text class="quick-label">本地IP</text>
+          <text class="quick-value" user-select>{{ localip || '-' }}</text>
+        </view>
+        <view class="quick-info-card" v-if="networkType === 'wifi'">
+          <text class="quick-icon">📡</text>
+          <text class="quick-label">WiFi名称</text>
+          <text class="quick-value" user-select>{{ wifiInfo.SSID || '-' }}</text>
+        </view>
+        <view class="quick-info-card" v-if="networkLatency">
+          <text class="quick-icon">⚡</text>
+          <text class="quick-label">网络延迟</text>
+          <text class="quick-value">{{ networkLatency }}ms</text>
+        </view>
+      </view>
+
+      <!-- 详细信息卡片 -->
+      <view class="detail-card">
+        <view class="section-header">
+          <text class="section-icon">ℹ️</text>
+          <text class="section-title">详细信息</text>
+        </view>
+
+        <view class="detail-list">
+          <view class="detail-item">
+            <text class="detail-label">网络类型</text>
+            <text class="detail-value" user-select>{{ networkType || '-' }}</text>
           </view>
-          <view class="status-subtext">
-            {{ networkTypeLabel }}
+
+          <view class="detail-item">
+            <text class="detail-label">IP 地址</text>
+            <text class="detail-value" user-select>{{ localip || '-' }}</text>
+          </view>
+
+          <view v-if="networkType === 'wifi'" class="detail-item">
+            <text class="detail-label">WiFi 名称</text>
+            <text class="detail-value" user-select>{{ wifiInfo.SSID || '-' }}</text>
+          </view>
+
+          <view v-if="networkType === 'wifi'" class="detail-item">
+            <text class="detail-label">MAC地址</text>
+            <text class="detail-value" user-select>{{ wifiInfo.BSSID || '-' }}</text>
+          </view>
+
+          <view v-if="networkType !== 'wifi' && networkType" class="detail-item">
+            <text class="detail-label">运营商</text>
+            <text class="detail-value" user-select>{{ operatorInfo || '-' }}</text>
           </view>
         </view>
       </view>
 
-      <!-- 网络基本信息 -->
-      <view class="card">
-        <view class="card-title-header" @click="toggleBasicInfo">
-          <text class="card-title">网络基本信息</text>
-          <text class="expand-icon" :class="showBasicInfo ? 'expanded' : ''">›</text>
+      <!-- 网络诊断卡片 -->
+      <view class="diagnosis-card">
+        <view class="section-header">
+          <text class="section-icon">🔍</text>
+          <text class="section-title">网络诊断</text>
         </view>
-        <view v-show="showBasicInfo" class="info-list">
-          <view class="info-item">
-            <view class="info-left">
-              <text class="label">网络类型</text>
-              <text class="desc">network type</text>
-            </view>
-            <text class="value" user-select>{{ networkType || '-' }}</text>
-          </view>
 
-          <view class="info-item">
-            <view class="info-left">
-              <text class="label">IP 地址</text>
-              <text class="desc">local ip address</text>
-            </view>
-            <text class="value" user-select>{{ localip || '-' }}</text>
-          </view>
-
-          <view v-if="networkType === 'wifi'" class="info-item">
-            <view class="info-left">
-              <text class="label">WiFi 名称</text>
-              <text class="desc">wifi ssid</text>
-            </view>
-            <text class="value" user-select>{{ wifiInfo.SSID || '-' }}</text>
-          </view>
-
-          <view v-if="networkType === 'wifi'" class="info-item">
-            <view class="info-left">
-              <text class="label">BSSID</text>
-              <text class="desc">mac address</text>
-            </view>
-            <text class="value" user-select>{{ wifiInfo.BSSID || '-' }}</text>
-          </view>
-
-          <view v-if="networkType !== 'wifi' && networkType" class="info-item">
-            <view class="info-left">
-              <text class="label">运营商信息</text>
-              <text class="desc">carrier info</text>
-            </view>
-            <text class="value" user-select>{{ operatorInfo || '-' }}</text>
-          </view>
-        </view>
-      </view>
-
-      <!-- 网络诊断 -->
-      <view class="card">
-        <view class="card-title-header" @click="toggleDiagnosis">
-          <text class="card-title">网络诊断</text>
-          <text class="expand-icon" :class="showDiagnosis ? 'expanded' : ''">›</text>
-        </view>
-        <view v-show="showDiagnosis" class="diagnosis-list">
+        <view class="diagnosis-grid">
           <view class="diagnosis-item">
-            <view class="diagnosis-left">
-              <text class="label">网络连接</text>
-              <text class="status-badge" :class="networkType ? 'success' : 'danger'">
-                {{ networkType ? '已连接' : '未连接' }}
-              </text>
+            <view class="diagnosis-status" :class="networkType ? 'status-success' : 'status-error'">
+              <text class="status-dot"></text>
             </view>
+            <text class="diagnosis-label">网络连接</text>
+            <text class="diagnosis-value">{{ networkType ? '已连接' : '未连接' }}</text>
           </view>
 
           <view class="diagnosis-item">
-            <view class="diagnosis-left">
-              <text class="label">互联网连接</text>
-              <text class="status-badge" :class="isInternetAvailable ? 'success' : 'warning'">
-                {{ isInternetAvailable ? '可用' : '检测中...' }}
-              </text>
+            <view class="diagnosis-status" :class="isInternetAvailable ? 'status-success' : 'status-warning'">
+              <text class="status-dot"></text>
             </view>
+            <text class="diagnosis-label">互联网</text>
+            <text class="diagnosis-value">{{ isInternetAvailable ? '可用' : '检测中' }}</text>
           </view>
 
           <view class="diagnosis-item">
-            <view class="diagnosis-left">
-              <text class="label">安全连接</text>
-              <text class="status-badge" :class="wifiInfo.secure ? 'success' : 'warning'">
-                {{ wifiInfo.secure ? '已加密' : wifiInfo.SSID ? '未加密' : '-' }}
-              </text>
+            <view class="diagnosis-status" :class="isDnsAvailable ? 'status-success' : 'status-warning'">
+              <text class="status-dot"></text>
             </view>
+            <text class="diagnosis-label">DNS连接</text>
+            <text class="diagnosis-value">{{ isDnsAvailable ? '正常' : '检测中' }}</text>
           </view>
 
-          <view class="diagnosis-item">
-            <view class="diagnosis-left">
-              <text class="label">DNS 连接</text>
-              <text class="status-badge" :class="isDnsAvailable ? 'success' : 'warning'">
-                {{ isDnsAvailable ? '正常' : '检测中...' }}
-              </text>
+          <view class="diagnosis-item" v-if="networkType === 'wifi'">
+            <view class="diagnosis-status" :class="wifiInfo.secure ? 'status-success' : 'status-warning'">
+              <text class="status-dot"></text>
             </view>
-          </view>
-
-          <view class="diagnosis-item">
-            <view class="diagnosis-left">
-              <text class="label">网络延迟</text>
-              <text class="status-badge" :class="networkLatency ? 'success' : 'warning'">
-                {{ networkLatency ? `${networkLatency}ms` : '检测中...' }}
-              </text>
-            </view>
+            <text class="diagnosis-label">安全连接</text>
+            <text class="diagnosis-value">{{
+              wifiInfo.secure ? '已加密' : wifiInfo.SSID ? '未加密' : '-'
+              }}</text>
           </view>
         </view>
       </view>
 
       <!-- 操作按钮 -->
-      <view class="button-group">
-        <wd-button block type="primary" @click="getNetworkInfo" :loading="isLoading">
-          <text :class="isLoading ? 'loading-text' : ''">{{ isLoading ? '刷新中...' : '刷新网络信息' }}</text>
-        </wd-button>
-        <wd-button block type="info" @click="copyNetworkInfo">
-          复制信息
-        </wd-button>
+      <view class="action-buttons">
+        <button class="action-btn primary-btn" @click="getNetworkInfo" :disabled="isLoading">
+          <text class="btn-icon">{{ isLoading ? '🔄' : '🔃' }}</text>
+          <text class="btn-text">{{ isLoading ? '刷新中...' : '刷新信息' }}</text>
+        </button>
+        <button class="action-btn secondary-btn" @click="copyNetworkInfo">
+          <text class="btn-icon">📋</text>
+          <text class="btn-text">复制信息</text>
+        </button>
       </view>
     </view>
   </view>
@@ -138,6 +132,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
+import PageHeader from '@/components/PageHeader.vue'
 
 interface WifiInfo {
   SSID?: string
@@ -154,18 +149,16 @@ const isDnsAvailable = ref(false)
 const networkLatency = ref<number | null>(null)
 const wifiInfo = ref<WifiInfo>({})
 const isLoading = ref(false)
-const showBasicInfo = ref(true)
-const showDiagnosis = ref(true)
 
 // 网络类型标签
 const networkTypeLabel = computed(() => {
   const labels: { [key: string]: string } = {
-    'wifi': '无线网络',
+    wifi: '无线网络',
     '2g': '2G 移动网络',
     '3g': '3G 移动网络',
     '4g': '4G 移动网络',
     '5g': '5G 移动网络',
-    'ethernet': '以太网'
+    ethernet: '以太网'
   }
   return labels[networkType.value] || '未知'
 })
@@ -187,16 +180,6 @@ onUnmounted(() => {
   // 页面卸载时移除监听
   uni.offNetworkStatusChange(networkStatusChangeHandler)
 })
-
-// 展开/收起基本信息
-const toggleBasicInfo = () => {
-  showBasicInfo.value = !showBasicInfo.value
-}
-
-// 展开/收起诊断
-const toggleDiagnosis = () => {
-  showDiagnosis.value = !showDiagnosis.value
-}
 
 const getNetworkInfo = async () => {
   isLoading.value = true
@@ -335,255 +318,335 @@ IP 地址: ${localip.value}
 </script>
 
 <style lang="scss" scoped>
-@use '../../../styles/theme.scss' as *;
-
-.page-container {
+.container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding-bottom: 20px;
-}
-
-.page-header {
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-
-  .page-title {
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: #ffffff;
-    margin: 0;
-  }
+  background: #f5f7fa;
+  padding: 0 0 40rpx 0;
 }
 
 .page-content {
-  padding: 16px;
+  padding: 30rpx;
 }
 
-.card {
-  background-color: $app-bg-secondary;
-  border-radius: $app-border-radius-md;
-  padding: $app-spacing-lg;
-  margin-bottom: $app-spacing-lg;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-
-  .card-title {
-    font-size: $app-font-size-base;
-    color: $app-text-primary;
-    font-weight: 600;
-    margin-bottom: $app-spacing-md;
-    padding-bottom: $app-spacing-sm;
-    border-bottom: 2px solid #4a63d2;
-  }
-
-  .card-title-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    padding-bottom: $app-spacing-sm;
-    border-bottom: 2px solid #4a63d2;
-    margin-bottom: $app-spacing-md;
-
-    .card-title {
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: none;
-      flex: 1;
-    }
-
-    .expand-icon {
-      font-size: 24px;
-      color: #4a63d2;
-      transition: transform 0.3s ease;
-      margin-left: $app-spacing-md;
-
-      &.expanded {
-        transform: rotate(90deg);
-      }
-    }
-  }
+/* 主状态卡片 */
+.main-status-card {
+  background: white;
+  border-radius: 24rpx;
+  padding: 60rpx 40rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30rpx;
 }
 
-// 网络状态卡片
-.status-card {
+.status-icon-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 120px;
-  background: linear-gradient(135deg, #4a63d2 0%, #5b7ce8 100%);
+}
 
-  .status-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: $app-spacing-md;
+.status-pulse {
+  position: absolute;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
 
-    .status-indicator {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      /* #ifndef MP */
-      animation: pulse 2s infinite;
-      /* #endif */
+  &.connected {
+    background: rgba(93, 188, 76, 0.2);
+    animation: pulse 2s infinite;
+  }
 
-      &.connected {
-        background-color: #5dbc4c;
-      }
-
-      &.disconnected {
-        background-color: #d32f2f;
-      }
-    }
-
-    .status-text {
-      font-size: $app-font-size-lg;
-      font-weight: 600;
-      color: white;
-    }
-
-    .status-subtext {
-      font-size: $app-font-size-sm;
-      color: rgba(255, 255, 255, 0.8);
-    }
+  &.disconnected {
+    background: rgba(211, 47, 47, 0.2);
   }
 }
 
-// 信息列表
-.info-list {
-  .info-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: $app-spacing-md 0;
-    border-bottom: 1px solid $app-divider-color;
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    .info-left {
-      display: flex;
-      flex-direction: column;
-      gap: $app-spacing-xs;
-
-      .label {
-        color: $app-text-primary;
-        font-size: $app-font-size-base;
-        font-weight: 500;
-      }
-
-      .desc {
-        color: #999;
-        font-size: $app-font-size-xs;
-      }
-    }
-
-    .value {
-      color: #4a63d2;
-      font-size: $app-font-size-base;
-      font-weight: 500;
-      text-align: right;
-      word-break: break-all;
-      max-width: 50%;
-    }
-  }
+.status-icon {
+  font-size: 80rpx;
+  z-index: 1;
 }
 
-// 诊断列表
-.diagnosis-list {
-  .diagnosis-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: $app-spacing-md 0;
-    border-bottom: 1px solid $app-divider-color;
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    .diagnosis-left {
-      display: flex;
-      align-items: center;
-      gap: $app-spacing-md;
-
-      .label {
-        color: $app-text-primary;
-        font-size: $app-font-size-base;
-        font-weight: 500;
-      }
-
-      .status-badge {
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-size: $app-font-size-xs;
-        font-weight: 500;
-
-        &.success {
-          background-color: rgba(93, 188, 76, 0.1);
-          color: #5dbc4c;
-        }
-
-        &.warning {
-          background-color: rgba(255, 193, 7, 0.1);
-          color: #ffc107;
-        }
-
-        &.danger {
-          background-color: rgba(211, 47, 47, 0.1);
-          color: #d32f2f;
-        }
-      }
-    }
-  }
-}
-
-// 按钮组
-.button-group {
+.status-info {
+  text-align: center;
   display: flex;
-  gap: $app-spacing-md;
   flex-direction: column;
+  gap: 12rpx;
+}
 
-  .loading-text {
-    /* #ifndef MP */
-    animation: rotate 1s linear infinite;
-    /* #endif */
+.status-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.status-subtitle {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 快速信息卡片组 */
+.quick-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.quick-info-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+
+  &:active {
+    transform: scale(0.98);
+    transition: transform 0.2s;
   }
 }
 
-/* #ifndef MP */
+.quick-icon {
+  font-size: 48rpx;
+}
+
+.quick-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.quick-value {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #667eea;
+  word-break: break-all;
+  text-align: center;
+}
+
+/* 详细信息卡片 */
+.detail-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 3rpx solid #f0f0f0;
+}
+
+.section-icon {
+  font-size: 40rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  transition: all 0.3s;
+
+  &:active {
+    background: #f0f1f3;
+  }
+}
+
+.detail-label {
+  font-size: 28rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+  text-align: right;
+  word-break: break-all;
+  max-width: 60%;
+}
+
+/* 网络诊断卡片 */
+.diagnosis-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.diagnosis-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24rpx;
+}
+
+.diagnosis-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  padding: 24rpx;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  transition: all 0.3s;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.diagnosis-status {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.status-success {
+    background: rgba(93, 188, 76, 0.15);
+
+    .status-dot {
+      width: 24rpx;
+      height: 24rpx;
+      border-radius: 50%;
+      background: #5dbc4c;
+      display: block;
+    }
+  }
+
+  &.status-warning {
+    background: rgba(255, 193, 7, 0.15);
+
+    .status-dot {
+      width: 24rpx;
+      height: 24rpx;
+      border-radius: 50%;
+      background: #ffc107;
+      display: block;
+    }
+  }
+
+  &.status-error {
+    background: rgba(211, 47, 47, 0.15);
+
+    .status-dot {
+      width: 24rpx;
+      height: 24rpx;
+      border-radius: 50%;
+      background: #d32f2f;
+      display: block;
+    }
+  }
+}
+
+.diagnosis-label {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+}
+
+.diagnosis-value {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 96rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  font-size: 30rpx;
+  font-weight: bold;
+  border: none;
+  transition: all 0.3s;
+
+  &.primary-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.4);
+
+    &:active {
+      transform: scale(0.98);
+      box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+    }
+  }
+
+  &.secondary-btn {
+    background: white;
+    color: #667eea;
+    border: 3rpx solid #667eea;
+
+    &:active {
+      background: #f8f9ff;
+      transform: scale(0.98);
+    }
+  }
+}
+
+.btn-icon {
+  font-size: 36rpx;
+}
+
+.btn-text {
+  font-size: 30rpx;
+}
+
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(93, 188, 76, 0.7);
+    transform: scale(1);
+    opacity: 1;
   }
 
-  70% {
-    box-shadow: 0 0 0 10px rgba(93, 188, 76, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 rgba(93, 188, 76, 0);
-  }
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
   }
 
   100% {
-    transform: rotate(360deg);
+    transform: scale(1);
+    opacity: 1;
   }
 }
-
-/* #endif */
 </style>

@@ -12,12 +12,7 @@
     <view class="page-content">
       <!-- 工具网格 -->
       <view class="tools-grid">
-        <view
-          class="tool-item"
-          v-for="(item, index) in toolsList"
-          :key="index"
-          @click="gotoPage(item)"
-        >
+        <view class="tool-item" v-for="(item, index) in toolsList" :key="index" @click="gotoPage(item)">
           <view class="tool-icon">{{ item.icon }}</view>
           <text class="tool-name">{{ item.title }}</text>
         </view>
@@ -28,7 +23,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
 
 interface ToolItem {
   title: string
@@ -92,63 +86,61 @@ const gotoPage = (item: ToolItem) => {
 
 .page-container {
   min-height: 100vh;
-  background-color: $app-bg-primary;
+  background: #f5f7fa;
 }
 
 .page-header {
-  padding: $app-spacing-lg;
-  background-color: #f5f6fa;
+  padding: 40rpx;
+  background-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $app-text-primary;
+  color: white;
   border-bottom: 1px solid #e5e5e5;
   position: relative;
-  /* #ifdef H5 */
-  background: linear-gradient(180deg, #ffffff 0%, #f5f6fa 100%);
-  /* #endif */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
   .header-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: $app-text-primary;
+    color: white;
     position: relative;
     z-index: 1;
 
     .logo {
       height: 60rpx;
       width: 60rpx;
-      margin-bottom: $app-spacing-sm;
+      margin-bottom: 20rpx;
       border-radius: 12rpx;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.2);
     }
 
     .page-title {
-      font-size: 24px;
+      font-size: 48rpx;
       font-weight: 700;
-      letter-spacing: 0.5px;
+      letter-spacing: 1rpx;
       margin: 0;
       line-height: 1.2;
-      color: #4a63d2;
+      color: white;
     }
   }
 }
 
 .page-content {
-  padding: $app-spacing-md;
+  padding: 30rpx;
 }
 
 .tools-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: $app-spacing-md;
-  margin-top: $app-spacing-sm;
+  gap: 30rpx;
+  margin-top: 20rpx;
 
   .tool-item {
-    background-color: $app-bg-secondary;
-    border-radius: $app-border-radius-lg;
-    padding: $app-spacing-md;
+    background-color: white;
+    border-radius: 20rpx;
+    padding: 30rpx;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -176,8 +168,8 @@ const gotoPage = (item: ToolItem) => {
     }
 
     .tool-name {
-      font-size: $app-font-size-base;
-      color: $app-text-primary;
+      font-size: 28rpx;
+      color: #333;
       font-weight: 500;
     }
   }

@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    PageHeader: typeof import('./src/components/PageHeader.vue')['default']
     WdButton: typeof import('wot-design-uni/components/wd-button/wd-button.vue')['default']
     WdInput: typeof import('wot-design-uni/components/wd-input/wd-input.vue')['default']
   }

@@ -1,12 +1,7 @@
 <template>
-  <view class="page-container">
+  <view class="container">
     <!-- 页面头部 -->
-    <view class="page-header">
-      <view class="header-content">
-        <text class="page-title">⏰ 当前时间</text>
-        <wd-button size="small" type="success" @click="addRecord">📍 记录</wd-button>
-      </view>
-    </view>
+    <PageHeader title="⏰ 当前时间" subtitle="精确到毫秒的时间工具" />
 
     <!-- 页面内容 -->
     <view class="page-content">
@@ -27,17 +22,17 @@
         <view class="copy-hint" v-if="showCopyHint">✓ 已复制</view>
       </view>
 
+      <!-- 记录按钮 -->
+      <view class="record-button-wrapper">
+        <button class="record-btn" @click="addRecord">📍 记录当前时间</button>
+      </view>
+
       <!-- 格式选择器 -->
       <view class="card format-selector-card">
         <view class="card-title">时间格式</view>
         <view class="format-buttons">
-          <wd-button
-            v-for="fmt in formatOptions"
-            :key="fmt.value"
-            :type="currentFormat === fmt.value ? 'primary' : 'default'"
-            size="small"
-            @click="currentFormat = fmt.value"
-          >
+          <wd-button v-for="fmt in formatOptions" :key="fmt.value"
+            :type="currentFormat === fmt.value ? 'primary' : 'default'" size="small" @click="currentFormat = fmt.value">
             {{ fmt.label }}
           </wd-button>
         </view>
@@ -114,6 +109,7 @@
 </template>
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import PageHeader from '@/components/PageHeader.vue'
 
 // 时间相关的 ref
 const currentTime = ref(new Date())
@@ -345,7 +341,7 @@ const clearRecords = () => {
   uni.showModal({
     title: '确认清空',
     content: '确定要清空所有记录吗？',
-    success: (res) => {
+    success: res => {
       if (res.confirm) {
         records.value = []
         uni.showToast({
@@ -364,88 +360,35 @@ const copyRecord = (record: string) => {
 <style scoped lang="scss">
 @use '../../../styles/theme.scss' as *;
 
-.page-container {
+.container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding-bottom: 10px;
-}
-
-.page-header {
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-
-  .header-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    justify-content: center;
-
-    :deep(.wd-button) {
-      min-width: 70px;
-    }
-  }
-
-  .page-title {
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: #ffffff;
-    margin: 0;
-  }
-}
-
-.page-content {
-  padding: 16px;
+  background: #f5f7fa;
+  padding: 0 0 40rpx 0;
 }
 
 .card {
-  background-color: $app-bg-secondary;
-  border-radius: 8px;
-  padding: $app-spacing-xs;
-  margin-bottom: $app-spacing-sm;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-
-  &:active {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
-  }
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 }
 
 .card-title {
-  font-size: $app-font-size-base;
-  color: $app-text-primary;
-  font-weight: 700;
-  margin-bottom: $app-spacing-sm;
-  padding-bottom: $app-spacing-xs;
-  border-bottom: 2px solid $app-divider-color;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
 }
 
 .card-header-with-action {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: $app-spacing-sm;
-  padding-bottom: $app-spacing-xs;
-  border-bottom: 2px solid $app-divider-color;
+  margin-bottom: 20rpx;
 
   .card-title {
     margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-  }
-
-  :deep(.wd-button) {
-    min-width: 60px;
   }
 }
 
@@ -455,145 +398,147 @@ const copyRecord = (record: string) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 130px;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
-  border-top: 3px solid #4a63d2;
-  cursor: pointer;
+  min-height: 320rpx;
+  background: linear-gradient(135deg, #f5f7ff 0%, #e8eaf6 100%);
   position: relative;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.2);
 
   .time-display {
-    font-size: 24px;
+    font-size: 72rpx;
     font-weight: 700;
-    color: #4a63d2;
-    font-family: 'Courier New', monospace;
+    color: #1a1a1a;
+    font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
     text-align: center;
-    letter-spacing: 0.5px;
-    word-break: break-all;
-    animation: pulse 2s ease-in-out infinite;
-    line-height: 1.2;
+    letter-spacing: 2rpx;
+    word-break: keep-all;
+    line-height: 1.3;
+    padding: 20rpx 40rpx;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16rpx;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: auto;
   }
 
   .time-display-full {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 16rpx;
+    padding: 30rpx 50rpx;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20rpx;
 
     .time-date {
-      font-size: 22px;
+      font-size: 60rpx;
+      font-weight: 700;
+      letter-spacing: 2rpx;
     }
 
     .time-time {
-      font-size: 20px;
-      opacity: 0.85;
+      font-size: 56rpx;
+      font-weight: 700;
+      opacity: 1;
+      letter-spacing: 2rpx;
     }
   }
 
   .time-meta {
-    margin-top: 4px;
-    font-size: $app-font-size-xs;
-    color: #999;
+    margin-top: 28rpx;
+    font-size: 28rpx;
+    color: rgba(44, 62, 80, 0.7);
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 24rpx;
+    font-weight: 500;
+    text-shadow: none;
 
     .meta-item {
       display: inline-block;
     }
 
     .meta-divider {
-      color: #ddd;
+      color: rgba(44, 62, 80, 0.4);
+      font-weight: 300;
     }
   }
 
   .copy-hint {
-    margin-top: 4px;
-    font-size: $app-font-size-xs;
-    color: #5dbc4c;
-    font-weight: 600;
+    position: absolute;
+    bottom: 24rpx;
+    right: 24rpx;
+    padding: 12rpx 24rpx;
+    background: rgba(93, 188, 76, 0.95);
+    border-radius: 24rpx;
+    font-size: 26rpx;
+    color: white;
+    font-weight: 700;
     animation: slideIn 0.3s ease;
+    box-shadow: 0 4rpx 12rpx rgba(93, 188, 76, 0.4);
+  }
+}
+
+/* ===== 记录按钮 ===== */
+.record-button-wrapper {
+  margin: 0 30rpx 30rpx;
+}
+
+.record-btn {
+  width: 100%;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #5dbc4c 0%, #4caf50 100%);
+  color: white;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  box-shadow: 0 4rpx 12rpx rgba(93, 188, 76, 0.3);
+  transition: all 0.3s;
+
+  &:active {
+    transform: scale(0.95);
+    box-shadow: 0 2rpx 8rpx rgba(93, 188, 76, 0.3);
   }
 }
 
 /* ===== 格式选择卡片 ===== */
 .format-selector-card {
-  border-top: 3px solid #17a2b8;
-
   .format-buttons {
     display: flex;
-    gap: 6px;
-    margin-bottom: $app-spacing-sm;
-    flex-wrap: wrap;
+    gap: 20rpx;
+    margin-bottom: 20rpx;
 
     :deep(.wd-button) {
       flex: 1;
-      min-width: 75px;
-      font-size: 12px !important;
+      min-width: 150rpx;
+      font-size: 28rpx !important;
+      padding: 24rpx !important;
     }
   }
 
   .format-display {
-    background-color: $app-bg-primary;
-    padding: 6px 8px;
-    border-radius: 6px;
-    border-left: 2px solid #17a2b8;
+    background: #f5f5f5;
+    padding: 24rpx;
+    border-radius: 12rpx;
+    margin-top: 20rpx;
 
     .format-label {
       display: block;
-      font-size: 11px;
+      font-size: 24rpx;
       color: #999;
-      margin-bottom: 2px;
+      margin-bottom: 12rpx;
     }
 
     .format-value {
       display: block;
-      font-size: 12px;
+      font-size: 28rpx;
       font-family: 'Courier New', monospace;
-      color: #4a63d2;
-      word-break: break-all;
-      cursor: pointer;
-      padding: 2px 0;
-      border-bottom: 1px dashed #ddd;
-      padding-bottom: 2px;
-    }
-  }
-}
-
-/* ===== 详细信息卡片 ===== */
-.detail-card {
-  border-top: 3px solid #ffc107;
-
-  .info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 4px;
-  }
-
-  .info-item {
-    display: flex;
-    flex-direction: column;
-    border-radius: 6px;
-    border-left: 2px solid #ffc107;
-    padding: 10px 0 !important;
-
-    .info-label {
-      font-size: 10px;
-      color: #999;
-      margin-bottom: 1px;
+      color: #667eea;
       font-weight: 600;
-      line-height: 1.2;
-    }
-
-    .info-value {
-      font-size: 12px;
-      color: #4a63d2;
-      font-weight: 600;
-      font-family: 'Courier New', monospace;
-      cursor: pointer;
-      padding: 2px 4px;
-      background-color: $app-bg-primary;
-      border-radius: 3px;
       word-break: break-all;
-      line-height: 1.3;
+      line-height: 1.4;
 
       &:active {
         opacity: 0.7;
@@ -602,57 +547,119 @@ const copyRecord = (record: string) => {
   }
 }
 
+/* ===== 详细信息卡片 ===== */
+.detail-card {
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20rpx;
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    padding: 20rpx;
+    background: #f5f5f5;
+    border-radius: 12rpx;
+    transition: all 0.3s;
+
+    &:active {
+      background: #667eea;
+      transform: scale(0.95);
+
+      .info-label {
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .info-value {
+        color: white;
+      }
+    }
+
+    .info-label {
+      font-size: 24rpx;
+      color: #999;
+      margin-bottom: 8rpx;
+      font-weight: 500;
+    }
+
+    .info-value {
+      font-size: 28rpx;
+      color: #333;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+      word-break: break-all;
+      line-height: 1.3;
+    }
+  }
+}
+
 /* ===== 快速复制卡片 ===== */
 .quick-copy-card {
-  border-top: 3px solid #e83e8c;
-
   .button-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    gap: 20rpx;
 
     :deep(.wd-button) {
       width: 100%;
-      font-size: 12px !important;
+      font-size: 28rpx !important;
+      padding: 24rpx !important;
     }
   }
 }
 
 /* ===== 时间记录卡片 ===== */
+/* ===== 时间记录卡片 ===== */
 .record-card {
-  border-top: 3px solid #6c757d;
-
   .record-list {
-    max-height: 300px;
+    max-height: 400rpx;
     overflow-y: auto;
 
     .record-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 8px;
-      margin-bottom: 4px;
-      background-color: $app-bg-primary;
-      border-radius: 4px;
-      border-left: 2px solid #6c757d;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      gap: 20rpx;
+      padding: 20rpx;
+      margin-bottom: 16rpx;
+      background: #f5f5f5;
+      border-radius: 12rpx;
+      transition: all 0.3s;
+      border: 2rpx solid transparent;
 
       &:last-child {
         margin-bottom: 0;
       }
 
       &:active {
-        opacity: 0.8;
+        background: #667eea;
         transform: scale(0.98);
+        border-color: #667eea;
+
+        .record-index {
+          color: white;
+          background: rgba(0, 0, 0, 0.2);
+        }
+
+        .record-time {
+          color: white;
+        }
+
+        .record-remove {
+          color: white;
+          opacity: 0.8;
+        }
       }
 
       .record-index {
-        font-size: 11px;
+        font-size: 24rpx;
         color: #999;
-        font-weight: 600;
-        min-width: 20px;
+        font-weight: bold;
+        min-width: 40rpx;
         text-align: center;
+        padding: 8rpx;
+        background: white;
+        border-radius: 8rpx;
       }
 
       .record-content {
@@ -660,43 +667,42 @@ const copyRecord = (record: string) => {
         min-width: 0;
 
         .record-time {
-          font-size: 11px;
-          color: #4a63d2;
+          font-size: 26rpx;
+          color: #333;
           font-family: 'Courier New', monospace;
+          font-weight: 500;
           word-break: break-all;
-          display: block;
-          line-height: 1.3;
+          line-height: 1.4;
         }
       }
 
       .record-remove {
-        font-size: 14px;
+        font-size: 32rpx;
         color: #ccc;
-        cursor: pointer;
-        padding: 2px 4px;
-        border-radius: 2px;
+        padding: 8rpx;
+        border-radius: 8rpx;
         transition: all 0.2s;
 
         &:active {
           color: #e74c3c;
-          background-color: rgba(231, 76, 60, 0.1);
+          background: rgba(231, 76, 60, 0.15);
         }
       }
     }
   }
 
-  // 美化滚动条
-  ::-webkit-scrollbar {
-    width: 3px;
+  .record-list::-webkit-scrollbar {
+    width: 6rpx;
   }
 
-  ::-webkit-scrollbar-track {
-    background: transparent;
+  .record-list::-webkit-scrollbar-track {
+    background: #f5f5f5;
+    border-radius: 3rpx;
   }
 
-  ::-webkit-scrollbar-thumb {
+  .record-list::-webkit-scrollbar-thumb {
     background: #d0d0d0;
-    border-radius: 2px;
+    border-radius: 3rpx;
 
     &:hover {
       background: #b0b0b0;
@@ -706,6 +712,7 @@ const copyRecord = (record: string) => {
 
 /* ===== 动画 ===== */
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;

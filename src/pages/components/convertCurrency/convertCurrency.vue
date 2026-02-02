@@ -1,101 +1,82 @@
 <template>
-  <view class="page-container">
+  <view class="container">
     <!-- 页面头部 -->
-    <view class="page-header">
-      <text class="page-title">金额转大写</text>
-    </view>
+    <PageHeader title="💰 金额转大写" subtitle="数字金额秒变大写" />
 
     <!-- 页面内容 -->
     <view class="page-content">
-      <!-- 单项转换卡片 -->
-      <view class="card">
-        <view class="card-title">单项转换</view>
-        <view class="input-group">
-          <view class="input-label">请输入金额：</view>
-          <wd-input v-model="currencyValue" placeholder="请输入金额，如：123.45" @input="validateInput" clearable />
-          <!-- 实时错误提示 -->
-          <view v-if="errorMessage" class="error-message">{{ errorMessage }}</view>
+      <!-- 主转换区域 -->
+      <view class="main-card">
+        <view class="section-title">💰 金额输入</view>
+        <view class="input-wrapper">
+          <input class="amount-input" v-model="currencyValue" type="digit" placeholder="输入金额" @input="validateInput" />
+          <view v-if="errorMessage" class="error-tip">{{ errorMessage }}</view>
         </view>
 
-        <!-- 快速转换模板 -->
-        <view class="template-section">
-          <view class="template-label">快速转换：</view>
-          <view class="template-buttons">
-            <wd-button size="small" type="info" @click="quickConvert('100')">100</wd-button>
-            <wd-button size="small" type="info" @click="quickConvert('1000')">1000</wd-button>
-            <wd-button size="small" type="info" @click="quickConvert('10000')">1万</wd-button>
-            <wd-button size="small" type="info" @click="quickConvert('100000')">10万</wd-button>
-            <wd-button size="small" type="info" @click="quickConvert('1000000')">100万</wd-button>
-            <wd-button size="small" type="info" @click="quickConvert('10000000')">1000万</wd-button>
+        <!-- 快速金额按钮 -->
+        <view class="quick-amounts">
+          <view class="quick-title">快速选择</view>
+          <view class="quick-buttons">
+            <view class="quick-btn" @tap="quickConvert('100')">100</view>
+            <view class="quick-btn" @tap="quickConvert('1000')">1千</view>
+            <view class="quick-btn" @tap="quickConvert('10000')">1万</view>
+            <view class="quick-btn" @tap="quickConvert('100000')">10万</view>
+            <view class="quick-btn" @tap="quickConvert('1000000')">百万</view>
+            <view class="quick-btn" @tap="quickConvert('10000000')">千万</view>
           </view>
         </view>
 
-        <view class="button-group">
-          <wd-button block @click="convertData(currencyValue)">
-            转换
-          </wd-button>
-          <wd-button block type="success" :disabled="!isNumericCopyable" @click="copyNumericValue">
-            {{ isNumericCopyable ? '复制' : '无法复制' }}
-          </wd-button>
-        </view>
+        <!-- 转换按钮 -->
+        <view class="convert-btn" @tap="convertData(currencyValue)"> 🔄 立即转换 </view>
       </view>
 
       <!-- 结果显示卡片 -->
-      <view class="card">
-        <view class="card-title">转换结果</view>
-        <view class="result-label">大写金额：</view>
-        <wd-input v-model="convertValue" placeholder="大写金额" clearable />
-        <view class="button-group">
-          <wd-button type="success" :disabled="!isCopy" block @click="clipboardData">
-            {{ isCopy ? '复制' : '无法复制' }}
-          </wd-button>
-          <wd-button block @click="convertFromChinese">
-            反向转换
-          </wd-button>
+      <view class="result-card" v-if="convertValue">
+        <view class="section-title">✨ 转换结果</view>
+        <view class="result-display">
+          <text class="result-text">{{ convertValue }}</text>
+        </view>
+        <view class="result-actions">
+          <view class="action-btn copy-btn" @tap="clipboardData"> 📋 复制 </view>
+          <view class="action-btn reverse-btn" @tap="convertFromChinese"> ↩️ 反向转换 </view>
         </view>
       </view>
 
       <!-- 批量转换卡片 -->
-      <view class="card">
-        <view class="card-title">批量转换</view>
-        <view class="input-group">
-          <view class="input-label">输入金额（每行一个）：</view>
-          <textarea v-model="batchInput" placeholder="如：123.45, 1000, 50000" class="batch-textarea" />
+      <view class="batch-card">
+        <view class="section-title">📊 批量转换</view>
+        <textarea class="batch-textarea" v-model="batchInput" placeholder="每行输入一个金额，如：\n123.45\n1000\n50000" />
+        <view class="batch-actions">
+          <view class="batch-btn" @tap="batchConvert">🔄 批量转换</view>
+          <view class="batch-btn copy-all-btn" :class="{ disabled: !batchResults.length }" @tap="copyBatchResults">
+            📋 复制全部
+          </view>
         </view>
-        <view class="button-group">
-          <wd-button block @click="batchConvert">
-            批量转换
-          </wd-button>
-          <wd-button block type="success" :disabled="!batchResults.length" @click="copyBatchResults">
-            {{ batchResults.length ? '复制结果' : '暂无结果' }}
-          </wd-button>
-        </view>
-        <!-- 批量结果显示 -->
+
+        <!-- 批量结果 -->
         <view v-if="batchResults.length" class="batch-results">
-          <view class="batch-title">转换结果：</view>
-          <view v-for="(result, index) in batchResults" :key="index" class="batch-item">
-            <view class="batch-input">{{ result.input }}</view>
-            <view class="batch-arrow">→</view>
-            <view class="batch-output">{{ result.output }}</view>
+          <view v-for="(result, index) in batchResults" :key="index" class="batch-result-item">
+            <text class="batch-input-text">{{ result.input }}</text>
+            <text class="batch-arrow">→</text>
+            <text class="batch-output-text">{{ result.output }}</text>
           </view>
         </view>
       </view>
 
-      <!-- 转换历史卡片 -->
-      <view class="card">
-        <view class="card-title-with-action">
-          <view class="card-title">转换历史</view>
-          <wd-button v-if="history.length" size="small" type="error" @click="clearHistory">清空</wd-button>
+      <!-- 转换历史 -->
+      <view class="history-card" v-if="history.length">
+        <view class="history-header">
+          <view class="section-title">📜 转换历史</view>
+          <view class="clear-btn" @tap="clearHistory">清空</view>
         </view>
-        <view v-if="history.length === 0" class="empty-message">暂无历史记录</view>
-        <view v-else class="history-list">
-          <view v-for="(item, index) in history" :key="index" class="history-item">
-            <view class="history-content" @click="useHistory(item)">
-              <view class="history-numeric">{{ item.numeric }}</view>
-              <view class="history-arrow">→</view>
-              <view class="history-chinese">{{ item.chinese }}</view>
+        <view class="history-list">
+          <view v-for="(item, index) in history" :key="index" class="history-item" @tap="useHistory(item)">
+            <view class="history-main">
+              <text class="history-number">{{ item.numeric }}</text>
+              <text class="history-arrow">→</text>
+              <text class="history-chinese">{{ item.chinese }}</text>
             </view>
-            <view class="history-time">{{ formatTime(item.timestamp) }}</view>
+            <text class="history-time">{{ formatTime(item.timestamp) }}</text>
           </view>
         </view>
       </view>
@@ -105,6 +86,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import PageHeader from '@/components/PageHeader.vue'
 
 const currencyValue = ref('')
 const convertValue = ref('')
@@ -157,7 +139,9 @@ const convertData = (value: string) => {
   convertValue.value = convertCurrency(value)
 
   // 检查返回结果是否包含中文大写数字（成功转换的标志）
-  if (/[\u96f6\u4e00\u58f9\u8d30\u53c1\u8086\u4f0d\u9686\u67d2\u634c\u7396]/.test(convertValue.value)) {
+  if (
+    /[\u96f6\u4e00\u58f9\u8d30\u53c1\u8086\u4f0d\u9686\u67d2\u634c\u7396]/.test(convertValue.value)
+  ) {
     isNumericCopyable.value = true
     // 添加到历史记录
     addToHistory(value, convertValue.value)
@@ -173,9 +157,11 @@ const addToHistory = (numeric: string, chinese: string) => {
   }
 
   // 避免重复添加
-  if (history.value.length > 0 &&
+  if (
+    history.value.length > 0 &&
     history.value[0].numeric === newRecord.numeric &&
-    history.value[0].chinese === newRecord.chinese) {
+    history.value[0].chinese === newRecord.chinese
+  ) {
     return
   }
 
@@ -271,7 +257,10 @@ const batchConvert = () => {
     return
   }
 
-  const lines = batchInput.value.trim().split('\n').filter(line => line.trim())
+  const lines = batchInput.value
+    .trim()
+    .split('\n')
+    .filter(line => line.trim())
   batchResults.value = []
 
   lines.forEach(line => {
@@ -300,9 +289,7 @@ const batchConvert = () => {
 
 // 复制批量结果
 const copyBatchResults = () => {
-  const text = batchResults.value
-    .map(item => `${item.input} → ${item.output}`)
-    .join('\n')
+  const text = batchResults.value.map(item => `${item.input} → ${item.output}`).join('\n')
 
   uni.setClipboardData({
     data: text,
@@ -455,7 +442,10 @@ const convertCurrency = (currencyDigits: string | number): string => {
 
 const chineseToNumeric = (chineseStr: string): string => {
   // 验证是否包含有效字符
-  const validChars = /^[\u96f6\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u58f9\u8d30\u53c1\u8086\u4f0d\u9686\u67d2\u634c\u7396\u62fe\u767e\u4f70\u5343\u4edf\u4e07\u4ebf\u5143\u6574\u89d2\u5206\u3007]+$/.test(chineseStr)
+  const validChars =
+    /^[\u96f6\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u58f9\u8d30\u53c1\u8086\u4f0d\u9686\u67d2\u634c\u7396\u62fe\u767e\u4f70\u5343\u4edf\u4e07\u4ebf\u5143\u6574\u89d2\u5206\u3007]+$/.test(
+      chineseStr
+    )
 
   if (!validChars) {
     return ''
@@ -467,12 +457,33 @@ const chineseToNumeric = (chineseStr: string): string => {
   }
 
   const chineseNum: { [key: string]: number } = {
-    '零': 0, '一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9,
-    '壹': 1, '贰': 2, '叁': 3, '肆': 4, '伍': 5, '陆': 6, '柒': 7, '捌': 8, '玖': 9
+    零: 0,
+    一: 1,
+    二: 2,
+    三: 3,
+    四: 4,
+    五: 5,
+    六: 6,
+    七: 7,
+    八: 8,
+    九: 9,
+    壹: 1,
+    贰: 2,
+    叁: 3,
+    肆: 4,
+    伍: 5,
+    陆: 6,
+    柒: 7,
+    捌: 8,
+    玖: 9
   }
 
   const chineseUnit: { [key: string]: number } = {
-    '拾': 10, '佰': 100, '仟': 1000, '万': 10000, '亿': 100000000
+    拾: 10,
+    佰: 100,
+    仟: 1000,
+    万: 10000,
+    亿: 100000000
   }
 
   // 分离整数部分和小数部分
@@ -527,7 +538,10 @@ const chineseToNumeric = (chineseStr: string): string => {
   let decimalResult = ''
   if (decimalStr && decimalStr !== '整') {
     // 验证小数部分格式
-    const validDecimal = /^[\u89d2\u5206\u96f6\u58f9\u8d30\u53c1\u8086\u4f0d\u9686\u67d2\u634c\u7396]*$/.test(decimalStr)
+    const validDecimal =
+      /^[\u89d2\u5206\u96f6\u58f9\u8d30\u53c1\u8086\u4f0d\u9686\u67d2\u634c\u7396]*$/.test(
+        decimalStr
+      )
     if (!validDecimal) {
       return ''
     }
@@ -564,243 +578,387 @@ const chineseToNumeric = (chineseStr: string): string => {
 <style lang="scss" scoped>
 @use '../../../styles/theme.scss' as *;
 
-.page-container {
+.container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding-bottom: 20px;
-}
-
-.page-header {
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-
-  .page-title {
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: #ffffff;
-    margin: 0;
-  }
+  background: #f5f7fa;
+  padding: 0 0 40rpx 0;
 }
 
 .page-content {
-  padding: 16px;
+  padding: 30rpx;
 }
 
-.card {
-  background-color: $app-bg-secondary;
-  border-radius: $app-border-radius-md;
-  padding: $app-spacing-lg;
-  margin-bottom: $app-spacing-lg;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+/* 主转换卡片 */
+.main-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 }
 
-.card-title {
-  font-size: $app-font-size-base;
-  font-weight: 600;
-  color: $app-text-primary;
-  margin-bottom: $app-spacing-md;
-  padding-bottom: $app-spacing-sm;
-  border-bottom: 2px solid #4a63d2;
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
 }
 
-.card-title-with-action {
+.input-wrapper {
+  margin-bottom: 30rpx;
+}
+
+.amount-input {
+  width: 100%;
+  height: 100rpx;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+  padding: 0 30rpx;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  border: 3rpx solid transparent;
+  transition: all 0.3s;
+  box-sizing: border-box;
+  display: block;
+
+  &:focus {
+    background: white;
+    border-color: #667eea;
+  }
+}
+
+.error-tip {
+  margin-top: 16rpx;
+  padding: 16rpx 24rpx;
+  background: rgba(255, 76, 76, 0.1);
+  border-radius: 12rpx;
+  color: #ff4c4c;
+  font-size: 24rpx;
+}
+
+/* 快速金额 */
+.quick-amounts {
+  margin-bottom: 30rpx;
+}
+
+.quick-title {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 20rpx;
+}
+
+.quick-buttons {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.quick-btn {
+  flex: 1;
+  min-width: 140rpx;
+  padding: 20rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #666;
+  transition: all 0.3s;
+
+  &:active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: scale(0.95);
+  }
+}
+
+.convert-btn {
+  width: 100%;
+  height: 100rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16rpx;
+  display: flex;
   align-items: center;
-
-  .card-title {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-    flex: 1;
-  }
-}
-
-.input-group {
-  margin-bottom: $app-spacing-lg;
-
-  .input-label {
-    font-size: $app-font-size-sm;
-    color: $app-text-primary;
-    margin-bottom: $app-spacing-sm;
-    font-weight: 500;
-  }
-
-  :deep(.wd-input__input) {
-    padding: 10px $app-spacing-md;
-  }
-}
-
-// 实时错误提示
-.error-message {
-  color: #d32f2f;
-  font-size: $app-font-size-xs;
-  margin-top: $app-spacing-xs;
-  padding: $app-spacing-sm;
-  background-color: rgba(211, 47, 47, 0.1);
-  border-radius: $app-border-radius-sm;
-}
-
-// 快速转换模板
-.template-section {
-  margin-bottom: $app-spacing-lg;
-
-  .template-label {
-    font-size: $app-font-size-sm;
-    color: $app-text-primary;
-    margin-bottom: $app-spacing-sm;
-    font-weight: 500;
-  }
-
-  .template-buttons {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: $app-spacing-sm;
-  }
-}
-
-.button-group {
-  display: flex;
-  gap: $app-spacing-md;
-  margin-top: $app-spacing-lg;
   justify-content: center;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.3);
+  transition: all 0.3s;
+
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
-.result-label {
-  font-size: $app-font-size-sm;
-  color: $app-text-primary;
-  font-weight: 500;
-  margin-bottom: $app-spacing-md;
+/* 结果卡片 */
+.result-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 }
 
-// 批量转换样式
+.result-display {
+  padding: 40rpx;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 30%);
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+}
+
+.result-text {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+.result-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  transition: all 0.3s;
+
+  &.copy-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+  }
+
+  &.reverse-btn {
+    background: white;
+    color: #667eea;
+    border: 2rpx solid #667eea;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+/* 批量转换卡片 */
+.batch-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
 .batch-textarea {
   width: 100%;
-  padding: $app-spacing-md;
-  border: 1px solid #e0e0e0;
-  border-radius: $app-border-radius-md;
-  font-size: $app-font-size-base;
-  color: $app-text-primary;
-  background-color: $app-bg-primary;
-  min-height: 100px;
-  resize: vertical;
-  margin-bottom: $app-spacing-lg;
+  min-height: 200rpx;
+  padding: 24rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 30rpx;
+  border: none;
+  box-sizing: border-box;
+  display: block;
+}
+
+.batch-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.batch-btn {
+  flex: 1;
+  height: 80rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+  transition: all 0.3s;
+
+  &.copy-all-btn {
+    background: white;
+    color: #667eea;
+    border: 2rpx solid #667eea;
+    box-shadow: none;
+  }
+
+  &.disabled {
+    opacity: 0.5;
+  }
+
+  &:active:not(.disabled) {
+    transform: scale(0.95);
+  }
 }
 
 .batch-results {
-  margin-top: $app-spacing-lg;
-  padding-top: $app-spacing-lg;
-  border-top: 1px solid #e0e0e0;
+  border-top: 2rpx dashed #eee;
+  padding-top: 30rpx;
+}
 
-  .batch-title {
-    font-size: $app-font-size-sm;
-    color: $app-text-primary;
-    font-weight: 500;
-    margin-bottom: $app-spacing-md;
-  }
+.batch-result-item {
+  padding: 24rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
 
-  .batch-item {
-    display: flex;
-    align-items: center;
-    padding: $app-spacing-sm;
-    background-color: $app-bg-primary;
-    border-radius: $app-border-radius-sm;
-    margin-bottom: $app-spacing-sm;
-    gap: $app-spacing-sm;
-
-    .batch-input {
-      flex: 0 0 auto;
-      min-width: 80px;
-      padding: $app-spacing-xs $app-spacing-sm;
-      background-color: #f0f0f0;
-      border-radius: $app-border-radius-sm;
-      font-size: $app-font-size-sm;
-      text-align: center;
-    }
-
-    .batch-arrow {
-      flex: 0 0 auto;
-      color: #999;
-      font-size: $app-font-size-sm;
-    }
-
-    .batch-output {
-      flex: 1;
-      padding: $app-spacing-xs $app-spacing-sm;
-      color: $app-text-primary;
-      font-size: $app-font-size-sm;
-      word-break: break-word;
-    }
+  &:last-child {
+    margin-bottom: 0;
   }
 }
 
-// 转换历史样式
-.empty-message {
-  text-align: center;
-  color: #999;
-  padding: $app-spacing-lg;
-  font-size: $app-font-size-sm;
+.batch-input-text {
+  font-size: 28rpx;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.batch-arrow {
+  color: #667eea;
+  font-size: 28rpx;
+  flex-shrink: 0;
+}
+
+.batch-output-text {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  flex: 1;
+  word-break: break-all;
+}
+
+/* 历史记录卡片 */
+.history-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+  border-top: 3px solid #667eea;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+
+  .section-title {
+    margin-bottom: 0;
+  }
+}
+
+.clear-btn {
+  padding: 12rpx 28rpx;
+  background: #ff4c4c;
+  color: white;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  transition: all 0.3s;
+
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
 .history-list {
-  display: flex;
-  flex-direction: column;
-  gap: $app-spacing-sm;
-  max-height: 400px;
+  max-height: 300px;
   overflow-y: auto;
 }
 
 .history-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: $app-spacing-md;
-  background-color: $app-bg-primary;
-  border-radius: $app-border-radius-md;
-  border-left: 4px solid #4a63d2;
+  gap: 16rpx;
+  padding: 12rpx 16rpx;
+  margin-bottom: 8rpx;
+  background: #f5f5f5;
+  border-radius: 8rpx;
+  border-left: 4rpx solid #667eea;
+  cursor: pointer;
+  transition: all 0.2s ease;
 
-  .history-content {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: $app-spacing-sm;
-    cursor: pointer;
-
-    .history-numeric {
-      padding: $app-spacing-xs $app-spacing-sm;
-      background-color: #f0f0f0;
-      border-radius: $app-border-radius-sm;
-      font-size: $app-font-size-sm;
-      min-width: 60px;
-      text-align: center;
-    }
-
-    .history-arrow {
-      color: #999;
-    }
-
-    .history-chinese {
-      flex: 1;
-      color: $app-text-primary;
-      font-size: $app-font-size-sm;
-      word-break: break-word;
-    }
+  &:last-child {
+    margin-bottom: 0;
   }
 
-  .history-time {
-    flex: 0 0 auto;
-    color: #999;
-    font-size: $app-font-size-xs;
-    margin-left: $app-spacing-sm;
+  &:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+}
+
+.history-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.history-number {
+  font-size: 24rpx;
+  color: #667eea;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+}
+
+.history-arrow {
+  display: none;
+}
+
+.history-chinese {
+  font-size: 24rpx;
+  color: #666;
+  font-weight: 500;
+  word-break: break-all;
+  line-height: 1.3;
+}
+
+.history-time {
+  font-size: 20rpx;
+  color: #999;
+  flex-shrink: 0;
+}
+
+// 美化滚动条
+.history-list::-webkit-scrollbar {
+  width: 3px;
+}
+
+.history-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 2px;
+
+  &:hover {
+    background: #b0b0b0;
   }
 }
 </style>

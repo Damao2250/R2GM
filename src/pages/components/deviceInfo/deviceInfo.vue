@@ -1,10 +1,7 @@
 <template>
-  <view class="page-container">
+  <view class="container">
     <!-- 页面头部 -->
-    <view class="page-header">
-      <view class="header-bg"></view>
-      <text class="page-title">📱 设备信息</text>
-    </view>
+    <PageHeader title="📱 设备信息" subtitle="查看当前设备详细信息" />
 
     <!-- 页面内容 -->
     <view class="page-content">
@@ -12,7 +9,9 @@
       <view class="highlight-card">
         <view class="highlight-item">
           <text class="highlight-label">系统</text>
-          <text class="highlight-value">{{ deviceInfo.platform === 'ios' ? 'iOS' : 'Android' }}</text>
+          <text class="highlight-value">{{
+            deviceInfo.platform === 'ios' ? 'iOS' : 'Android'
+            }}</text>
         </view>
         <view class="highlight-divider"></view>
         <view class="highlight-item">
@@ -106,7 +105,9 @@
         </view>
         <view class="info-item">
           <text class="info-label">屏幕方向</text>
-          <text class="info-value">{{ deviceInfo.screenHeight > deviceInfo.screenWidth ? '竖屏' : '横屏' }}</text>
+          <text class="info-value">{{
+            deviceInfo.screenHeight > deviceInfo.screenWidth ? '竖屏' : '横屏'
+            }}</text>
         </view>
         <view class="info-item">
           <text class="info-label">刘海屏</text>
@@ -132,6 +133,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import PageHeader from '@/components/PageHeader.vue'
 
 interface DeviceInfoType {
   platform: string
@@ -235,108 +237,69 @@ App版本: ${deviceInfo.appVersion}
 <style lang="scss" scoped>
 @use '../../../styles/theme.scss' as *;
 
-.page-container {
+.container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-}
-
-.page-header {
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-
-  .header-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0.1;
-  }
-
-  .page-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: #ffffff;
-    position: relative;
-    z-index: 1;
-    letter-spacing: 0.5px;
-  }
+  background: #f5f7fa;
+  padding: 0 0 40rpx 0;
 }
 
 .page-content {
-  padding: 16px;
+  padding: 30rpx;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.info-card {
-  background-color: #ffffff;
-  border-radius: 16rpx;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  gap: 30rpx;
 }
 
 /* 高亮信息卡 */
 .highlight-card {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 20rpx;
+  padding: 40rpx;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
-  margin-bottom: 8px;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.3);
 
   .highlight-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 16rpx;
     flex: 1;
 
     .highlight-label {
-      font-size: 9px;
-      color: rgba(255, 255, 255, 0.7);
-      font-weight: 600;
-      letter-spacing: 1px;
+      font-size: 24rpx;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: bold;
+      letter-spacing: 2rpx;
     }
 
     .highlight-value {
-      font-size: 14px;
-      color: #ffffff;
-      font-weight: 700;
+      font-size: 32rpx;
+      color: white;
+      font-weight: bold;
     }
   }
 
   .highlight-divider {
-    width: 1px;
-    height: 40px;
-    background-color: rgba(255, 255, 255, 0.2);
-    margin: 0 12px;
+    width: 2rpx;
+    height: 80rpx;
+    background-color: rgba(255, 255, 255, 0.3);
+    margin: 0 24rpx;
   }
 }
 
 /* 各类别卡片 */
 .section-card {
-  background-color: #ffffff;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  border-top: 4px solid #667eea;
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  border-top: 8rpx solid #667eea;
 
   &:active {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    transform: scale(0.98);
   }
 
   &.system-card {
@@ -344,7 +307,7 @@ App版本: ${deviceInfo.appVersion}
   }
 
   &.screen-card {
-    border-top-color: #764ba2;
+    border-top-color: #4facfe;
   }
 
   &.app-card {
@@ -368,9 +331,9 @@ App版本: ${deviceInfo.appVersion}
     }
 
     .section-title {
-      font-size: 14px;
+      font-size: 28rpx;
       font-weight: 700;
-      color: $app-text-primary;
+      color: #333;
     }
   }
 }
@@ -379,7 +342,7 @@ App版本: ${deviceInfo.appVersion}
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 24rpx 0;
   border-bottom: 1px solid #f5f5f5;
 
   &:last-child {
@@ -387,15 +350,15 @@ App版本: ${deviceInfo.appVersion}
   }
 
   .info-label {
-    font-size: 12px;
+    font-size: 26rpx;
     color: #999;
     font-weight: 600;
     flex: 0.5;
   }
 
   .info-value {
-    font-size: 13px;
-    color: $app-text-primary;
+    font-size: 28rpx;
+    color: #333;
     font-weight: 700;
     text-align: right;
     flex: 0.5;
@@ -404,9 +367,9 @@ App版本: ${deviceInfo.appVersion}
 }
 
 .action-section {
-  padding: 8px 0;
+  padding: 16rpx 0;
   display: flex;
-  gap: $app-spacing-md;
+  gap: 20rpx;
   margin-top: 8px;
 
   .copy-btn {
