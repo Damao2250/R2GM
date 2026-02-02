@@ -2,194 +2,208 @@
   <view class="page-container">
     <!-- 页面头部 -->
     <view class="page-header">
-      <text class="page-title">Base64 / MD5 转换</text>
+      <text class="page-title">编码/转换工具</text>
+      <text class="page-desc">Base64、Hex、URL、MD5 编码转换工具</text>
     </view>
 
     <!-- 页面内容 -->
     <view class="page-content">
       <!-- Base64 编码 -->
-      <view class="card">
-        <view class="card-title">Base64 编码</view>
-        <view class="input-group">
-          <wd-input
-            v-model="currencyValue"
-            type="textarea"
-            placeholder="请输入要编码的内容"
-          />
-        </view>
-        <button class="wd-button primary full-width" @click="convertData(currencyValue)">
-          编码
-        </button>
-        <view v-if="convertValue" class="result-container">
-          <view class="text-display" selectable user-select>
-            {{ convertValue }}
-          </view>
-          <button
-            class="wd-button primary full-width"
-            :disabled="!isCopy"
-            @click="clipboardData"
-          >
-            复制
-          </button>
-        </view>
-      </view>
+      <conversion-card
+        title="Base64 编码"
+        desc="将文本转换为 Base64 编码格式"
+        icon="📝"
+        card-class="encode-card"
+        :input-value="conversions.base64Encode.input"
+        :output-value="conversions.base64Encode.output"
+        @update:input="conversions.base64Encode.input = $event"
+        @convert="handleConvert('base64Encode')"
+        @copy="handleCopy('base64Encode')"
+        @clear="handleClear('base64Encode')"
+      />
 
       <!-- Base64 解码 -->
-      <view class="card">
-        <view class="card-title">Base64 解码</view>
-        <view class="input-group">
-          <wd-input
-            v-model="currencyValue1"
-            type="textarea"
-            placeholder="请输入要解码的内容"
-          />
-        </view>
-        <button class="wd-button primary full-width" @click="convertData1(currencyValue1)">
-          解码
-        </button>
-        <view v-if="convertValue1" class="result-container">
-          <view class="text-display" selectable user-select>
-            {{ convertValue1 }}
-          </view>
-          <button
-            class="wd-button primary full-width"
-            :disabled="!isCopy1"
-            @click="clipboardData1"
-          >
-            复制
-          </button>
-        </view>
-      </view>
+      <conversion-card
+        title="Base64 解码"
+        desc="将 Base64 编码解码为原始文本"
+        icon="🔓"
+        card-class="decode-card"
+        :input-value="conversions.base64Decode.input"
+        :output-value="conversions.base64Decode.output"
+        @update:input="conversions.base64Decode.input = $event"
+        @convert="handleConvert('base64Decode')"
+        @copy="handleCopy('base64Decode')"
+        @clear="handleClear('base64Decode')"
+      />
+
+      <!-- Hex 编码 -->
+      <conversion-card
+        title="Hex 编码"
+        desc="将文本转换为十六进制编码"
+        icon="🔠"
+        card-class="hex-card"
+        :input-value="conversions.hexEncode.input"
+        :output-value="conversions.hexEncode.output"
+        @update:input="conversions.hexEncode.input = $event"
+        @convert="handleConvert('hexEncode')"
+        @copy="handleCopy('hexEncode')"
+        @clear="handleClear('hexEncode')"
+      />
+
+      <!-- Hex 解码 -->
+      <conversion-card
+        title="Hex 解码"
+        desc="将十六进制解码为原始文本"
+        icon="🔡"
+        card-class="hex-decode-card"
+        :input-value="conversions.hexDecode.input"
+        :output-value="conversions.hexDecode.output"
+        @update:input="conversions.hexDecode.input = $event"
+        @convert="handleConvert('hexDecode')"
+        @copy="handleCopy('hexDecode')"
+        @clear="handleClear('hexDecode')"
+      />
+
+      <!-- URL 编码 -->
+      <conversion-card
+        title="URL 编码"
+        desc="将文本转换为 URL 编码格式"
+        icon="🔗"
+        card-class="url-card"
+        :input-value="conversions.urlEncode.input"
+        :output-value="conversions.urlEncode.output"
+        @update:input="conversions.urlEncode.input = $event"
+        @convert="handleConvert('urlEncode')"
+        @copy="handleCopy('urlEncode')"
+        @clear="handleClear('urlEncode')"
+      />
+
+      <!-- URL 解码 -->
+      <conversion-card
+        title="URL 解码"
+        desc="将 URL 编码解码为原始文本"
+        icon="📍"
+        card-class="url-decode-card"
+        :input-value="conversions.urlDecode.input"
+        :output-value="conversions.urlDecode.output"
+        @update:input="conversions.urlDecode.input = $event"
+        @convert="handleConvert('urlDecode')"
+        @copy="handleCopy('urlDecode')"
+        @clear="handleClear('urlDecode')"
+      />
 
       <!-- MD5 计算 -->
-      <view class="card">
-        <view class="card-title">MD5 计算</view>
-        <view class="input-group">
-          <wd-input
-            v-model="currencyValue3"
-            type="textarea"
-            placeholder="请输入要计算的内容"
-          />
-        </view>
-        <button class="wd-button primary full-width" @click="convertData3(currencyValue3)">
-          计算
-        </button>
-        <view v-if="convertValue3" class="result-container">
-          <view class="text-display" selectable user-select>
-            {{ convertValue3 }}
-          </view>
-          <button
-            class="wd-button primary full-width"
-            :disabled="!isCopy3"
-            @click="clipboardData3"
-          >
-            复制
-          </button>
-        </view>
-      </view>
+      <conversion-card
+        title="MD5 计算"
+        desc="计算文本的 MD5 哈希值"
+        icon="🔐"
+        card-class="md5-card"
+        :input-value="conversions.md5.input"
+        :output-value="conversions.md5.output"
+        @update:input="conversions.md5.input = $event"
+        @convert="handleConvert('md5')"
+        @copy="handleCopy('md5')"
+        @clear="handleClear('md5')"
+      />
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import EncodeUtils from './endecode-lib.js'
+import ConversionCard from './ConversionCard.vue'
 
-const currencyValue = ref('')
-const convertValue = ref('')
-const isCopy = ref(false)
+// 统一管理所有转换类型的状态
+const conversions = reactive({
+  base64Encode: { input: '', output: '', canCopy: false },
+  base64Decode: { input: '', output: '', canCopy: false },
+  hexEncode: { input: '', output: '', canCopy: false },
+  hexDecode: { input: '', output: '', canCopy: false },
+  urlEncode: { input: '', output: '', canCopy: false },
+  urlDecode: { input: '', output: '', canCopy: false },
+  md5: { input: '', output: '', canCopy: false }
+})
 
-const currencyValue1 = ref('')
-const convertValue1 = ref('')
-const isCopy1 = ref(false)
+// 编码函数映射
+const encodeFunctions: Record<string, (input: string) => string | undefined> = {
+  base64Encode: (value: string) => {
+    const encoded = EncodeUtils.base64Encode(EncodeUtils.utf8Encode(value))
+    return encoded
+  },
+  base64Decode: (value: string) => {
+    try {
+      const decoded = EncodeUtils.utf8Decode(EncodeUtils.base64Decode(value))
+      return decoded
+    } catch (e) {
+      throw new Error('无法解码')
+    }
+  },
+  hexEncode: (value: string) => {
+    return EncodeUtils.hexEncode(value)
+  },
+  hexDecode: (value: string) => {
+    try {
+      const decoded = EncodeUtils.hexDecode(value)
+      return decoded
+    } catch (e) {
+      throw new Error('无法解码')
+    }
+  },
+  urlEncode: (value: string) => {
+    return encodeURIComponent(value)
+  },
+  urlDecode: (value: string) => {
+    try {
+      return decodeURIComponent(value)
+    } catch (e) {
+      throw new Error('无法解码')
+    }
+  },
+  md5: (value: string) => {
+    return EncodeUtils.md5(value)
+  }
+}
 
-const currencyValue3 = ref('')
-const convertValue3 = ref('')
-const isCopy3 = ref(false)
-
-// Base64 编码
-const convertData = (value: string) => {
-  console.log(value)
-  if (value === '') {
+// 处理转换
+const handleConvert = (type: string) => {
+  const conversion = conversions[type as keyof typeof conversions]
+  
+  if (!conversion.input) {
     uni.showToast({
       icon: 'none',
       title: '输入框不能为空',
       duration: 1000
     })
-    return false
-  }
-  convertValue.value = convertCurrency(value)
-}
-
-const convertCurrency = (value: string): string => {
-  isCopy.value = false
-  console.log(value)
-  const encodeString = EncodeUtils.base64Encode(EncodeUtils.utf8Encode(value))
-  console.log(encodeString)
-  convertValue.value = encodeString
-  isCopy.value = true
-  return encodeString
-}
-
-const clipboardData = () => {
-  if (!isCopy.value) {
     return
   }
-  uni.setClipboardData({
-    data: convertValue.value,
-    success: function () {
-      console.log('success')
-      uni.showToast({
-        title: '复制成功',
-        duration: 1000
-      })
-    }
-  })
-}
 
-// Base64 解码
-const convertData1 = (value: string) => {
-  console.log(value)
-  if (value === '') {
-    uni.showToast({
-      icon: 'none',
-      title: '输入框不能为空',
-      duration: 1000
-    })
-    return false
-  }
-  const result = convertCurrency1(value)
-  if (result) {
-    convertValue1.value = result
-  }
-}
-
-const convertCurrency1 = (value: string): string | undefined => {
-  isCopy1.value = false
-  console.log(value)
-  const decodeString = EncodeUtils.utf8Decode(EncodeUtils.base64Decode(value))
-  console.log(decodeString)
-  if (decodeString) {
-    convertValue1.value = decodeString
-    isCopy1.value = true
-    return decodeString
-  } else {
+  try {
+    const result = encodeFunctions[type](conversion.input)
+    conversion.output = result || ''
+    conversion.canCopy = true
+  } catch (error) {
     uni.showToast({
       icon: 'error',
-      title: '无法解码',
+      title: (error as Error).message || '转换失败',
       duration: 1000
     })
+    conversion.output = ''
+    conversion.canCopy = false
   }
 }
 
-const clipboardData1 = () => {
-  if (!isCopy1.value) {
+// 复制结果
+const handleCopy = (type: string) => {
+  const conversion = conversions[type as keyof typeof conversions]
+  
+  if (!conversion.canCopy) {
     return
   }
+
   uni.setClipboardData({
-    data: convertValue1.value,
-    success: function () {
-      console.log('success')
+    data: conversion.output,
+    success: () => {
       uni.showToast({
         title: '复制成功',
         duration: 1000
@@ -198,47 +212,12 @@ const clipboardData1 = () => {
   })
 }
 
-// MD5 计算
-const convertData3 = (value: string) => {
-  console.log(value)
-  const result = convertCurrency3(value)
-  if (result) {
-    convertValue3.value = result
-  }
-}
-
-const convertCurrency3 = (value: string): string | undefined => {
-  isCopy3.value = false
-  console.log(value)
-  const decodeString = EncodeUtils.md5(value)
-  console.log(decodeString)
-  if (decodeString) {
-    convertValue3.value = decodeString
-    isCopy3.value = true
-    return decodeString
-  } else {
-    uni.showToast({
-      icon: 'error',
-      title: '无法解码',
-      duration: 1000
-    })
-  }
-}
-
-const clipboardData3 = () => {
-  if (!isCopy3.value) {
-    return
-  }
-  uni.setClipboardData({
-    data: convertValue3.value,
-    success: function () {
-      console.log('success')
-      uni.showToast({
-        title: '复制成功',
-        duration: 1000
-      })
-    }
-  })
+// 清空输入输出
+const handleClear = (type: string) => {
+  const conversion = conversions[type as keyof typeof conversions]
+  conversion.input = ''
+  conversion.output = ''
+  conversion.canCopy = false
 }
 </script>
 
@@ -247,82 +226,95 @@ const clipboardData3 = () => {
 
 .page-container {
   min-height: 100vh;
-  background-color: $app-bg-primary;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding-bottom: 20px;
 }
 
 .page-header {
   padding: $app-spacing-lg;
-  background-color: #f5f6fa;
+  background: linear-gradient(135deg, #4a63d2 0%, #5b7ce8 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: $app-text-primary;
-  border-bottom: 1px solid #e5e5e5;
+  color: white;
+  border-bottom: none;
   position: relative;
-  /* #ifdef H5 */
-  background: linear-gradient(180deg, #ffffff 0%, #f5f6fa 100%);
-  /* #endif */
 
   .page-title {
     font-size: $app-font-size-2xl;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: #4a63d2;
-    margin: 0;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: white;
+    margin: 0 0 8px 0;
+  }
+
+  .page-desc {
+    font-size: $app-font-size-sm;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 300;
   }
 }
 
 .page-content {
-  padding: $app-spacing-lg;
-}
-
-.card {
-  background-color: $app-bg-secondary;
-  border-radius: $app-border-radius-md;
-  padding: $app-spacing-lg;
-  margin-bottom: $app-spacing-lg;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-
-  .card-title {
-    font-size: $app-font-size-lg;
-    color: $app-text-primary;
-    font-weight: 600;
-    margin-bottom: $app-spacing-lg;
-    padding-bottom: $app-spacing-md;
-    border-bottom: 2px solid $app-divider-color;
-  }
-}
-
-.input-group {
-  margin-bottom: $app-spacing-lg;
-
-  :deep(.wd-input__textarea) {
-    padding: $app-spacing-md;
-    min-height: 100px;
-  }
-}
-
-
-.result-container {
-  margin-top: $app-spacing-lg;
-  padding-top: $app-spacing-lg;
-  border-top: 1px solid $app-divider-color;
-}
-
-.text-display {
-  background-color: $app-bg-primary;
   padding: $app-spacing-md;
-  border-radius: $app-border-radius-md;
+}
+
+/* 卡片样式 */
+:deep(.card) {
+  background-color: $app-bg-secondary;
+  border-radius: 12px;
+  padding: $app-spacing-lg;
   margin-bottom: $app-spacing-lg;
-  border-left: 4px solid $app-primary-color;
-  word-break: break-all;
-  min-height: 60px;
-  display: flex;
-  align-items: flex-start;
-  padding-top: $app-spacing-lg;
-  font-size: $app-font-size-sm;
-  color: $app-text-primary;
-  max-height: 300px;
-  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border-top: 4px solid #4a63d2;
+  overflow: hidden;
+
+  &:active {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  }
+}
+
+:deep(.encode-card) {
+  border-top-color: #4a63d2;
+}
+
+:deep(.decode-card) {
+  border-top-color: #5dbc4c;
+}
+
+:deep(.hex-card) {
+  border-top-color: #17a2b8;
+}
+
+:deep(.hex-decode-card) {
+  border-top-color: #20c997;
+}
+
+:deep(.url-card) {
+  border-top-color: #ffc107;
+}
+
+:deep(.url-decode-card) {
+  border-top-color: #fd7e14;
+}
+
+:deep(.md5-card) {
+  border-top-color: #e83e8c;
+}
+
+/* 动画 */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

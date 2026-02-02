@@ -17,6 +17,10 @@
       "type": "home"
     },
     {
+      "path": "pages/components/base64Conver/ConversionCard",
+      "type": "page"
+    },
+    {
       "path": "pages/components/base64Conver/base64Conver",
       "type": "page"
     },

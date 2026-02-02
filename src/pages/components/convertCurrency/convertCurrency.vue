@@ -12,7 +12,7 @@
         <view class="card-title">单项转换</view>
         <view class="input-group">
           <view class="input-label">请输入金额：</view>
-          <wd-input v-model="currencyValue" placeholder="请输入金额，如：123.45" @input="validateInput" />
+          <wd-input v-model="currencyValue" placeholder="请输入金额，如：123.45" @input="validateInput" clearable />
           <!-- 实时错误提示 -->
           <view v-if="errorMessage" class="error-message">{{ errorMessage }}</view>
         </view>
@@ -44,7 +44,7 @@
       <view class="card">
         <view class="card-title">转换结果</view>
         <view class="result-label">大写金额：</view>
-        <wd-input v-model="convertValue" placeholder="大写金额" />
+        <wd-input v-model="convertValue" placeholder="大写金额" clearable />
         <view class="button-group">
           <wd-button type="success" :disabled="!isCopy" block @click="clipboardData">
             {{ isCopy ? '复制' : '无法复制' }}
@@ -586,7 +586,7 @@ const chineseToNumeric = (chineseStr: string): string => {
 }
 
 .page-content {
-  padding: $app-spacing-lg;
+  padding: $app-spacing-md;
 }
 
 .card {

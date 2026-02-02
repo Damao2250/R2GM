@@ -5,6 +5,7 @@
 
 interface NavigateToOptions {
   url: "/pages/index/index" |
+       "/pages/components/base64Conver/ConversionCard" |
        "/pages/components/base64Conver/base64Conver" |
        "/pages/components/convertCurrency/convertCurrency" |
        "/pages/components/networkInfo/networkInfo" |
