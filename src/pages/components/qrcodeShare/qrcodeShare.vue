@@ -28,11 +28,14 @@
         <button class="btn btn-primary" @click="generateQrcode" :disabled="!inputText">生成二维码</button>
       </view>
 
+      <!-- Canvas 容器 -->
+      <canvas canvas-id="qrcodeCanvas" class="qrcode-canvas"></canvas>
+
       <!-- 二维码显示区域 -->
       <view v-if="qrcodeUrl" class="qrcode-section">
         <text class="section-title">📲 二维码</text>
         <view class="qrcode-container">
-          <image :src="qrcodeUrl" class="qrcode-image"></image>
+          <image :src="qrcodeUrl" class="qrcode-image" mode="aspectFit"></image>
         </view>
 
         <!-- 二维码操作 -->
@@ -62,6 +65,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import drawQrcode from 'weapp-qrcode'
 
 const inputText = ref('')
 const qrcodeUrl = ref('')
@@ -129,25 +133,47 @@ const generateQrcode = async () => {
       title: '生成中...'
     })
 
-    // 使用 canvas 生成二维码
-    const canvas = uni.createCanvasContext('qrcodeCanvas')
-    
-    // 简单的二维码数据编码（使用在线 API 作为备选方案）
-    const encodedText = encodeURIComponent(inputText.value)
-    const qrcodeApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodedText}`
-    
-    qrcodeUrl.value = qrcodeApiUrl
-
-    uni.hideLoading()
-    uni.showToast({
-      title: '生成成功',
-      icon: 'success',
-      duration: 1500
+    // 直接调用 weapp-qrcode 绘制到 canvas
+    drawQrcode({
+      width: 250,
+      height: 250,
+      canvasId: 'qrcodeCanvas',
+      text: inputText.value,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: 2
     })
-  } catch (e) {
+
+    // 绘制完成后导出为临时文件（给 canvas 充分时间完成渲染）
+    setTimeout(() => {
+      uni.canvasToTempFilePath({
+        canvasId: 'qrcodeCanvas',
+        destWidth: 250,
+        destHeight: 250,
+        success: (res: any) => {
+          qrcodeUrl.value = res.tempFilePath
+          uni.hideLoading()
+          uni.showToast({
+            title: '生成成功',
+            icon: 'success',
+            duration: 1500
+          })
+        },
+        fail: (err: any) => {
+          uni.hideLoading()
+          console.error('Canvas to temp file error:', err)
+          uni.showToast({
+            title: '生成失败，请重试',
+            icon: 'error'
+          })
+        }
+      })
+    }, 200)
+  } catch (e: any) {
     uni.hideLoading()
+    console.error('QR Code generation error:', e)
     uni.showToast({
-      title: '生成失败',
+      title: e?.message || '生成失败，请重试',
       icon: 'error'
     })
   }
@@ -173,10 +199,22 @@ const copyText = async () => {
 
 const saveQrcode = async () => {
   try {
-    uni.showToast({
-      title: '已保存到相册',
-      icon: 'success',
-      duration: 2000
+    // 小程序保存图片到相册
+    uni.saveImageToPhotosAlbum({
+      filePath: qrcodeUrl.value,
+      success: () => {
+        uni.showToast({
+          title: '已保存到相册',
+          icon: 'success',
+          duration: 2000
+        })
+      },
+      fail: () => {
+        uni.showToast({
+          title: '保存失败，请检查权限',
+          icon: 'error'
+        })
+      }
     })
   } catch (e) {
     uni.showToast({
@@ -408,5 +446,13 @@ const saveQrcode = async () => {
     font-size: 14px;
     color: #999;
   }
+}
+
+/* Canvas 容器（隐藏） */
+.qrcode-canvas {
+  position: absolute;
+  left: -9999px;
+  width: 250px;
+  height: 250px;
 }
 </style>
