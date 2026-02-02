@@ -11,7 +11,9 @@ interface NavigateToOptions {
        "/pages/components/deviceInfo/deviceInfo" |
        "/pages/components/networkInfo/networkInfo" |
        "/pages/components/qrcodeShare/qrcodeShare" |
-       "/pages/components/timeNow/timeNow";
+       "/pages/components/relativeCalculator/relativeCalculator" |
+       "/pages/components/timeNow/timeNow" |
+       "/pages/components/unitConvert/unitConvert";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 

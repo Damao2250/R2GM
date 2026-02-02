@@ -41,7 +41,15 @@
       "type": "page"
     },
     {
+      "path": "pages/components/relativeCalculator/relativeCalculator",
+      "type": "page"
+    },
+    {
       "path": "pages/components/timeNow/timeNow",
+      "type": "page"
+    },
+    {
+      "path": "pages/components/unitConvert/unitConvert",
       "type": "page"
     }
   ],

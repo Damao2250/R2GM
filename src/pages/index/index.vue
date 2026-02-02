@@ -66,6 +66,16 @@ const toolsList = ref<ToolItem[]>([
     title: '二维码分享',
     url: '/pages/components/qrcodeShare/qrcodeShare',
     icon: '📲'
+  },
+  {
+    title: '单位转换',
+    url: '/pages/components/unitConvert/unitConvert',
+    icon: '📏'
+  },
+  {
+    title: '亲戚计算器',
+    url: '/pages/components/relativeCalculator/relativeCalculator',
+    icon: '👨‍👩‍👧‍👦'
   }
 ])
 

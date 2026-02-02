@@ -19,8 +19,6 @@
         ></textarea>
         <view class="char-count">{{ inputText.length }}/1000</view>
       </view>
-
-      <!-- 按钮组 -->
       <view class="button-group">
         <button class="btn btn-secondary" @click="scanQrcode">📸 扫描</button>
         <button class="btn btn-secondary" @click="pasteText">📋 粘贴</button>
@@ -67,16 +65,28 @@ import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import drawQrcode from 'weapp-qrcode'
 
+// 类型定义
+interface CanvasTempFileResult {
+  tempFilePath: string
+  errMsg: string
+}
+
+interface QrcodeConfig {
+  width: number
+  height: number
+  canvasId: string
+  text: string
+  colorDark: string
+  colorLight: string
+  correctLevel: number
+}
+
 const inputText = ref('')
 const qrcodeUrl = ref('')
 
 onLoad(() => {
-  // 页面加载逻辑
+  console.log('二维码分享页面加载')
 })
-
-const onInput = () => {
-  // 实时输入处理
-}
 
 const scanQrcode = async () => {
   try {
@@ -119,6 +129,10 @@ const pasteText = async () => {
   }
 }
 
+/**
+ * 生成二维码
+ * 使用 weapp-qrcode 在 canvas 上绘制二维码，然后导出为图片
+ */
 const generateQrcode = async () => {
   if (!inputText.value.trim()) {
     uni.showToast({
@@ -133,24 +147,27 @@ const generateQrcode = async () => {
       title: '生成中...'
     })
 
-    // 直接调用 weapp-qrcode 绘制到 canvas
-    drawQrcode({
+    // 配置二维码参数
+    const config: QrcodeConfig = {
       width: 250,
       height: 250,
       canvasId: 'qrcodeCanvas',
       text: inputText.value,
       colorDark: '#000000',
       colorLight: '#ffffff',
-      correctLevel: 2
-    })
+      correctLevel: 2 // H级纠错
+    }
 
-    // 绘制完成后导出为临时文件（给 canvas 充分时间完成渲染）
+    // 直接调用 weapp-qrcode 绘制到 canvas
+    drawQrcode(config)
+
+    // 绘制完成后导出为临时文件
     setTimeout(() => {
       uni.canvasToTempFilePath({
         canvasId: 'qrcodeCanvas',
         destWidth: 250,
         destHeight: 250,
-        success: (res: any) => {
+        success: (res: CanvasTempFileResult) => {
           qrcodeUrl.value = res.tempFilePath
           uni.hideLoading()
           uni.showToast({
@@ -163,7 +180,7 @@ const generateQrcode = async () => {
           uni.hideLoading()
           console.error('Canvas to temp file error:', err)
           uni.showToast({
-            title: '生成失败，请重试',
+            title: err.errMsg || '生成失败，请重试',
             icon: 'error'
           })
         }

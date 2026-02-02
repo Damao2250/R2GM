@@ -216,12 +216,19 @@ const clearHistory = () => {
   })
 }
 
+// 最大历史记录数
+const MAX_HISTORY_COUNT = 100
+
 // 保存历史记录到本地存储
 const saveHistory = () => {
   try {
+    // 限制历史记录数量，保留最新的 50 条
+    if (history.value.length > MAX_HISTORY_COUNT) {
+      history.value = history.value.slice(0, MAX_HISTORY_COUNT)
+    }
     uni.setStorageSync('convertHistory', JSON.stringify(history.value))
   } catch (e) {
-    console.log('保存历史记录失败:', e)
+    console.error('保存历史记录失败:', e)
   }
 }
 
