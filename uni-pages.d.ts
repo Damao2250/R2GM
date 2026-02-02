@@ -8,7 +8,9 @@ interface NavigateToOptions {
        "/pages/components/base64Conver/ConversionCard" |
        "/pages/components/base64Conver/base64Conver" |
        "/pages/components/convertCurrency/convertCurrency" |
+       "/pages/components/deviceInfo/deviceInfo" |
        "/pages/components/networkInfo/networkInfo" |
+       "/pages/components/qrcodeShare/qrcodeShare" |
        "/pages/components/timeNow/timeNow";
 }
 interface RedirectToOptions extends NavigateToOptions {}

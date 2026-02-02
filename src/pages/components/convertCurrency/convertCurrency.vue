@@ -559,34 +559,33 @@ const chineseToNumeric = (chineseStr: string): string => {
 
 .page-container {
   min-height: 100vh;
-  background-color: $app-bg-primary;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding-bottom: 20px;
 }
 
 .page-header {
-  padding: $app-spacing-lg;
-  background-color: #f5f6fa;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $app-text-primary;
-  border-bottom: 1px solid #e5e5e5;
-  position: relative;
-  /* #ifdef H5 */
-  background: linear-gradient(180deg, #ffffff 0%, #f5f6fa 100%);
-  /* #endif */
+  color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 
   .page-title {
-    font-size: $app-font-size-2xl;
+    font-size: 20px;
     font-weight: 600;
     letter-spacing: 0.5px;
-    color: #4a63d2;
+    color: #ffffff;
     margin: 0;
   }
 }
 
 .page-content {
-  padding: $app-spacing-md;
+  padding: 16px;
 }
 
 .card {

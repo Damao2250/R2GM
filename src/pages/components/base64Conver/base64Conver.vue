@@ -3,7 +3,6 @@
     <!-- 页面头部 -->
     <view class="page-header">
       <text class="page-title">编码/转换工具</text>
-      <text class="page-desc">Base64、Hex、URL、MD5 编码转换工具</text>
     </view>
 
     <!-- 页面内容 -->
@@ -231,33 +230,29 @@ const handleClear = (type: string) => {
 }
 
 .page-header {
-  padding: $app-spacing-lg;
-  background: linear-gradient(135deg, #4a63d2 0%, #5b7ce8 100%);
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
-  border-bottom: none;
-  position: relative;
+  color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 
   .page-title {
-    font-size: $app-font-size-2xl;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: white;
-    margin: 0 0 8px 0;
-  }
-
-  .page-desc {
-    font-size: $app-font-size-sm;
-    color: rgba(255, 255, 255, 0.85);
-    font-weight: 300;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    margin: 0;
   }
 }
 
 .page-content {
-  padding: $app-spacing-md;
+  padding: 16px;
 }
 
 /* 卡片样式 */

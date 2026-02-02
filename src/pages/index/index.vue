@@ -18,6 +18,7 @@
           :key="index"
           @click="gotoPage(item)"
         >
+          <view class="tool-icon">{{ item.icon }}</view>
           <text class="tool-name">{{ item.title }}</text>
         </view>
       </view>
@@ -32,30 +33,41 @@ import { onLoad } from '@dcloudio/uni-app'
 interface ToolItem {
   title: string
   url: string
+  icon?: string
 }
 
 const toolsList = ref<ToolItem[]>([
   {
     title: '金额转大写',
-    url: '/pages/components/convertCurrency/convertCurrency'
+    url: '/pages/components/convertCurrency/convertCurrency',
+    icon: '💰'
   },
   {
     title: '网络信息',
-    url: '/pages/components/networkInfo/networkInfo'
+    url: '/pages/components/networkInfo/networkInfo',
+    icon: '🌐'
   },
   {
     title: 'base64/MD5',
-    url: '/pages/components/base64Conver/base64Conver'
+    url: '/pages/components/base64Conver/base64Conver',
+    icon: '🔐'
   },
   {
     title: '当前时间',
-    url: '/pages/components/timeNow/timeNow'
+    url: '/pages/components/timeNow/timeNow',
+    icon: '⏰'
+  },
+  {
+    title: '设备信息',
+    url: '/pages/components/deviceInfo/deviceInfo',
+    icon: '📱'
+  },
+  {
+    title: '二维码分享',
+    url: '/pages/components/qrcodeShare/qrcodeShare',
+    icon: '📲'
   }
 ])
-
-onLoad(() => {
-  // 页面加载逻辑
-})
 
 const gotoPage = (item: ToolItem) => {
   if (!item.url) return
@@ -72,6 +84,7 @@ const gotoPage = (item: ToolItem) => {
   min-height: 100vh;
   background-color: $app-bg-primary;
 }
+
 .page-header {
   padding: $app-spacing-lg;
   background-color: #f5f6fa;
@@ -135,6 +148,7 @@ const gotoPage = (item: ToolItem) => {
     flex: 1;
     min-width: 120px;
     min-height: 90px;
+    border: 2px solid #e0e0e0;
     /* #ifndef MP */
     transition: all 0.3s ease;
     /* #endif */
@@ -144,6 +158,11 @@ const gotoPage = (item: ToolItem) => {
       transform: scale(0.95);
       /* #endif */
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .tool-icon {
+      font-size: 28px;
+      margin-bottom: 4px;
     }
 
     .tool-name {

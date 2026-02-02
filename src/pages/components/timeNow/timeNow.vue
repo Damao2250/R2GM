@@ -4,7 +4,7 @@
     <view class="page-header">
       <view class="header-content">
         <text class="page-title">⏰ 当前时间</text>
-        <wd-button size="small" type="primary" @click="addRecord">📍 记录</wd-button>
+        <wd-button size="small" type="success" @click="addRecord">📍 记录</wd-button>
       </view>
     </view>
 
@@ -366,26 +366,27 @@ const copyRecord = (record: string) => {
 
 .page-container {
   min-height: 100vh;
-  background-color: $app-bg-primary;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding-bottom: 10px;
 }
 
 .page-header {
-  padding: $app-spacing-md 0;
-  background: linear-gradient(135deg, #4a63d2 0%, #5b7ce8 100%);
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  border-bottom: none;
-  position: relative;
+  color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 
   .header-content {
     display: flex;
     align-items: center;
-    gap: $app-spacing-md;
+    gap: 12px;
     width: 100%;
-    padding: 0 $app-spacing-md;
     justify-content: center;
 
     :deep(.wd-button) {
@@ -394,16 +395,16 @@ const copyRecord = (record: string) => {
   }
 
   .page-title {
-    font-size: $app-font-size-lg;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 600;
     letter-spacing: 0.5px;
-    color: white;
+    color: #ffffff;
     margin: 0;
   }
 }
 
 .page-content {
-  padding: $app-spacing-sm $app-spacing-md;
+  padding: 16px;
 }
 
 .card {
