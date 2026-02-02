@@ -70,6 +70,11 @@ const toolsList = ref<ToolItem[]>([
     title: '亲戚计算器',
     url: '/pages/components/relativeCalculator/relativeCalculator',
     icon: '👨‍👩‍👧‍👦'
+  },
+  {
+    title: '随机数工具',
+    url: '/pages/components/randomNumber/randomNumber',
+    icon: '🎲'
   }
 ])
 
