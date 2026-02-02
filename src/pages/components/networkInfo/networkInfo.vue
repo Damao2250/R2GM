@@ -366,7 +366,7 @@ IP 地址: ${localip.value}
 }
 
 .page-content {
-  padding: $app-spacing-lg;
+  padding: $app-spacing-md;
 }
 
 .card {

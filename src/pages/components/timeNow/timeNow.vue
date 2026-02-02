@@ -101,7 +101,7 @@ const formatTime = (time: Date): string => {
 }
 
 .page-content {
-  padding: $app-spacing-lg;
+  padding: $app-spacing-md;
 }
 
 .card {
