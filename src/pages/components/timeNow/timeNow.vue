@@ -107,6 +107,16 @@
     </view>
   </view>
 </template>
+<script lang="ts">
+import { getShareConfig } from '@/utils/useShare'
+
+export default {
+  ...getShareConfig({
+    title: '当前时间 - DM工具箱',
+    path: '/pages/components/timeNow/timeNow'
+  })
+}
+</script>
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'

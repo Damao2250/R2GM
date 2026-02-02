@@ -84,6 +84,17 @@
   </view>
 </template>
 
+<script lang="ts">
+import { getShareConfig } from '@/utils/useShare'
+
+export default {
+  ...getShareConfig({
+    title: '金额转大写 - DM工具箱',
+    path: '/pages/components/convertCurrency/convertCurrency'
+  })
+}
+</script>
+
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'

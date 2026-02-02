@@ -130,6 +130,17 @@
   </view>
 </template>
 
+<script lang="ts">
+import { getShareConfig } from '@/utils/useShare'
+
+export default {
+  ...getShareConfig({
+    title: '网络信息 - DM工具箱',
+    path: '/pages/components/networkInfo/networkInfo'
+  })
+}
+</script>
+
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'

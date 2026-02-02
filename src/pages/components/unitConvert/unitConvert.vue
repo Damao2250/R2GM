@@ -70,6 +70,17 @@
     </view>
 </template>
 
+<script lang="ts">
+import { getShareConfig } from '@/utils/useShare'
+
+export default {
+  ...getShareConfig({
+    title: '单位转换 - DM工具箱',
+    path: '/pages/components/unitConvert/unitConvert'
+  })
+}
+</script>
+
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'

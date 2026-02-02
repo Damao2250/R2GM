@@ -21,6 +21,18 @@
   </view>
 </template>
 
+<script lang="ts">
+import { getShareConfig } from '@/utils/useShare'
+
+export default {
+  ...getShareConfig({
+    title: 'DM工具箱 - 一款实用的工具集',
+    path: '/pages/index/index',
+    imageUrl: '/static/dm-logo.png'
+  })
+}
+</script>
+
 <script setup lang="ts">
 import { ref } from 'vue'
 

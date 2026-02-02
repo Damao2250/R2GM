@@ -96,6 +96,17 @@
   </view>
 </template>
 
+<script lang="ts">
+import { getShareConfig } from '@/utils/useShare'
+
+export default {
+  ...getShareConfig({
+    title: '亲戚计算器 - DM工具箱',
+    path: '/pages/components/relativeCalculator/relativeCalculator'
+  })
+}
+</script>
+
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'

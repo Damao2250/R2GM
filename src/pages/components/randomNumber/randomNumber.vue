@@ -202,6 +202,17 @@
   </view>
 </template>
 
+<script lang="ts">
+import { getShareConfig } from '@/utils/useShare'
+
+export default {
+  ...getShareConfig({
+    title: '随机数工具 - DM工具箱',
+    path: '/pages/components/randomNumber/randomNumber'
+  })
+}
+</script>
+
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'

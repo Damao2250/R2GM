@@ -50,6 +50,17 @@
   </view>
 </template>
 
+<script lang="ts">
+import { getShareConfig } from '@/utils/useShare'
+
+export default {
+  ...getShareConfig({
+    title: '编码/转换 - DM工具箱',
+    path: '/pages/components/base64Conver/base64Conver'
+  })
+}
+</script>
+
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import EncodeUtils from './endecode-lib.js'
