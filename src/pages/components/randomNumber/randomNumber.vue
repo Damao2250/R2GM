@@ -861,15 +861,15 @@ const rollDice = () => {
   transition: transform 0.6s ease-in-out;
 
   &.roll3d-v1 {
-    animation: roll3d-v1 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    animation: roll3d-v1 1.5s linear;
   }
 
   &.roll3d-v2 {
-    animation: roll3d-v2 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    animation: roll3d-v2 1.5s linear;
   }
 
   &.roll3d-v3 {
-    animation: roll3d-v3 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    animation: roll3d-v3 1.5s linear;
   }
 
   // 根据点数显示对应的面
@@ -1130,20 +1130,32 @@ const rollDice = () => {
     transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
   }
   
+  5% {
+    transform: rotateX(36deg) rotateY(36deg) rotateZ(18deg);
+  }
+  
   10% {
-    transform: rotateX(140deg) rotateY(140deg) rotateZ(70deg);
+    transform: rotateX(72deg) rotateY(72deg) rotateZ(36deg);
   }
   
-  25% {
-    transform: rotateX(380deg) rotateY(360deg) rotateZ(190deg);
+  20% {
+    transform: rotateX(144deg) rotateY(144deg) rotateZ(72deg);
   }
   
-  60% {
-    transform: rotateX(630deg) rotateY(610deg) rotateZ(300deg);
+  35% {
+    transform: rotateX(252deg) rotateY(252deg) rotateZ(126deg);
+  }
+  
+  50% {
+    transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg);
+  }
+  
+  65% {
+    transform: rotateX(468deg) rotateY(468deg) rotateZ(234deg);
   }
   
   80% {
-    transform: rotateX(690deg) rotateY(700deg) rotateZ(345deg);
+    transform: rotateX(576deg) rotateY(576deg) rotateZ(288deg);
   }
 
   100% {
@@ -1156,20 +1168,32 @@ const rollDice = () => {
     transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
   }
   
+  5% {
+    transform: rotateX(40deg) rotateY(35deg) rotateZ(15deg);
+  }
+  
   10% {
-    transform: rotateX(160deg) rotateY(120deg) rotateZ(50deg);
+    transform: rotateX(80deg) rotateY(70deg) rotateZ(30deg);
   }
   
-  25% {
-    transform: rotateX(350deg) rotateY(400deg) rotateZ(210deg);
+  20% {
+    transform: rotateX(160deg) rotateY(140deg) rotateZ(60deg);
   }
   
-  60% {
-    transform: rotateX(610deg) rotateY(650deg) rotateZ(270deg);
+  35% {
+    transform: rotateX(280deg) rotateY(245deg) rotateZ(105deg);
+  }
+  
+  50% {
+    transform: rotateX(400deg) rotateY(350deg) rotateZ(150deg);
+  }
+  
+  65% {
+    transform: rotateX(520deg) rotateY(455deg) rotateZ(195deg);
   }
   
   80% {
-    transform: rotateX(700deg) rotateY(690deg) rotateZ(355deg);
+    transform: rotateX(640deg) rotateY(560deg) rotateZ(240deg);
   }
 
   100% {
@@ -1182,20 +1206,32 @@ const rollDice = () => {
     transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
   }
   
+  5% {
+    transform: rotateX(35deg) rotateY(45deg) rotateZ(25deg);
+  }
+  
   10% {
-    transform: rotateX(130deg) rotateY(160deg) rotateZ(90deg);
+    transform: rotateX(70deg) rotateY(90deg) rotateZ(50deg);
   }
   
-  25% {
-    transform: rotateX(400deg) rotateY(340deg) rotateZ(170deg);
+  20% {
+    transform: rotateX(140deg) rotateY(180deg) rotateZ(100deg);
   }
   
-  60% {
-    transform: rotateX(640deg) rotateY(580deg) rotateZ(310deg);
+  35% {
+    transform: rotateX(245deg) rotateY(315deg) rotateZ(175deg);
+  }
+  
+  50% {
+    transform: rotateX(350deg) rotateY(450deg) rotateZ(250deg);
+  }
+  
+  65% {
+    transform: rotateX(455deg) rotateY(585deg) rotateZ(325deg);
   }
   
   80% {
-    transform: rotateX(695deg) rotateY(710deg) rotateZ(340deg);
+    transform: rotateX(560deg) rotateY(720deg) rotateZ(400deg);
   }
 
   100% {
