@@ -87,6 +87,11 @@ const toolsList = ref<ToolItem[]>([
     title: '随机数工具',
     url: '/pages/components/randomNumber/randomNumber',
     icon: '🎲'
+  },
+  {
+    title: '系统设置',
+    url: '/pages/components/systemSettings/systemSettings',
+    icon: '⚙️'
   }
 ])
 

@@ -13,6 +13,7 @@ interface NavigateToOptions {
        "/pages/components/qrcodeShare/qrcodeShare" |
        "/pages/components/randomNumber/randomNumber" |
        "/pages/components/relativeCalculator/relativeCalculator" |
+       "/pages/components/systemSettings/systemSettings" |
        "/pages/components/timeNow/timeNow" |
        "/pages/components/unitConvert/unitConvert";
 }
