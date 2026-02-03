@@ -27,7 +27,7 @@
             </picker>
           </view>
 
-          <button class="add-btn" @click="addEvent" :disabled="!newEvent.date">
+          <button class="add-btn" @click="addEvent" :disabled="!newEvent.title || !newEvent.date">
             <text class="btn-icon">➕</text>
             <text class="btn-text">添加</text>
           </button>
@@ -107,8 +107,7 @@
         <view class="tips-content">
           <text class="tip-item">• 快速计算距离目标日期还有多少天</text>
           <text class="tip-item">• 支持未来和过去的日期查看</text>
-          <text class="tip-item">• 查询历史记录自动保存到本地</text>
-          <text class="tip-item">• 长按可分享查询结果</text>
+          <text class="tip-item">• 所有记录自动保存到本地</text>
         </view>
       </view>
     </view>
@@ -130,6 +129,7 @@ export default {
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import dayjs from 'dayjs'
 
 interface Event {
   title: string
@@ -192,112 +192,78 @@ const saveEvents = async () => {
  * 计算日期差异
  */
 const calculateDays = (dateString: string) => {
-  const targetDate = new Date(dateString)
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  targetDate.setHours(0, 0, 0, 0)
-  
-  const diff = targetDate.getTime() - today.getTime()
-  return Math.floor(diff / (1000 * 60 * 60 * 24))
+  const targetDate = dayjs(dateString).startOf('day')
+  const today = dayjs().startOf('day')
+  return targetDate.diff(today, 'day')
 }
 
 /**
  * 计算年份差异
  */
 const calculateYears = (dateString: string) => {
-  const targetDate = new Date(dateString)
-  const today = new Date()
+  const targetDate = dayjs(dateString)
+  const today = dayjs()
   
-  // 判断是未来还是过去
-  const isFuture = targetDate > today
+  const isFuture = targetDate.isAfter(today)
+  const [start, end] = isFuture ? [today, targetDate] : [targetDate, today]
   
-  let years = Math.abs(targetDate.getFullYear() - today.getFullYear())
-  
-  if (isFuture) {
-    // 未来日期：如果今年还没到目标日期，年数减1
-    if (today.getMonth() > targetDate.getMonth() || 
-        (today.getMonth() === targetDate.getMonth() && today.getDate() > targetDate.getDate())) {
-      years = Math.max(0, years - 1)
-    }
-  } else {
-    // 过去日期：如果今年还没到纪念日，年数减1
-    if (today.getMonth() < targetDate.getMonth() || 
-        (today.getMonth() === targetDate.getMonth() && today.getDate() < targetDate.getDate())) {
-      years = Math.max(0, years - 1)
-    }
-  }
-  
-  return years
+  return end.diff(start, 'year')
 }
 
 /**
  * 计算月份差异（不包括整年的月份）
  */
 const calculateMonths = (dateString: string) => {
-  const targetDate = new Date(dateString)
-  const today = new Date()
+  const targetDate = dayjs(dateString)
+  const today = dayjs()
   
-  // 判断是未来还是过去
-  const isFuture = targetDate > today
+  const isFuture = targetDate.isAfter(today)
+  const [start, end] = isFuture ? [today, targetDate] : [targetDate, today]
   
-  let [startDate, endDate] = isFuture ? [today, targetDate] : [targetDate, today]
+  // 计算总月数，然后减去整年的月数
+  const totalMonths = end.diff(start, 'month')
+  const years = end.diff(start, 'year')
   
-  let months = endDate.getMonth() - startDate.getMonth()
-  
-  // 如果结束日期的日小于开始日期的日，月数减1
-  if (endDate.getDate() < startDate.getDate()) {
-    months -= 1
-  }
-  
-  // 如果月数为负，加12
-  if (months < 0) {
-    months += 12
-  }
-  
-  return months
+  return totalMonths - (years * 12)
 }
 
 /**
  * 计算月内天数（不包括整月的天数）
  */
 const calculateDaysInMonth = (dateString: string) => {
-  const targetDate = new Date(dateString)
-  const today = new Date()
+  const targetDate = dayjs(dateString)
+  const today = dayjs()
   
-  // 判断是未来还是过去
-  const isFuture = targetDate > today
+  const isFuture = targetDate.isAfter(today)
+  const [start, end] = isFuture ? [today, targetDate] : [targetDate, today]
   
-  let [startDate, endDate] = isFuture ? [today, targetDate] : [targetDate, today]
+  // 计算总天数，然后减去整月的天数
+  const totalDays = end.diff(start, 'day')
+  const years = end.diff(start, 'year')
+  const months = end.diff(start.add(years, 'year'), 'month')
+  const daysInMonths = end.diff(start.add(years, 'year').add(months, 'month'), 'day')
   
-  // 如果结束日期的日大于等于开始日期的日，直接相减
-  if (endDate.getDate() >= startDate.getDate()) {
-    return endDate.getDate() - startDate.getDate()
-  } else {
-    // 如果结束日期的日小于开始日期，需要从上个月借天数
-    const lastMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0)
-    const daysInLastMonth = lastMonth.getDate()
-    return daysInLastMonth - startDate.getDate() + endDate.getDate()
-  }
+  return daysInMonths
 }
 
 /**
  * 计算进度百分比
  */
 const calculateProgress = (dateString: string) => {
-  const targetDate = new Date(dateString)
-  const today = new Date()
+  const targetDate = dayjs(dateString)
+  const today = dayjs()
   
   // 找到这一年或去年的纪念日
-  let startDate = new Date(today.getFullYear(), targetDate.getMonth(), targetDate.getDate())
-  let endDate = new Date(today.getFullYear() + 1, targetDate.getMonth(), targetDate.getDate())
+  let startDate = dayjs().year(today.year()).month(targetDate.month()).date(targetDate.date())
+  let endDate = startDate.add(1, 'year')
   
-  if (today > startDate) {
+  if (today.isAfter(startDate)) {
     startDate = endDate
-    endDate = new Date(today.getFullYear() + 2, targetDate.getMonth(), targetDate.getDate())
+    endDate = startDate.add(1, 'year')
   }
   
-  const totalDays = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
-  const passedDays = (today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+  const totalDays = endDate.diff(startDate, 'day')
+  const passedDays = today.diff(startDate, 'day')
   
   return Math.min(100, Math.max(0, (passedDays / totalDays) * 100))
 }
@@ -328,9 +294,19 @@ const onDateChange = (e: any) => {
  * 添加新事件
  */
 const addEvent = async () => {
-  if (!newEvent.value.title) {
+  const title = newEvent.value.title.trim()
+  
+  if (!title) {
     uni.showToast({
       title: '请输入倒数日名称',
+      icon: 'none'
+    })
+    return
+  }
+  
+  if (title.length > 20) {
+    uni.showToast({
+      title: '名称最多20个字符',
       icon: 'none'
     })
     return
@@ -347,7 +323,7 @@ const addEvent = async () => {
   const daysUntil = calculateDays(newEvent.value.date)
   
   events.value.push({
-    title: newEvent.value.title,
+    title,
     date: newEvent.value.date,
     daysUntil,
     daysPassed: daysUntil,
@@ -357,8 +333,16 @@ const addEvent = async () => {
     progressPercent: calculateProgress(newEvent.value.date)
   })
 
-  // 按daysUntil排序
-  events.value.sort((a, b) => a.daysUntil - b.daysUntil)
+  // 按daysUntil排序：未来的从近到远，过去的从远到近
+  events.value.sort((a, b) => {
+    if (a.daysUntil >= 0 && b.daysUntil >= 0) {
+      return a.daysUntil - b.daysUntil
+    } else if (a.daysUntil < 0 && b.daysUntil < 0) {
+      return b.daysUntil - a.daysUntil
+    } else {
+      return a.daysUntil >= 0 ? -1 : 1
+    }
+  })
 
   await saveEvents()
 
