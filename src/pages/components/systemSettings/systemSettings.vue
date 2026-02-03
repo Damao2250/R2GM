@@ -106,6 +106,15 @@
           <text class="tip-item">• <text class="tip-label">检查更新</text> - 检查微信服务器是否有新版本，有新版本时会自动下载安装</text>
         </view>
       </view>
+
+      <!-- 关于本应用 -->
+      <view class="about-section">
+        <view class="about-title">📱 关于 DM工具箱</view>
+        <view class="about-content">
+          <text class="about-text">集成多种不实用功能的离线工具，专为日常生活和工作提供阻碍。</text>
+          <text class="about-version">版本：{{ appVersion }}</text>
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -512,6 +521,7 @@ const checkUpdate = () => {
   padding: 24rpx;
   border-left: 4rpx solid #667eea;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  margin-bottom: 30rpx;
 }
 
 .tips-title {
@@ -531,6 +541,46 @@ const checkUpdate = () => {
   font-size: 24rpx;
   line-height: 1.6;
   color: #666;
+}
+
+.tip-label {
+  font-weight: 600;
+  color: #667eea;
+}
+
+/* 关于本应用 */
+.about-section {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  border: 1rpx solid rgba(102, 126, 234, 0.1);
+}
+
+.about-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.about-content {
+  padding-left: 8rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.about-text {
+  font-size: 26rpx;
+  line-height: 1.8;
+  color: #666;
+}
+
+.about-version {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
 }
 
 .tip-label {

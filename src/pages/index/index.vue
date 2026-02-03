@@ -26,7 +26,7 @@ import { getShareConfig } from '@/utils/useShare'
 
 export default {
   ...getShareConfig({
-    title: 'DM工具箱 - 一款实用的工具集',
+    title: 'DM工具箱 - 不实用的工具',
     path: '/pages/index/index',
     imageUrl: '/static/dm-logo.png'
   })
@@ -114,7 +114,7 @@ const toolsList = ref<ToolItem[]>([
     icon: '🎂'
   },
   {
-    title: '2048游戏',
+    title: '2048',
     url: '/pages/components/game2048/game2048',
     icon: '🎮'
   },
