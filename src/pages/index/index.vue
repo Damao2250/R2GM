@@ -89,6 +89,31 @@ const toolsList = ref<ToolItem[]>([
     icon: '🎲'
   },
   {
+    title: '折扣计算器',
+    url: '/pages/components/discountCalculator/discountCalculator',
+    icon: '💵'
+  },
+  {
+    title: '配对缘分',
+    url: '/pages/components/matchCalculator/matchCalculator',
+    icon: '💑'
+  },
+  {
+    title: '倒数日',
+    url: '/pages/components/countdown/countdown',
+    icon: '📅'
+  },
+  {
+    title: '决策助手',
+    url: '/pages/components/randomDecider/randomDecider',
+    icon: '🎴'
+  },
+  {
+    title: '生日/星座',
+    url: '/pages/components/birthdayCalculator/birthdayCalculator',
+    icon: '🎂'
+  },
+  {
     title: '系统设置',
     url: '/pages/components/systemSettings/systemSettings',
     icon: '⚙️'

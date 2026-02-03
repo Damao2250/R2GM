@@ -7,10 +7,15 @@ interface NavigateToOptions {
   url: "/pages/index/index" |
        "/pages/components/base64Conver/ConversionCard" |
        "/pages/components/base64Conver/base64Conver" |
+       "/pages/components/birthdayCalculator/birthdayCalculator" |
        "/pages/components/convertCurrency/convertCurrency" |
+       "/pages/components/countdown/countdown" |
        "/pages/components/deviceInfo/deviceInfo" |
+       "/pages/components/discountCalculator/discountCalculator" |
+       "/pages/components/matchCalculator/matchCalculator" |
        "/pages/components/networkInfo/networkInfo" |
        "/pages/components/qrcodeShare/qrcodeShare" |
+       "/pages/components/randomDecider/randomDecider" |
        "/pages/components/randomNumber/randomNumber" |
        "/pages/components/relativeCalculator/relativeCalculator" |
        "/pages/components/systemSettings/systemSettings" |

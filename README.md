@@ -22,6 +22,11 @@
 + 📐 **单位转换** - 支持长度、重量、温度等多种单位转换
 + 👥 **亲戚关系计算器** - 快速计算复杂亲戚关系
 + 🎲 **3D 骰子随机数** - 支持 1-3 个骰子的实时滚动动画
++ 💵 **折扣/优惠计算器** - 折扣、满减、费用分摊计算
++ 💑 **配对缘分计算** - 娱乐向的姓名配对和缘分指数
++ 📅 **倒数日/纪念日** - 记录重要日期，自动计算距离和周年
++ 🎴 **随机决策助手** - 帮助决策和随机选择
++ 🎂 **生日/星座计算** - 查看生日、星座、生肖和运势
 + ⚙️ **系统设置** - 清除缓存、重启应用、检查更新
 
 ### 核心特性
@@ -222,6 +227,11 @@ export default {
 - 亲戚计算器 (relativeCalculator.vue) - "亲戚计算器"
 - 随机数工具 (randomNumber.vue) - "随机数工具"
 - 系统设置 (systemSettings.vue) - "系统设置"
+- 折扣计算器 (discountCalculator.vue) - "折扣/优惠计算器"
+- 配对缘分 (matchCalculator.vue) - "配对缘分计算"
+- 倒数日 (countdown.vue) - "倒数日/纪念日"
+- 决策助手 (randomDecider.vue) - "随机决策助手"
+- 生日/星座 (birthdayCalculator.vue) - "生日/星座计算"
 
 ### 系统设置功能
 
@@ -238,6 +248,79 @@ export default {
 3. **更新检查机制** - 通过 `uni.getUpdateManager()` 检查新版本，支持后台下载和用户确认更新
 4. **UX 考虑** - 危险操作添加确认对话框、检查中状态防止重复点击、展示系统信息便于调试
 5. **存储计算** - 实时计算缓存大小并格式化显示（B/KB/MB），帮助用户了解占用空间
+
+### 折扣/优惠计算器
+
+位置：[src/pages/components/discountCalculator/discountCalculator.vue](src/pages/components/discountCalculator/discountCalculator.vue)
+
+**核心功能：**
+- **折扣计算** - 输入原价和折扣率，自动计算优惠金额和最终价格
+- **满减优惠** - 检查是否满足优惠条件，计算优惠后价格
+- **费用分摊** - 快速计算每人支付金额，处理四舍五入问题
+
+**设计亮点：**
+- 支持折扣输入为"8"或"0.8"两种格式
+- 满减优惠实时显示还差多少满足条件
+- 费用分摊显示四舍五入前后的差异
+
+### 配对缘分计算
+
+位置：[src/pages/components/matchCalculator/matchCalculator.vue](src/pages/components/matchCalculator/matchCalculator.vue)
+
+**核心功能：**
+- **缘分指数计算** - 基于两个名字计算缘分指数（0-100%）
+- **详细分析** - 显示姓名笔画、五行搭配、音韵和谐、字义搭配等四个维度
+- **娱乐评级** - 从"天生一对"到"缘分有限"的趣味评级
+
+**特点：**
+- 纯前端实现，基于名字的哈希值和笔画特征计算
+- 高传播价值，用户乐于分享
+- 适合社交场景使用
+
+### 倒数日/纪念日
+
+位置：[src/pages/components/countdown/countdown.vue](src/pages/components/countdown/countdown.vue)
+
+**核心功能：**
+- **添加纪念日** - 记录重要日期（生日、纪念日、假期等）
+- **自动计算** - 显示距离、已过天数、周年纪念
+- **本地存储** - 数据自动保存到本地，支持长期使用
+
+**特点：**
+- 支持过去和未来的日期
+- 按倒数时间排序，最近的日期优先展示
+- 支持快速添加常见纪念日
+
+### 随机决策助手
+
+位置：[src/pages/components/randomDecider/randomDecider.vue](src/pages/components/randomDecider/randomDecider.vue)
+
+**核心功能：**
+- **决策助手模式** - 输入多个选项，随机选择一个
+- **随机选择模式** - 支持自定义列表或预设模板快速选择
+- **转盘动画** - 1.5秒的视觉反馈动画，增强交互体验
+
+**预设模板：**
+- 🍽️ 今天吃什么 - 常见美食选项
+- 🎨 颜色选择 - 12种基础颜色
+- ⏰ 时间段 - 常见时间点
+- 👥 人物选择 - 快速分配任务
+
+### 生日/星座计算
+
+位置：[src/pages/components/birthdayCalculator/birthdayCalculator.vue](src/pages/components/birthdayCalculator/birthdayCalculator.vue)
+
+**核心功能：**
+- **星座查询** - 输入出生日期自动识别星座
+- **详细信息** - 显示年龄、生肖、星座符号、五行属性、幸运数字和颜色
+- **性格特点** - 基于星座的性格标签
+- **生日倒数** - 计算距离下一个生日的天数
+
+**特点：**
+- 支持12星座完整信息库
+- 实时计算周年纪念（多少年）
+- 结合中国生肖系统
+- 展示幸运数字、幸运颜色等娱乐信息
 
 ## 许可证
 
