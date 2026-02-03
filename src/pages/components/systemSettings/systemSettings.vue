@@ -581,7 +581,6 @@ const checkUpdate = () => {
   color: #999;
   margin-top: 4rpx;
 }
-}
 
 .tip-label {
   color: #667eea;
