@@ -38,14 +38,14 @@ $app-font-size-3xl: 48rpx;
 
 // 全局样式
 page {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f5f7fa;
   min-height: 100vh;
 }
 
 // 页面容器
 .page-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f5f7fa;
   padding: 0 0 40rpx 0;
 }
 
