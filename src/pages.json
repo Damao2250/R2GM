@@ -45,15 +45,15 @@
       "type": "page"
     },
     {
-      "path": "pages/components/game2048/game2048",
-      "type": "page"
-    },
-    {
       "path": "pages/components/matchCalculator/matchCalculator",
       "type": "page"
     },
     {
       "path": "pages/components/networkInfo/networkInfo",
+      "type": "page"
+    },
+    {
+      "path": "pages/components/numberMerge/numberMerge",
       "type": "page"
     },
     {
