@@ -27,7 +27,7 @@
             </picker>
           </view>
 
-          <button class="add-btn" @click="addEvent" :disabled="!newEvent.title || !newEvent.date">
+          <button class="add-btn" @click="addEvent" :disabled="!newEvent.date">
             <text class="btn-icon">➕</text>
             <text class="btn-text">添加</text>
           </button>
@@ -69,18 +69,11 @@
 
           <!-- 主内容区 -->
           <view class="event-main">
-            <!-- 天数显示 -->
-            <view class="days-display">
-              <view class="days-number">{{ event.daysUntil }}</view>
-              <view v-if="event.daysUntil > 0" class="days-label">天后</view>
-              <view v-else-if="event.daysUntil === 0" class="days-label today">就是今天</view>
-              <view v-else class="days-label">天前</view>
-            </view>
 
             <!-- 事件信息 -->
             <view class="event-info">
-              <text class="event-title">{{ event.title }}</text>
-              <text class="event-date">{{ event.date }}</text>
+              <text class="event-title">{{ event.title }}<text class="event-date">（{{ event.date }}）</text></text>
+              
               <view class="event-details">
                 <view v-if="event.daysUntil >= 0" class="detail-item">
                   <text class="detail-label">距今</text>
@@ -91,8 +84,8 @@
                   <text class="detail-value">{{ Math.abs(event.daysUntil) }}天</text>
                 </view>
                 <view class="detail-item">
-                  <text class="detail-label">周年</text>
-                  <text class="detail-value">{{ event.yearsPassed }}年</text>
+                  <text class="detail-label">年/月/日</text>
+                  <text class="detail-value">{{ event.yearsPassed }}年{{ event.monthsPassed }}月{{ event.daysInMonth }}天</text>
                 </view>
               </view>
             </view>
@@ -144,6 +137,8 @@ interface Event {
   daysUntil: number
   daysPassed: number
   yearsPassed: number
+  monthsPassed: number
+  daysInMonth: number
   progressPercent: number
 }
 
@@ -212,15 +207,77 @@ const calculateDays = (dateString: string) => {
 const calculateYears = (dateString: string) => {
   const targetDate = new Date(dateString)
   const today = new Date()
-  let years = today.getFullYear() - targetDate.getFullYear()
   
-  // 如果今年还没到纪念日，年数减1
-  if (today.getMonth() < targetDate.getMonth() || 
-      (today.getMonth() === targetDate.getMonth() && today.getDate() < targetDate.getDate())) {
-    years = Math.max(0, years - 1)
+  // 判断是未来还是过去
+  const isFuture = targetDate > today
+  
+  let years = Math.abs(targetDate.getFullYear() - today.getFullYear())
+  
+  if (isFuture) {
+    // 未来日期：如果今年还没到目标日期，年数减1
+    if (today.getMonth() > targetDate.getMonth() || 
+        (today.getMonth() === targetDate.getMonth() && today.getDate() > targetDate.getDate())) {
+      years = Math.max(0, years - 1)
+    }
+  } else {
+    // 过去日期：如果今年还没到纪念日，年数减1
+    if (today.getMonth() < targetDate.getMonth() || 
+        (today.getMonth() === targetDate.getMonth() && today.getDate() < targetDate.getDate())) {
+      years = Math.max(0, years - 1)
+    }
   }
   
   return years
+}
+
+/**
+ * 计算月份差异（不包括整年的月份）
+ */
+const calculateMonths = (dateString: string) => {
+  const targetDate = new Date(dateString)
+  const today = new Date()
+  
+  // 判断是未来还是过去
+  const isFuture = targetDate > today
+  
+  let [startDate, endDate] = isFuture ? [today, targetDate] : [targetDate, today]
+  
+  let months = endDate.getMonth() - startDate.getMonth()
+  
+  // 如果结束日期的日小于开始日期的日，月数减1
+  if (endDate.getDate() < startDate.getDate()) {
+    months -= 1
+  }
+  
+  // 如果月数为负，加12
+  if (months < 0) {
+    months += 12
+  }
+  
+  return months
+}
+
+/**
+ * 计算月内天数（不包括整月的天数）
+ */
+const calculateDaysInMonth = (dateString: string) => {
+  const targetDate = new Date(dateString)
+  const today = new Date()
+  
+  // 判断是未来还是过去
+  const isFuture = targetDate > today
+  
+  let [startDate, endDate] = isFuture ? [today, targetDate] : [targetDate, today]
+  
+  // 如果结束日期的日大于等于开始日期的日，直接相减
+  if (endDate.getDate() >= startDate.getDate()) {
+    return endDate.getDate() - startDate.getDate()
+  } else {
+    // 如果结束日期的日小于开始日期，需要从上个月借天数
+    const lastMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0)
+    const daysInLastMonth = lastMonth.getDate()
+    return daysInLastMonth - startDate.getDate() + endDate.getDate()
+  }
 }
 
 /**
@@ -254,6 +311,8 @@ const updateAllEvents = () => {
     daysUntil: calculateDays(event.date),
     daysPassed: calculateDays(event.date),
     yearsPassed: calculateYears(event.date),
+    monthsPassed: calculateMonths(event.date),
+    daysInMonth: calculateDaysInMonth(event.date),
     progressPercent: calculateProgress(event.date)
   }))
 }
@@ -269,9 +328,17 @@ const onDateChange = (e: any) => {
  * 添加新事件
  */
 const addEvent = async () => {
-  if (!newEvent.value.title || !newEvent.value.date) {
+  if (!newEvent.value.title) {
     uni.showToast({
-      title: '请填写完整信息',
+      title: '请输入倒数日名称',
+      icon: 'none'
+    })
+    return
+  }
+  
+  if (!newEvent.value.date) {
+    uni.showToast({
+      title: '请选择日期',
       icon: 'none'
     })
     return
@@ -285,6 +352,8 @@ const addEvent = async () => {
     daysUntil,
     daysPassed: daysUntil,
     yearsPassed: calculateYears(newEvent.value.date),
+    monthsPassed: calculateMonths(newEvent.value.date),
+    daysInMonth: calculateDaysInMonth(newEvent.value.date),
     progressPercent: calculateProgress(newEvent.value.date)
   })
 
