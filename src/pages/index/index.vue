@@ -114,6 +114,11 @@ const toolsList = ref<ToolItem[]>([
     icon: '🎂'
   },
   {
+    title: '2048游戏',
+    url: '/pages/components/game2048/game2048',
+    icon: '🎮'
+  },
+  {
     title: '系统设置',
     url: '/pages/components/systemSettings/systemSettings',
     icon: '⚙️'

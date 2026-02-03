@@ -12,6 +12,7 @@ interface NavigateToOptions {
        "/pages/components/countdown/countdown" |
        "/pages/components/deviceInfo/deviceInfo" |
        "/pages/components/discountCalculator/discountCalculator" |
+       "/pages/components/game2048/game2048" |
        "/pages/components/matchCalculator/matchCalculator" |
        "/pages/components/networkInfo/networkInfo" |
        "/pages/components/qrcodeShare/qrcodeShare" |
