@@ -104,6 +104,34 @@
           </view>
         </view>
       </view>
+
+      <!-- 世界时间卡片 -->
+      <view class="card world-time-card">
+        <view class="card-title">🌍 世界时间</view>
+        <view class="world-grid">
+          <view class="world-city-item" v-for="city in worldCitiesInfo" :key="city.name">
+            <!-- 模拟时钟 -->
+            <view class="clock-face" :class="{ 'clock-night': !city.isDay }">
+              <text class="clock-12">12</text>
+              <text class="clock-3">3</text>
+              
+              <view class="hand hour-hand" :style="{ transform: `rotate(${city.hourDeg}deg)` }"></view>
+              <view class="hand minute-hand" :style="{ transform: `rotate(${city.minuteDeg}deg)` }"></view>
+              <view class="hand second-hand" :style="{ transform: `rotate(${city.secondDeg}deg)` }"></view>
+              <view class="center-dot"></view>
+            </view>
+            
+            <!-- 城市信息 -->
+            <view class="city-meta">
+              <view class="city-name">{{ city.name }}</view>
+              <view class="city-details">
+                <view class="city-time">{{ city.timeStr }}</view>
+                <view class="city-offset">{{ city.diffText }}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -366,6 +394,69 @@ const clearRecords = () => {
 const copyRecord = (record: string) => {
   copyToClipboard(record)
 }
+
+// 世界时间数据
+const worldCities = [
+  { name: '北京', offset: 8 },
+  { name: '东京', offset: 9 },
+  { name: '悉尼', offset: 11 },
+  { name: '迪拜', offset: 4 },
+  { name: '莫斯科', offset: 3 },
+  { name: '巴黎', offset: 1 },
+  { name: '伦敦', offset: 0 },
+  { name: '纽约', offset: -4 },
+  { name: '洛杉矶', offset: -7 },
+  { name: '旧金山', offset: -7 }
+]
+
+const worldCitiesInfo = computed(() => {
+  const time = currentTime.value
+  const localOffset = -time.getTimezoneOffset() / 60
+  
+  // 获取 UTC 时间
+  const utcHours = time.getUTCHours()
+  const utcMinutes = time.getUTCMinutes()
+  const utcSeconds = time.getUTCSeconds()
+  const milliseconds = time.getMilliseconds()
+
+  return worldCities.map(city => {
+    // 计算目标时区的时间 = UTC时间 + 时区偏移
+    // 使用 ((x % 24) + 24) % 24 来正确处理负数
+    const hours = ((utcHours + city.offset) % 24 + 24) % 24
+    const minutes = utcMinutes
+    const seconds = utcSeconds
+    
+    // Day or Night (6:00 - 18:00 is Day)
+    const isDay = hours >= 6 && hours < 18
+    
+    // Offset diff
+    const diffHours = city.offset - localOffset
+    let diffText = ''
+    if (diffHours === 0) {
+      diffText = '时间相同'
+    } else if (diffHours > 0) {
+      diffText = `比本地快 ${Math.round(diffHours)} 小时`
+    } else {
+      diffText = `比本地慢 ${Math.round(Math.abs(diffHours))} 小时`
+    }
+    
+    // Analog clock degrees
+    const secondFull = seconds + milliseconds / 1000
+    const secondDeg = secondFull * 6
+    const minuteDeg = minutes * 6 + secondFull * 0.1
+    const hourDeg = (hours % 12) * 30 + minutes * 0.5
+    
+    return {
+      ...city,
+      isDay,
+      timeStr: `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`,
+      diffText,
+      secondDeg,
+      minuteDeg,
+      hourDeg
+    }
+  })
+})
 </script>
 <style scoped lang="scss">
 @use '../../../styles/theme.scss' as *;
@@ -717,6 +808,172 @@ const copyRecord = (record: string) => {
     &:hover {
       background: #b0b0b0;
     }
+  }
+}
+
+/* ===== 世界时间卡片 ===== */
+.world-time-card {
+  .world-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20rpx;
+    margin-top: 10rpx;
+  }
+
+  .world-city-item {
+    background: #fdfdfd;
+    border-radius: 16rpx;
+    padding: 30rpx 10rpx 20rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.03);
+  }
+
+  /* 模拟时钟样式 */
+  .clock-face {
+    width: 200rpx;
+    height: 200rpx;
+    border-radius: 50%;
+    position: relative;
+    background: #ffffff;
+    border: 6rpx solid #efefef;
+    box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    margin-bottom: 30rpx;
+    /* 使得动画在各平台尽量顺滑 */
+    transform: translateZ(0);
+
+    &.clock-night {
+      background: #333333;
+      border-color: #f5f5f5;
+    }
+  }
+
+  .clock-12, .clock-3 {
+    position: absolute;
+    font-size: 26rpx;
+    font-weight: 700;
+    color: #666;
+    font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  }
+  
+  .clock-night .clock-12, 
+  .clock-night .clock-3 {
+    color: #ddd;
+  }
+
+  .clock-12 {
+    top: 10rpx;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .clock-3 {
+    right: 14rpx;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .hand {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border-radius: 10rpx; /* 圆角指针 */
+  }
+
+  .hour-hand {
+    width: 8rpx;
+    height: 50rpx;
+    background: #444;
+    margin-left: -4rpx;
+    margin-top: -50rpx;
+    transform-origin: 50% 50rpx;
+  }
+  
+  .clock-night .hour-hand {
+    background: #fff;
+  }
+
+  .minute-hand {
+    width: 6rpx;
+    height: 70rpx;
+    background: #444;
+    margin-left: -3rpx;
+    margin-top: -70rpx;
+    transform-origin: 50% 70rpx;
+  }
+  
+  .clock-night .minute-hand {
+    background: #fff;
+  }
+
+  .second-hand {
+    width: 2rpx;
+    height: 100rpx;
+    background: #db4437;
+    margin-left: -1rpx;
+    margin-top: -80rpx; /* 伸出中心部分 */
+    transform-origin: 50% 80rpx;
+    border-radius: 0;
+  }
+
+  .center-dot {
+    width: 16rpx;
+    height: 16rpx;
+    background: #db4437;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 4rpx solid #444;
+    box-sizing: border-box;
+  }
+
+  .clock-night .center-dot {
+    border-color: #fff;
+  }
+
+  /* 城市信息下半部分 */
+  .city-meta {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 12rpx;
+  }
+
+  .city-name {
+    font-size: 28rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 2rpx;
+    background: #fff;
+    padding: 6rpx 14rpx;
+    border-radius: 6rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+  }
+
+  .city-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .city-time {
+    font-size: 40rpx;
+    color: #db4437;
+    font-weight: 300;
+    line-height: 1;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  .city-offset {
+    font-size: 18rpx;
+    color: #999;
+    margin-top: 6rpx;
+    white-space: nowrap;
   }
 }
 
