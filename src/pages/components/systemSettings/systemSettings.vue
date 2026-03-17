@@ -158,7 +158,7 @@ interface SystemInfo {
 }
 
 const storageSize = ref('计算中...')
-const appVersion = ref('1.0.0')
+const appVersion = ref('0.1.8')
 const isCheckingUpdate = ref(false)
 const systemInfo = ref<SystemInfo>({
   platform: '',
@@ -185,11 +185,11 @@ const getSystemInfo = async () => {
       model: info.model,
       screenHeight: info.screenHeight
     }
-    // 获取应用版本号
-    const appInfo = await uni.getAppBaseInfo()
-    if (appInfo.appVersion) {
-      appVersion.value = appInfo.appVersion
-    }
+    // 获取应用版本号（改为手动更新）
+    // const appInfo = await uni.getAppBaseInfo()
+    // if (appInfo.appVersion) {
+    //   appVersion.value = appInfo.appVersion
+    // }
   } catch (e) {
     console.error('获取系统信息失败:', e)
   }
