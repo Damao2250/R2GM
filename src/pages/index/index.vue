@@ -49,6 +49,11 @@ const toolsList = ref<ToolItem[]>([
     icon: '💰'
   },
   {
+    title: '灵感罗盘',
+    url: '/pages/components/compass/compass',
+    icon: '🧭'
+  },
+  {
     title: '网络信息',
     url: '/pages/components/networkInfo/networkInfo',
     icon: '🌐'
@@ -122,6 +127,11 @@ const toolsList = ref<ToolItem[]>([
     title: '系统设置',
     url: '/pages/components/systemSettings/systemSettings',
     icon: '⚙️'
+  },
+  {
+    title: 'BMI计算',
+    url: '/pages/components/bmiCalculator/bmiCalculator',
+    icon: '⚖️'
   }
 ])
 

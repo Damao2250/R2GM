@@ -8,6 +8,8 @@ interface NavigateToOptions {
        "/pages/components/base64Conver/ConversionCard" |
        "/pages/components/base64Conver/base64Conver" |
        "/pages/components/birthdayCalculator/birthdayCalculator" |
+       "/pages/components/bmiCalculator/bmiCalculator" |
+       "/pages/components/compass/compass" |
        "/pages/components/convertCurrency/convertCurrency" |
        "/pages/components/countdown/countdown" |
        "/pages/components/deviceInfo/deviceInfo" |
