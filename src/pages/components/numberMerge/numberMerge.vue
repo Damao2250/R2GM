@@ -3,19 +3,14 @@
     <!-- 口算题界面 -->
     <view v-if="showQuiz" class="quiz-container">
       <PageHeader title="📝 口算练习" subtitle="提升计算能力，锻炼思维敏捷性" />
-      
+
       <view class="quiz-wrapper">
         <!-- 运算符选择 -->
         <view class="operator-selector">
           <view class="selector-label">选择运算类型</view>
           <view class="operator-buttons">
-            <button 
-              v-for="op in ['加', '减', '乘', '除', '随机']" 
-              :key="op"
-              class="op-btn"
-              :class="{ active: selectedOperators.has(op) }"
-              @tap="toggleOperator(op)"
-            >
+            <button v-for="op in ['加', '减', '乘', '除', '随机']" :key="op" class="op-btn"
+              :class="{ active: selectedOperators.has(op) }" @tap="toggleOperator(op)">
               {{ op }}法
             </button>
           </view>
@@ -28,16 +23,10 @@
             <text class="operator">{{ getOperatorSymbol() }}</text>
             <text class="num2">{{ quizNum2 }}</text>
             <text class="equal">=</text>
-            <input 
-              v-model="quizResult" 
-              type="number" 
-              class="answer-input"
-              :disabled="quizSubmitted"
-              placeholder="请输入答案"
-              @confirm="submitQuiz"
-            />
+            <input v-model="quizResult" type="number" class="answer-input" :disabled="quizSubmitted" placeholder="请输入答案"
+              @confirm="submitQuiz" />
           </view>
-          
+
           <!-- 答题结果显示 -->
           <view v-if="quizSubmitted" class="quiz-result">
             <view class="result-info" :class="{ correct: quizIsCorrect, wrong: !quizIsCorrect }">
@@ -67,7 +56,9 @@
         <!-- 说明文字 -->
         <view class="quiz-tips">
           <text>💡 坚持练习，持续提升计算速度</text>
+          <button class="complex-calculator" @tap="submitComplexCalculator">复杂计算器</button>
         </view>
+
       </view>
     </view>
 
@@ -101,21 +92,13 @@
         <view class="main-board" @touchstart="onTouchStart" @touchmove.stop.prevent @touchend="onTouchEnd">
           <!-- 背景网格 -->
           <view class="grid-container">
-            <view 
-              v-for="i in 16" 
-              :key="'bg-' + i" 
-              class="grid-cell"
-            ></view>
+            <view v-for="i in 16" :key="'bg-' + i" class="grid-cell"></view>
           </view>
 
           <!-- 数字方块 -->
           <view class="tiles-container">
-            <view
-              v-for="tile in tiles"
-              :key="tile.id"
-              class="tile"
-              :class="[getTileClass(tile.value), 'tile-position-' + tile.row + '-' + tile.col, tile.isNew ? 'tile-new' : '', tile.isMerged ? 'tile-merged' : '']"
-            >
+            <view v-for="tile in tiles" :key="tile.id" class="tile"
+              :class="[getTileClass(tile.value), 'tile-position-' + tile.row + '-' + tile.col, tile.isNew ? 'tile-new' : '', tile.isMerged ? 'tile-merged' : '']">
               <view class="tile-inner">{{ tile.value }}</view>
             </view>
           </view>
@@ -194,7 +177,7 @@ interface Tile {
 const showQuiz = ref(true)
 const quizNum1 = ref(0)
 const quizNum2 = ref(0)
-const quizOperator = ref<'+'|'-'|'*'|'/'>('+')
+const quizOperator = ref<'+' | '-' | '*' | '/'>('+')
 const quizResult = ref('')
 const quizSubmitted = ref(false)
 const quizIsCorrect = ref(false)
@@ -258,11 +241,11 @@ const initData = () => {
   hasWon.value = false
   continueAfterWin.value = false
   tileIdCounter = 0
-  
+
   // 添加两个初始元素
   addRandomTile()
   addRandomTile()
-  
+
   // 监听触摸事件
   setupTouchEvents()
 }
@@ -293,19 +276,19 @@ const toggleOperator = (op: string) => {
   } else {
     // 具体运算符模式：移除随机
     selectedOperators.value.delete('随机')
-    
+
     if (selectedOperators.value.has(op)) {
       selectedOperators.value.delete(op)
     } else {
       selectedOperators.value.add(op)
     }
-    
+
     // 如果没有选择任何具体运算符，恢复到随机
     if (selectedOperators.value.size === 0) {
       selectedOperators.value.add('随机')
     }
   }
-  
+
   generateQuiz()
 }
 
@@ -330,10 +313,10 @@ const generateQuiz = () => {
   quizSubmitted.value = false
   quizIsCorrect.value = false
   quizCorrectAnswer.value = 0
-  
+
   // 确定运算符
   let operators: ('+' | '-' | '*' | '/')[] = []
-  
+
   if (selectedOperators.value.has('随机')) {
     operators = ['+', '-', '*', '/']
   } else {
@@ -342,17 +325,17 @@ const generateQuiz = () => {
     if (selectedOperators.value.has('乘')) operators.push('*')
     if (selectedOperators.value.has('除')) operators.push('/')
   }
-  
+
   if (operators.length === 0) {
     operators = ['+', '-', '*', '/']
   }
-  
+
   quizOperator.value = operators[Math.floor(Math.random() * operators.length)]
-  
+
   // 生成数字（每个数字在0-100范围内）
   let num1 = Math.floor(Math.random() * 101)
   let num2 = Math.floor(Math.random() * 101)
-  
+
   // 除法特殊处理：确保能整除
   if (quizOperator.value === '/') {
     // 先生成被除数（1-100，避免0）
@@ -367,7 +350,7 @@ const generateQuiz = () => {
     // 随机选择一个因数作为除数
     num2 = divisors[Math.floor(Math.random() * divisors.length)]
   }
-  
+
   quizNum1.value = num1
   quizNum2.value = num2
 }
@@ -377,14 +360,14 @@ const generateQuiz = () => {
  */
 const submitQuiz = () => {
   if (quizSubmitted.value) return
-  
+
   // 检查888魔法码
   if (quizResult.value === '888') {
     showQuiz.value = false
     initData()
     return
   }
-  
+
   // 计算正确答案
   let correctAnswer = 0
   switch (quizOperator.value) {
@@ -401,9 +384,9 @@ const submitQuiz = () => {
       correctAnswer = quizNum1.value / quizNum2.value
       break
   }
-  
+
   const userAnswer = parseInt(quizResult.value)
-  
+
   if (isNaN(userAnswer)) {
     uni.showToast({
       title: '请输入正确的数字',
@@ -412,11 +395,30 @@ const submitQuiz = () => {
     })
     return
   }
-  
+
   // 标记已提交并显示结果
   quizSubmitted.value = true
   quizCorrectAnswer.value = correctAnswer
   quizIsCorrect.value = userAnswer === correctAnswer
+}
+
+/**
+ * 复杂计算器（示例功能）
+ */
+const submitComplexCalculator = () => {
+  // 弹出提示，‘确认进入复杂计算器吗？’
+  uni.showModal({
+    title: '复杂计算器',
+    content: '确认进入复杂计算器吗？',
+    confirmText: '进入',
+    cancelText: '取消',
+    success: (res) => {
+      if (res.confirm) {
+        showQuiz.value = false
+        initData()
+      }
+    }
+  })
 }
 
 /**
@@ -438,7 +440,7 @@ const setupTouchEvents = () => {
  */
 const addRandomTile = () => {
   const emptyCells: { row: number; col: number }[] = []
-  
+
   // 找出所有空位
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
@@ -447,15 +449,15 @@ const addRandomTile = () => {
       }
     }
   }
-  
+
   if (emptyCells.length === 0) return
-  
+
   // 随机选择一个空位
   const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
-  
+
   // 90%概率生成2，10%概率生成4
   const value = Math.random() < 0.9 ? 2 : 4
-  
+
   tiles.value.push({
     id: tileIdCounter++,
     value,
@@ -463,7 +465,7 @@ const addRandomTile = () => {
     col: randomCell.col,
     isNew: true
   })
-  
+
   // 移除新元素标记
   setTimeout(() => {
     const tile = tiles.value.find(t => t.id === tileIdCounter - 1)
@@ -491,13 +493,13 @@ const getTileClass = (value: number) => {
  */
 const move = (direction: 'up' | 'down' | 'left' | 'right') => {
   if (isOver.value) return
-  
+
   let moved = false
   const mergedTiles: number[] = []
-  
+
   // 清除所有合并标记
   tiles.value.forEach(t => t.isMerged = false)
-  
+
   // 根据方向确定遍历顺序
   const directions = {
     up: { row: [0, 1, 2, 3], col: [0, 1, 2, 3], dr: -1, dc: 0 },
@@ -505,26 +507,26 @@ const move = (direction: 'up' | 'down' | 'left' | 'right') => {
     left: { row: [0, 1, 2, 3], col: [0, 1, 2, 3], dr: 0, dc: -1 },
     right: { row: [0, 1, 2, 3], col: [3, 2, 1, 0], dr: 0, dc: 1 }
   }
-  
+
   const dir = directions[direction]
-  
+
   for (const row of dir.row) {
     for (const col of dir.col) {
       const tile = getTileAt(row, col)
       if (!tile) continue
-      
+
       let newRow = row
       let newCol = col
-      
+
       // 向指定方向移动
       while (true) {
         const nextRow = newRow + dir.dr
         const nextCol = newCol + dir.dc
-        
+
         if (nextRow < 0 || nextRow > 3 || nextCol < 0 || nextCol > 3) break
-        
+
         const nextTile = getTileAt(nextRow, nextCol)
-        
+
         if (!nextTile) {
           // 空位，继续移动
           newRow = nextRow
@@ -533,36 +535,36 @@ const move = (direction: 'up' | 'down' | 'left' | 'right') => {
           // 可以合并
           newRow = nextRow
           newCol = nextCol
-          
+
           // 标记为已合并
           mergedTiles.push(nextTile.id)
-          
+
           // 更新累计
           valueSum.value += tile.value * 2
-          
+
           // 检查是否达成
           if (tile.value * 2 === TARGET_VAL && !hasWon.value) {
             hasWon.value = true
           }
-          
+
           break
         } else {
           // 遇到不同的元素，停止移动
           break
         }
       }
-      
+
       // 更新位置
       if (newRow !== row || newCol !== col) {
         moved = true
-        
+
         const targetTile = getTileAt(newRow, newCol)
-        
+
         if (targetTile && targetTile.value === tile.value) {
           // 合并元素
           targetTile.value *= 2
           targetTile.isMerged = true
-          
+
           // 移除当前元素
           const index = tiles.value.findIndex(t => t.id === tile.id)
           if (index > -1) tiles.value.splice(index, 1)
@@ -574,12 +576,12 @@ const move = (direction: 'up' | 'down' | 'left' | 'right') => {
       }
     }
   }
-  
+
   // 如果有移动，添加新元素
   if (moved) {
     setTimeout(() => {
       addRandomTile()
-      
+
       // 检查是否还能继续
       if (!canMove()) {
         isOver.value = true
@@ -599,19 +601,19 @@ const canMove = (): boolean => {
       if (!getTileAt(row, col)) return true
     }
   }
-  
+
   // 检查是否有相邻的相同元素
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
       const tile = getTileAt(row, col)
       if (!tile) continue
-      
+
       // 检查右边
       if (col < 3) {
         const rightTile = getTileAt(row, col + 1)
         if (rightTile && rightTile.value === tile.value) return true
       }
-      
+
       // 检查下边
       if (row < 3) {
         const bottomTile = getTileAt(row + 1, col)
@@ -619,7 +621,7 @@ const canMove = (): boolean => {
       }
     }
   }
-  
+
   return false
 }
 
@@ -637,12 +639,12 @@ const onTouchStart = (e: any) => {
 const onTouchEnd = (e: any) => {
   const touchEndX = e.changedTouches[0].clientX
   const touchEndY = e.changedTouches[0].clientY
-  
+
   const dx = touchEndX - touchStartX
   const dy = touchEndY - touchStartY
-  
+
   const minSwipeDistance = 30
-  
+
   if (Math.abs(dx) > Math.abs(dy)) {
     // 水平滑动
     if (Math.abs(dx) > minSwipeDistance) {
@@ -692,7 +694,7 @@ const onTouchEnd = (e: any) => {
   padding: 24rpx;
   text-align: center;
   box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
-  
+
   &.best {
     border-color: #667eea;
   }
@@ -727,7 +729,7 @@ const onTouchEnd = (e: any) => {
   align-items: center;
   gap: 8rpx;
   margin: 0;
-  
+
   &.restart {
     background: #4a69bd;
   }
@@ -786,11 +788,11 @@ const onTouchEnd = (e: any) => {
   border-radius: 8rpx;
   font-weight: 600;
   transition: all 0.1s ease-out;
-  
+
   &.tile-new {
     animation: cell-appear 0.2s ease-out;
   }
-  
+
   &.tile-merged {
     animation: cell-update 0.15s ease-out;
   }
@@ -813,29 +815,139 @@ const onTouchEnd = (e: any) => {
 }
 
 /* 单元配色 - 暖色系 */
-.tile-2 { background: #eee4da; border: 1px solid #d4c5b9; .tile-inner { color: #776e65; } }
-.tile-4 { background: #ede0c8; border: 1px solid #d4c5b9; .tile-inner { color: #776e65; } }
-.tile-8 { background: #f2b179; border: 1px solid #e39e5f; .tile-inner { color: #f9f6f2; } }
-.tile-16 { background: #f59563; border: 1px solid #e37d47; .tile-inner { color: #f9f6f2; } }
-.tile-32 { background: #f67c5f; border: 1px solid #e4634b; .tile-inner { color: #f9f6f2; } }
-.tile-64 { background: #f65e3b; border: 1px solid #e44827; .tile-inner { color: #f9f6f2; } }
-.tile-128 { background: #edcf72; .tile-inner { color: #f9f6f2; font-size: 40rpx; } }
-.tile-256 { background: #edcc61; .tile-inner { color: #f9f6f2; font-size: 40rpx; } }
-.tile-512 { background: #edc850; .tile-inner { color: #f9f6f2; font-size: 36rpx; } }
-.tile-1024 { background: #edc53f; .tile-inner { color: #f9f6f2; font-size: 32rpx; } }
-.tile-max { background: #edc22e; .tile-inner { color: #f9f6f2; font-size: 32rpx; } }
-.tile-4096 { background: #3c3a32; .tile-inner { color: #f9f6f2; font-size: 28rpx; } }
+.tile-2 {
+  background: #eee4da;
+  border: 1px solid #d4c5b9;
+
+  .tile-inner {
+    color: #776e65;
+  }
+}
+
+.tile-4 {
+  background: #ede0c8;
+  border: 1px solid #d4c5b9;
+
+  .tile-inner {
+    color: #776e65;
+  }
+}
+
+.tile-8 {
+  background: #f2b179;
+  border: 1px solid #e39e5f;
+
+  .tile-inner {
+    color: #f9f6f2;
+  }
+}
+
+.tile-16 {
+  background: #f59563;
+  border: 1px solid #e37d47;
+
+  .tile-inner {
+    color: #f9f6f2;
+  }
+}
+
+.tile-32 {
+  background: #f67c5f;
+  border: 1px solid #e4634b;
+
+  .tile-inner {
+    color: #f9f6f2;
+  }
+}
+
+.tile-64 {
+  background: #f65e3b;
+  border: 1px solid #e44827;
+
+  .tile-inner {
+    color: #f9f6f2;
+  }
+}
+
+.tile-128 {
+  background: #edcf72;
+
+  .tile-inner {
+    color: #f9f6f2;
+    font-size: 40rpx;
+  }
+}
+
+.tile-256 {
+  background: #edcc61;
+
+  .tile-inner {
+    color: #f9f6f2;
+    font-size: 40rpx;
+  }
+}
+
+.tile-512 {
+  background: #edc850;
+
+  .tile-inner {
+    color: #f9f6f2;
+    font-size: 36rpx;
+  }
+}
+
+.tile-1024 {
+  background: #edc53f;
+
+  .tile-inner {
+    color: #f9f6f2;
+    font-size: 32rpx;
+  }
+}
+
+.tile-max {
+  background: #edc22e;
+
+  .tile-inner {
+    color: #f9f6f2;
+    font-size: 32rpx;
+  }
+}
+
+.tile-4096 {
+  background: #3c3a32;
+
+  .tile-inner {
+    color: #f9f6f2;
+    font-size: 28rpx;
+  }
+}
 
 /* 动画映射 */
 @keyframes cell-appear {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes cell-update {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* 悬浮指示 */
@@ -922,12 +1034,12 @@ const onTouchEnd = (e: any) => {
   border-radius: 8rpx;
   font-size: 26rpx;
   font-weight: 600;
-  
+
   &.continue {
     background: #4a69bd;
     color: white;
   }
-  
+
   &.restart {
     background: #e9ecef;
     color: #495057;
@@ -969,6 +1081,7 @@ const onTouchEnd = (e: any) => {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -979,6 +1092,7 @@ const onTouchEnd = (e: any) => {
     transform: translateY(100rpx);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -1029,7 +1143,7 @@ const onTouchEnd = (e: any) => {
   font-size: 26rpx;
   font-weight: 600;
   transition: all 0.2s ease;
-  
+
   &.active {
     background: #667eea;
     color: white;
@@ -1085,7 +1199,7 @@ const onTouchEnd = (e: any) => {
   font-weight: 700;
   color: #667eea;
   background: #f8f9fa;
-  
+
   &:disabled {
     opacity: 0.6;
   }
@@ -1103,12 +1217,12 @@ const onTouchEnd = (e: any) => {
   flex-direction: row;
   gap: 30rpx;
   align-items: center;
-  
+
   &.correct {
     background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
     border: 2px solid #28a745;
   }
-  
+
   &.wrong {
     background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
     border: 2px solid #dc3545;
@@ -1119,11 +1233,11 @@ const onTouchEnd = (e: any) => {
   font-size: 80rpx;
   font-weight: 700;
   flex-shrink: 0;
-  
+
   .correct & {
     color: #28a745;
   }
-  
+
   .wrong & {
     color: #dc3545;
   }
@@ -1184,12 +1298,12 @@ const onTouchEnd = (e: any) => {
   font-weight: 700;
   box-shadow: 0 6rpx 20rpx rgba(102, 126, 234, 0.4);
   transition: all 0.3s ease;
-  
+
   &.primary {
     background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
     box-shadow: 0 6rpx 20rpx rgba(40, 167, 69, 0.4);
   }
-  
+
   &:active {
     transform: translateY(2rpx);
     box-shadow: 0 4rpx 12rpx rgba(108, 117, 125, 0.3);
@@ -1201,6 +1315,10 @@ const onTouchEnd = (e: any) => {
   font-size: 24rpx;
   color: #6c757d;
   animation: fadeIn 0.5s ease-in 0.6s both;
+}
+
+.complex-calculator {
+  margin-top: 50rpx;
 }
 
 .matrix-container {

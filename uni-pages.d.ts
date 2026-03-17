@@ -23,6 +23,7 @@ interface NavigateToOptions {
        "/pages/components/relativeCalculator/relativeCalculator" |
        "/pages/components/systemSettings/systemSettings" |
        "/pages/components/timeNow/timeNow" |
+       "/pages/components/toolsManager/toolsManager" |
        "/pages/components/unitConvert/unitConvert";
 }
 interface RedirectToOptions extends NavigateToOptions {}

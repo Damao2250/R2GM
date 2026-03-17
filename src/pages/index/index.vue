@@ -23,123 +23,42 @@
 
 <script lang="ts">
 import { getShareConfig } from '@/utils/useShare'
+import { getToolsList, getVisibleTools } from '@/utils/toolsManager'
 
 export default {
   ...getShareConfig({
     title: 'DM工具箱 - 不实用的工具',
     path: '/pages/index/index',
     imageUrl: '/static/dm-logo.png'
-  })
-}
-</script>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-
-interface ToolItem {
-  title: string
-  url: string
-  icon?: string
-}
-
-const toolsList = ref<ToolItem[]>([
-  {
-    title: '金额转大写',
-    url: '/pages/components/convertCurrency/convertCurrency',
-    icon: '💰'
+  }),
+  data() {
+    return {
+      toolsList: []
+    }
   },
-  {
-    title: '灵感罗盘',
-    url: '/pages/components/compass/compass',
-    icon: '🧭'
+  onLoad() {
+    this.loadTools()
   },
-  {
-    title: '网络信息',
-    url: '/pages/components/networkInfo/networkInfo',
-    icon: '🌐'
+  onShow() {
+    // 每次页面显示时重新加载工具列表（包括从其他页面返回）
+    this.loadTools()
   },
-  {
-    title: 'base64/MD5',
-    url: '/pages/components/base64Conver/base64Conver',
-    icon: '🔐'
-  },
-  {
-    title: '当前时间',
-    url: '/pages/components/timeNow/timeNow',
-    icon: '⏰'
-  },
-  {
-    title: '设备信息',
-    url: '/pages/components/deviceInfo/deviceInfo',
-    icon: '📱'
-  },
-  {
-    title: '二维码分享',
-    url: '/pages/components/qrcodeShare/qrcodeShare',
-    icon: '📲'
-  },
-  {
-    title: '单位转换',
-    url: '/pages/components/unitConvert/unitConvert',
-    icon: '📏'
-  },
-  {
-    title: '亲戚计算器',
-    url: '/pages/components/relativeCalculator/relativeCalculator',
-    icon: '👨‍👩‍👧‍👦'
-  },
-  {
-    title: '随机数工具',
-    url: '/pages/components/randomNumber/randomNumber',
-    icon: '🎲'
-  },
-  {
-    title: '折扣计算器',
-    url: '/pages/components/discountCalculator/discountCalculator',
-    icon: '💵'
-  },
-  {
-    title: '配对缘分',
-    url: '/pages/components/matchCalculator/matchCalculator',
-    icon: '💑'
-  },
-  {
-    title: '倒数日',
-    url: '/pages/components/countdown/countdown',
-    icon: '📅'
-  },
-  {
-    title: '决策助手',
-    url: '/pages/components/randomDecider/randomDecider',
-    icon: '🎴'
-  },
-  {
-    title: '生日/星座',
-    url: '/pages/components/birthdayCalculator/birthdayCalculator',
-    icon: '🎂'
-  },
-  {
-    title: '口算练习',
-    url: '/pages/components/numberMerge/numberMerge',
-    icon: '📝'
-  },
-  {
-    title: '系统设置',
-    url: '/pages/components/systemSettings/systemSettings',
-    icon: '⚙️'
-  },
-  {
-    title: 'BMI计算',
-    url: '/pages/components/bmiCalculator/bmiCalculator',
-    icon: '⚖️'
+  methods: {
+    async loadTools() {
+      try {
+        const allTools = await getToolsList()
+        this.toolsList = getVisibleTools(allTools)
+      } catch (e) {
+        console.error('加载工具列表失败:', e)
+      }
+    },
+    gotoPage(item: any) {
+      if (!item.url) return
+      uni.navigateTo({
+        url: item.url
+      })
+    }
   }
-])
-
-const gotoPage = (item: ToolItem) => {
-  if (!item.url) return
-  uni.navigateTo({
-    url: item.url
-  })
 }
 </script>
 

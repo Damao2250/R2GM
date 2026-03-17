@@ -72,6 +72,22 @@
             </button>
           </view>
         </view>
+
+        <!-- 工具管理 -->
+        <view class="option-card">
+          <view class="option-header">
+            <view class="option-info">
+              <text class="option-icon">🛠️</text>
+              <view class="option-text">
+                <text class="option-title">工具管理</text>
+                <text class="option-desc">调整菜单显示顺序和显示状态</text>
+              </view>
+            </view>
+            <button class="action-btn primary-btn" @click="goToToolsManager">
+              <text class="btn-text">打开</text>
+            </button>
+          </view>
+        </view>
       </view>
 
       <!-- 系统信息 -->
@@ -325,6 +341,15 @@ const checkUpdate = () => {
       duration: 1500
     })
   }
+}
+
+/**
+ * 打开工具管理页面
+ */
+const goToToolsManager = () => {
+  uni.navigateTo({
+    url: '/pages/components/toolsManager/toolsManager'
+  })
 }
 </script>
 
