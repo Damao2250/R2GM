@@ -62,7 +62,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
 import EncodeUtils from './endecode-lib.js'
 import ConversionCard from './ConversionCard.vue'
 import PageHeader from '@/components/PageHeader.vue'

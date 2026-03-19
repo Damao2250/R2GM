@@ -237,8 +237,7 @@ const calculateDaysInMonth = (dateString: string) => {
   const isFuture = targetDate.isAfter(today)
   const [start, end] = isFuture ? [today, targetDate] : [targetDate, today]
   
-  // 计算总天数，然后减去整月的天数
-  const totalDays = end.diff(start, 'day')
+  // 计算扣除整年整月后的剩余天数
   const years = end.diff(start, 'year')
   const months = end.diff(start.add(years, 'year'), 'month')
   const daysInMonths = end.diff(start.add(years, 'year').add(months, 'month'), 'day')

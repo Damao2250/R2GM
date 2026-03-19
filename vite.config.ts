@@ -17,7 +17,9 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
   return defineConfig({
     envDir: './env',
     plugins: [
-      UniPages(),
+      UniPages({
+        exclude: ['**/ConversionCard.vue'],
+      }),
       UniComponents({
         resolvers: [WotResolver()]
       }),

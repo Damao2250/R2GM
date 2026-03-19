@@ -20,9 +20,65 @@
       }
     },
     {
+      "path": "pages/components/base64Conver/base64Conver",
+      "style": {
+        "navigationBarTitleText": "编码/转换",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/birthdayCalculator/birthdayCalculator",
+      "style": {
+        "navigationBarTitleText": "生日/星座计算",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/bmiCalculator/bmiCalculator",
+      "style": {
+        "navigationBarTitleText": "BMI计算器",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/compass/compass",
+      "style": {
+        "navigationBarTitleText": "灵感罗盘",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
       "path": "pages/components/convertCurrency/convertCurrency",
       "style": {
         "navigationBarTitleText": "金额转大写",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/countdown/countdown",
+      "style": {
+        "navigationBarTitleText": "倒数日",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/deviceInfo/deviceInfo",
+      "style": {
+        "navigationBarTitleText": "设备信息",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/discountCalculator/discountCalculator",
+      "style": {
+        "navigationBarTitleText": "折扣/优惠计算器",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/matchCalculator/matchCalculator",
+      "style": {
+        "navigationBarTitleText": "配对缘分计算",
         "enablePullDownRefresh": false
       }
     },
@@ -34,9 +90,44 @@
       }
     },
     {
-      "path": "pages/components/base64Conver/base64Conver",
+      "path": "pages/components/numberMerge/numberMerge",
       "style": {
-        "navigationBarTitleText": "BASE64转换",
+        "navigationBarTitleText": "数值矩阵",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/qrcodeShare/qrcodeShare",
+      "style": {
+        "navigationBarTitleText": "二维码分享",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/randomDecider/randomDecider",
+      "style": {
+        "navigationBarTitleText": "随机决策助手",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/randomNumber/randomNumber",
+      "style": {
+        "navigationBarTitleText": "随机数工具",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/relativeCalculator/relativeCalculator",
+      "style": {
+        "navigationBarTitleText": "亲戚计算器",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/systemSettings/systemSettings",
+      "style": {
+        "navigationBarTitleText": "系统设置",
         "enablePullDownRefresh": false
       }
     },
@@ -44,6 +135,20 @@
       "path": "pages/components/timeNow/timeNow",
       "style": {
         "navigationBarTitleText": "当前时间",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/toolsManager/toolsManager",
+      "style": {
+        "navigationBarTitleText": "工具管理",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/components/unitConvert/unitConvert",
+      "style": {
+        "navigationBarTitleText": "单位转换",
         "enablePullDownRefresh": false
       }
     }

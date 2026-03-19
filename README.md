@@ -1,332 +1,276 @@
 # R2DM
 
-一个基于 uni-app + Vue 3 + TypeScript + Vite 的跨平台小工具集合。
+R2DM 是一个基于 `uni-app 3 + Vue 3 + Vite + TypeScript` 的跨平台工具箱应用，主打离线可用、单仓多端和轻交互体验。项目当前覆盖了金额转换、时间日期、设备信息、二维码、传感器、随机娱乐等多个日常场景。
+
+## 项目定位
+
+- 跨平台发布：支持 H5、微信小程序和 App。
+- 工具统一管理：所有工具入口统一注册，首页和工具管理页自动同步。
+- 本地优先：大部分功能不依赖后端，用户设置和部分记录保存在本地存储。
+- 以 TypeScript 为主：当前大多数页面已使用 `Vue 3 + <script setup lang="ts">`，少量历史页面仍保留 Options API 写法。
+
+## 当前功能
+
+### 实用工具
+
+- 💰 金额转大写：数字金额与中文大写金额互转。
+- 🔐 编码/转换：支持 Base64、Hex、URL 编解码和 MD5。
+- ⏰ 当前时间：显示精确到毫秒的时间、时间戳和世界时间。
+- 📱 设备信息：查看系统、屏幕、像素比等设备信息。
+- 📲 二维码分享：输入文本生成二维码，支持扫描、复制、保存。
+- 📏 单位转换：支持长度、重量、温度、面积、体积、存储等类别。
+- 💵 折扣/优惠计算器：折扣、满减和费用分摊计算。
+- 📅 倒数日：记录纪念日并计算已过时间、周年和进度。
+- ⚖️ BMI 计算器：根据身高体重计算 BMI 和区间结果。
+
+### 设备与系统能力
+
+- 🌐 网络信息：查看网络状态和基础网络诊断信息。
+- 🧭 灵感罗盘：结合罗盘和加速度数据展示方向与水平状态。
+- ⚙️ 系统设置：清理缓存、重启应用、检查更新。
+- 🛠️ 工具管理：调整首页工具顺序和显示/隐藏状态。
+
+### 随机与娱乐
+
+- 🎲 随机数工具：随机数、抛硬币、掷骰子。
+- 👨‍👩‍👧‍👦 亲戚计算器：查询复杂家庭称谓。
+- 💑 配对缘分计算：娱乐向名字配对和分析。
+- 🎴 随机决策助手：输入选项后随机帮你做选择。
+- 🎂 生日/星座计算：查看年龄、星座、生肖等信息。
+- 📝 口算练习 / 🔢 数值矩阵：同一页面内包含口算练习和数值矩阵玩法。
 
 ## 技术栈
 
-- **框架**: uni-app 3.0 (Vue 3)
-- **语言**: TypeScript 5.4
-- **构建工具**: Vite 5.2
-- **包管理**: npm
-- **代码规范**: ESLint + Prettier
+- `uni-app` 3
+- `Vue` 3
+- `TypeScript` 5
+- `Vite` 5
+- `Sass`
+- `dayjs`
+- `relationship.js`
+- `weapp-qrcode`
+- `wot-design-uni`
 
-## 功能特点
+## 核心实现
 
-### 工具集合
-+ 💰 **金额大小写转换** - 支持数字金额转中文大写
-+ 📡 **WiFi 网络信息查询** - 查看本地 IP、网络类型、WiFi 信息、网络诊断
-+ 🔐 **Base64 转换 / MD5 计算** - 编解码工具
-+ ⏰ **当前时间查询** - 实时显示精确到毫秒的时间
-+ 📱 **设备信息查询** - 获取设备型号、系统版本、屏幕信息等
-+ 🔗 **二维码分享** - 生成与分享二维码
-+ 📐 **单位转换** - 支持长度、重量、温度等多种单位转换
-+ 👥 **亲戚关系计算器** - 快速计算复杂亲戚关系
-+ 🎲 **3D 骰子随机数** - 支持 1-3 个骰子的实时滚动动画
-+ 💵 **折扣/优惠计算器** - 折扣、满减、费用分摊计算
-+ 💑 **配对缘分计算** - 娱乐向的姓名配对和缘分指数
-+ 📅 **倒数日/纪念日** - 记录重要日期，自动计算距离和周年
-+ 🎴 **随机决策助手** - 帮助决策和随机选择
-+ 🎂 **生日/星座计算** - 查看生日、星座、生肖和运势
-+ 🎮 **2048游戏** - 经典数字合并益智游戏，支持触屏滑动操作
-+ ⚙️ **系统设置** - 清除缓存、重启应用、检查更新
+- 工具清单统一维护在 `src/utils/defaultTools.ts`，新增工具后首页和工具管理页会自动同步。
+- 工具顺序和显隐状态由 `src/utils/toolsManager.ts` 管理，并通过本地存储持久化。
+- 页面分享能力统一封装在 `src/utils/useShare.ts`，便于微信小程序场景复用。
+- 页面全局风格和通用样式集中在 `src/styles/theme.scss`。
+- `vite-plugin-uni-pages` 与 `pages.config.ts`、`src/pages.json` 配合生成页面配置。
 
-## 关于本项目
+## 目录结构
 
-DM工具箱是一款集成多种实用功能的离线工具集合，专为日常生活和工作提供便捷服务。
-
-### 核心特性
-+ ⚡ **极速开发体验** - 基于 Vite 的快速热更新和即时编译
-+ 🎨 **3D CSS 动画** - 纯 CSS 实现骰子转动的 3D 效果，流畅自然
-+ 📤 **一键分享** - 统一的分享工具，支持微信好友和朋友圈
-+ 🎯 **完整类型支持** - 全 TypeScript 开发，类型安全高效
-+ 📱 **跨平台打包** - 单一代码库支持 H5、微信小程序、App 等多端发布
+```text
+R2GM/
+├── src/
+│   ├── App.vue
+│   ├── main.ts
+│   ├── pages/
+│   │   ├── index/
+│   │   └── components/
+│   ├── components/
+│   │   └── PageHeader.vue
+│   ├── static/
+│   ├── styles/
+│   │   └── theme.scss
+│   ├── utils/
+│   │   ├── defaultTools.ts
+│   │   ├── toolsManager.ts
+│   │   └── useShare.ts
+│   ├── manifest.json
+│   └── pages.json
+├── manifest.json
+├── pages.config.ts
+├── pages.json
+├── vite.config.ts
+├── tsconfig.json
+└── README.md
+```
 
 ## 环境要求
 
 - Node.js >= 16
 - npm >= 7
 
-## 开发工具
-
-- VS Code（推荐）/ HBuilderX
-- 微信开发者工具（用于小程序调试）
-
 ## 快速开始
 
-### 1. 安装依赖
+### 安装依赖
+
+```bash
+npm install
+```
+
+如果依赖解析冲突，可以使用：
 
 ```bash
 npm install --legacy-peer-deps
 ```
 
-### 2. 运行开发服务器
+### 开发
 
-#### 开发 H5 端
 ```bash
 npm run dev:h5
 ```
 
-#### 开发微信小程序
 ```bash
 npm run dev:mp
 ```
 
-#### 开发 App
 ```bash
 npm run dev:app
 ```
 
-### 3. 构建项目
+### 构建
 
-#### 构建 H5
 ```bash
 npm run build:h5
 ```
 
-#### 构建微信小程序
 ```bash
 npm run build:mp
 ```
 
-#### 构建 App
 ```bash
 npm run build:app
 ```
 
-### 4. 类型检查
+### 类型检查
 
 ```bash
 npm run type-check
 ```
-
-## 项目结构
-
-```
-R2GM/
-├── src/
-│   ├── App.vue                       # 根组件 (TypeScript)
-│   ├── main.ts                       # 入口文件 (TypeScript)
-│   ├── pages/                        # 页面目录
-│   │   ├── index/                    # 首页
-│   │   │   └── index.vue            # 工具列表
-│   │   └── components/              # 功能组件页面
-│   │       ├── convertCurrency/     # 金额转换
-│   │       ├── networkInfo/         # 网络信息
-│   │       ├── base64Conver/        # Base64/MD5
-│   │       ├── timeNow/             # 时间显示
-│   │       ├── deviceInfo/          # 设备信息
-│   │       ├── qrcodeShare/         # 二维码分享
-│   │       ├── unitConvert/         # 单位转换
-│   │       ├── relativeCalculator/  # 亲戚计算器
-│   │       └── randomNumber/        # 3D骰子随机数
-│   ├── components/                  # 通用组件
-│   │   ├── PageHeader.vue           # 页面头部组件
-│   │   └── ...
-│   ├── utils/                       # 工具函数
-│   │   └── useShare.ts              # 分享功能工具
-│   ├── static/                      # 静态资源
-│   ├── styles/                      # 全局样式
-│   │   └── theme.scss               # 主题配置
-│   ├── shims-uni.d.ts              # uni-app 类型定义
-│   ├── pages.json                   # 页面配置
-│   └── manifest.json                # 应用配置
-├── vite.config.ts                   # Vite 配置 (TypeScript)
-├── tsconfig.json                    # TypeScript 配置
-├── tsconfig.node.json              # Node 环境 TS 配置
-├── package.json                     # 项目配置
-├── .gitignore                      # Git 忽略文件
-└── README.md                        # 项目说明
-```
-
-## TypeScript 支持
-
-项目已完全迁移到 TypeScript，使用 `<script setup lang="ts">` 语法和 Composition API，提供完整的类型检查：
-
-```bash
-npm run type-check
-```
-
 
 ## 构建输出
 
-- **H5**: 构建输出到 `dist/build/h5/` 目录
-- **微信小程序**: 
-  - 开发版: `dist/dev/mp-weixin/` - 用微信开发者工具导入此目录预览
-  - 生产版: `dist/build/mp-weixin/`
-- **App**: 需要通过 HBuilderX 或云打包服务进行打包
+- H5: `dist/build/h5/`
+- 微信小程序开发目录: `dist/dev/mp-weixin/`
+- 微信小程序生产目录: `dist/build/mp-weixin/`
+- App: 通过 HBuilderX 或云打包服务打包
 
 ## 开发建议
 
-### VS Code 插件
+- 推荐使用 VS Code 或 HBuilderX。
+- 微信小程序调试建议配合微信开发者工具。
+- 建议安装 `Volar`、`ESLint`、`Prettier`、`uni-helper` 等插件。
 
-推荐安装以下插件以获得更好的开发体验：
+## 新增页面步骤
 
-- Vue Language Features (Volar)
-- TypeScript Vue Plugin (Volar)
-- ESLint
-- Prettier - Code formatter
-- uni-app-snippets
-- uni-helper
+如果你要新增一个独立工具页面，建议按下面顺序操作。
 
-### 常见问题
+### 1. 创建页面文件
 
-**Q: 安装依赖失败？**  
-A: 尝试使用 `npm install --legacy-peer-deps` 安装
+在 `src/pages/components/` 下新建目录和页面文件，通常保持目录名和文件名一致，例如：
 
-**Q: TypeScript 类型检查报错？**  
-A: uni-app 组件属性与标准 HTML 存在类型差异，不影响运行，可忽略
+```text
+src/pages/components/demoTool/demoTool.vue
+```
 
-**Q: 编译速度慢？**  
-A: 首次编译较慢，后续会利用缓存加速
+推荐直接沿用现有页面结构，最小模板示例：
 
-## 功能详解
+```vue
+<template>
+  <view class="container">
+    <PageHeader title="🧪 示例工具" subtitle="页面描述" />
 
-### 3D 骰子随机数工具
+    <view class="page-content">
+      <view class="card">
+        <view class="section-title">示例内容</view>
+      </view>
+    </view>
+  </view>
+</template>
 
-位置：[src/pages/components/randomNumber/randomNumber.vue](src/pages/components/randomNumber/randomNumber.vue)
-
-**特点：**
-- 支持 1-3 个骰子同时滚动
-- 使用 CSS 3D Transform 实现真实的骰子旋转效果
-- 线性动画（1.5秒完成），每个骰子有随机的旋转方向
-- 骰子显示 1-6 的点数，采用标准的骰子点阵设计
-- 动画结束后自动计算并显示点数和
-
-**动画实现：**
-- 三种随机动画变体，分别改变旋转轴的强调方向
-- 9 个关键帧点确保动画流畅
-- 通过 `cubic-bezier` 或 `linear` 缓动函数优化动画体验
-
-### 微信小程序分享功能
-
-位置：[src/utils/useShare.ts](src/utils/useShare.ts)
-
-**特点：**
-- 统一的分享配置工具函数 `getShareConfig()`
-- 支持分享到好友（onShareAppMessage）和朋友圈（onShareTimeline）
-- 自动配置分享标题、路径、图片等信息
-- 支持自定义查询参数传递
-
-**使用方式：**
-```typescript
+<script lang="ts">
 import { getShareConfig } from '@/utils/useShare'
 
 export default {
   ...getShareConfig({
-    title: '页面标题 - DM工具箱',
-    path: '/pages/path/to/page',
-    imageUrl: '/static/custom-image.png' // 可选，默认为 dm-logo.png
+    title: '示例工具 - DM工具箱',
+    path: '/pages/components/demoTool/demoTool'
   })
+}
+</script>
+
+<script setup lang="ts">
+import PageHeader from '@/components/PageHeader.vue'
+</script>
+
+<style lang="scss" scoped>
+.container {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+</style>
+```
+
+### 2. 注册页面路由
+
+把新页面加入 `src/pages.json`：
+
+```json
+{
+  "path": "pages/components/demoTool/demoTool",
+  "type": "page"
 }
 ```
 
-已集成到的页面：
-- 首页 (index.vue) - "DM工具箱"
-- 金额转换 (convertCurrency.vue) - "金额转大写"
-- 网络信息 (networkInfo.vue) - "网络信息"
-- Base64转换 (base64Conver.vue) - "编码/转换"
-- 时间显示 (timeNow.vue) - "当前时间"
-- 设备信息 (deviceInfo.vue) - "设备信息"
-- 二维码分享 (qrcodeShare.vue) - "二维码分享"
-- 单位转换 (unitConvert.vue) - "单位转换"
-- 亲戚计算器 (relativeCalculator.vue) - "亲戚计算器"
-- 随机数工具 (randomNumber.vue) - "随机数工具"
-- 系统设置 (systemSettings.vue) - "系统设置"
-- 折扣计算器 (discountCalculator.vue) - "折扣/优惠计算器"
-- 配对缘分 (matchCalculator.vue) - "配对缘分计算"
-- 倒数日 (countdown.vue) - "倒数日/纪念日"
-- 决策助手 (randomDecider.vue) - "随机决策助手"
-- 生日/星座 (birthdayCalculator.vue) - "生日/星座计算"
+同时同步到根目录 `pages.json`，补上导航标题：
 
-### 系统设置功能
+```json
+{
+  "path": "pages/components/demoTool/demoTool",
+  "style": {
+    "navigationBarTitleText": "示例工具",
+    "enablePullDownRefresh": false
+  }
+}
+```
 
-位置：[src/pages/components/systemSettings/systemSettings.vue](src/pages/components/systemSettings/systemSettings.vue)
+### 3. 接入首页工具列表
 
-**核心功能：**
-- **清除缓存** - 删除应用所有本地存储数据，释放空间
-- **重启应用** - 重新加载应用，解决卡顿或状态异常
-- **检查更新** - 检查微信服务器新版本，支持自动下载安装
+如果这个页面需要出现在首页和工具管理页，还要在 `src/utils/defaultTools.ts` 中新增一项：
 
-**功能设计思考：**
-1. **清除缓存的必要性** - 长期使用会积累数据，用户需要手动清理释放空间。采用 `uni.clearStorage()` 清理所有本地存储
-2. **重启应用的价值** - 解决应用卡顿、内存泄漏、状态混乱等问题。使用 `uni.reLaunch()` 重新初始化应用
-3. **更新检查机制** - 通过 `uni.getUpdateManager()` 检查新版本，支持后台下载和用户确认更新
-4. **UX 考虑** - 危险操作添加确认对话框、检查中状态防止重复点击、展示系统信息便于调试
-5. **存储计算** - 实时计算缓存大小并格式化显示（B/KB/MB），帮助用户了解占用空间
+```ts
+{
+  title: '示例工具',
+  url: '/pages/components/demoTool/demoTool',
+  icon: '🧪',
+  visible: true
+}
+```
 
-### 折扣/优惠计算器
+如果只是内部页面或设置页，不想出现在首页，可以只注册路由，不加到工具列表。
 
-位置：[src/pages/components/discountCalculator/discountCalculator.vue](src/pages/components/discountCalculator/discountCalculator.vue)
+### 4. 复用项目公共能力
 
-**核心功能：**
-- **折扣计算** - 输入原价和折扣率，自动计算优惠金额和最终价格
-- **满减优惠** - 检查是否满足优惠条件，计算优惠后价格
-- **费用分摊** - 快速计算每人支付金额，处理四舍五入问题
+- 页面标题建议使用 `PageHeader`，保持视觉统一。
+- 微信分享页建议接入 `getShareConfig()`。
+- 通用样式优先复用 `src/styles/theme.scss` 中的类和变量。
+- 需要本地持久化时，优先复用 `uni.setStorage` / `uni.getStorage` 的现有模式。
 
-**设计亮点：**
-- 支持折扣输入为"8"或"0.8"两种格式
-- 满减优惠实时显示还差多少满足条件
-- 费用分摊显示四舍五入前后的差异
+### 5. 自检
 
-### 配对缘分计算
+新增页面后，至少执行一次：
 
-位置：[src/pages/components/matchCalculator/matchCalculator.vue](src/pages/components/matchCalculator/matchCalculator.vue)
+```bash
+npm run type-check
+```
 
-**核心功能：**
-- **缘分指数计算** - 基于两个名字计算缘分指数（0-100%）
-- **详细分析** - 显示姓名笔画、五行搭配、音韵和谐、字义搭配等四个维度
-- **娱乐评级** - 从"天生一对"到"缘分有限"的趣味评级
+如需验证构建链路，再执行：
 
-**特点：**
-- 纯前端实现，基于名字的哈希值和笔画特征计算
-- 高传播价值，用户乐于分享
-- 适合社交场景使用
+```bash
+npm run build:h5
+```
 
-### 倒数日/纪念日
+### 6. 命名约定
 
-位置：[src/pages/components/countdown/countdown.vue](src/pages/components/countdown/countdown.vue)
+- 页面路径建议使用 `src/pages/components/<目录名>/<文件名>.vue`。
+- `url` 一律使用 `/pages/components/...` 这种绝对页面路径。
+- 页面标题、分享标题、工具列表标题尽量保持一致，减少后期维护成本。
 
-**核心功能：**
-- **添加纪念日** - 记录重要日期（生日、纪念日、假期等）
-- **自动计算** - 显示距离、已过天数、周年纪念
-- **本地存储** - 数据自动保存到本地，支持长期使用
+## 维护说明
 
-**特点：**
-- 支持过去和未来的日期
-- 按倒数时间排序，最近的日期优先展示
-- 支持快速添加常见纪念日
-
-### 随机决策助手
-
-位置：[src/pages/components/randomDecider/randomDecider.vue](src/pages/components/randomDecider/randomDecider.vue)
-
-**核心功能：**
-- **决策助手模式** - 输入多个选项，随机选择一个
-- **随机选择模式** - 支持自定义列表或预设模板快速选择
-- **转盘动画** - 1.5秒的视觉反馈动画，增强交互体验
-
-**预设模板：**
-- 🍽️ 今天吃什么 - 常见美食选项
-- 🎨 颜色选择 - 12种基础颜色
-- ⏰ 时间段 - 常见时间点
-- 👥 人物选择 - 快速分配任务
-
-### 生日/星座计算
-
-位置：[src/pages/components/birthdayCalculator/birthdayCalculator.vue](src/pages/components/birthdayCalculator/birthdayCalculator.vue)
-
-**核心功能：**
-- **星座查询** - 输入出生日期自动识别星座
-- **详细信息** - 显示年龄、生肖、星座符号、五行属性、幸运数字和颜色
-- **性格特点** - 基于星座的性格标签
-- **生日倒数** - 计算距离下一个生日的天数
-
-**特点：**
-- 支持12星座完整信息库
-- 实时计算周年纪念（多少年）
-- 结合中国生肖系统
-- 展示幸运数字、幸运颜色等娱乐信息
-
-## 许可证
-
-Apache 2.0
+- 页面清单当前维护在 `src/pages.json`，根目录 `pages.json` 保持与其同步，方便不同 uni-app 工具链使用。
+- `manifest.json` 与 `src/manifest.json` 需要保持一致，避免多端配置漂移。
+- 本仓库未附带 `LICENSE` 文件，如需开源发布，建议补充正式许可证声明。

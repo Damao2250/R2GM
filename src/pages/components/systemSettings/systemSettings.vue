@@ -295,12 +295,30 @@ const checkUpdate = () => {
   try {
     // 仅在微信小程序中可用
     const updateManager = uni.getUpdateManager()
+    let checkCompleted = false
 
-    updateManager.onCheckForUpdate(() => {
-      // 已经在检查，不需要额外处理
+    updateManager.onCheckForUpdate((res) => {
+      checkCompleted = true
+
+      if (!res.hasUpdate) {
+        isCheckingUpdate.value = false
+        uni.showToast({
+          title: '已是最新版本',
+          duration: 1500
+        })
+        return
+      }
+
+      uni.showToast({
+        title: '检测到新版本，下载中',
+        icon: 'none',
+        duration: 1500
+      })
     })
 
     updateManager.onUpdateReady(() => {
+      isCheckingUpdate.value = false
+
       // 新版本已下载完毕，可立即应用
       uni.showModal({
         title: '更新提示',
@@ -315,6 +333,7 @@ const checkUpdate = () => {
     })
 
     updateManager.onUpdateFailed(() => {
+      isCheckingUpdate.value = false
       uni.showToast({
         title: '更新失败，请稍后重试',
         icon: 'none',
@@ -324,11 +343,14 @@ const checkUpdate = () => {
 
     // 延迟后隐藏检查状态（防止频繁点击）
     setTimeout(() => {
-      isCheckingUpdate.value = false
-      // 如果没有任何回调触发，说明是最新版本
-      if (!updateManager.clientVersion) {
+      if (isCheckingUpdate.value) {
+        isCheckingUpdate.value = false
+      }
+
+      if (!checkCompleted) {
         uni.showToast({
-          title: '已是最新版本',
+          title: '检查完成，请稍后再试',
+          icon: 'none',
           duration: 1500
         })
       }

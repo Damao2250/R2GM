@@ -336,25 +336,6 @@ const clipboardData = () => {
   })
 }
 
-const copyNumericValue = () => {
-  if (currencyValue.value === '') {
-    uni.showToast({
-      title: '输入框不能为空',
-      duration: 1000
-    })
-    return
-  }
-  uni.setClipboardData({
-    data: currencyValue.value,
-    success: function () {
-      uni.showToast({
-        title: '复制成功',
-        duration: 1000
-      })
-    }
-  })
-}
-
 const convertFromChinese = () => {
   if (convertValue.value === '') {
     uni.showToast({
@@ -510,7 +491,6 @@ const chineseToNumeric = (chineseStr: string): string => {
   let integerResult = ''
   let current = 0
   let hasYi = false
-  let hasWan = false
 
   for (let i = 0; i < integerStr.length; i++) {
     const char = integerStr[i]
@@ -532,7 +512,6 @@ const chineseToNumeric = (chineseStr: string): string => {
           integerResult += (current > 0 ? current : 1) * unit
         }
         current = 0
-        hasWan = true
       } else {
         // 千、百、十位
         current *= unit

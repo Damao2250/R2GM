@@ -5,7 +5,6 @@
 
 interface NavigateToOptions {
   url: "/pages/index/index" |
-       "/pages/components/base64Conver/ConversionCard" |
        "/pages/components/base64Conver/base64Conver" |
        "/pages/components/birthdayCalculator/birthdayCalculator" |
        "/pages/components/bmiCalculator/bmiCalculator" |
