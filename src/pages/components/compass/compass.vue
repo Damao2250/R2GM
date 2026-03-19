@@ -40,7 +40,7 @@
         <view class="angle-info">
           <view class="angle-value">{{ Math.round(compassAngle) }}°</view>
           <view class="direction-text">{{ currentDirection }}</view>
-          <view class="coordinates">{{ location }}</view>
+          <view class="coordinates">{{ sensorStatus }}</view>
         </view>
       </view>
 
@@ -125,34 +125,99 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 
-// 罗盘角度
-const compassAngle = ref(0)
+interface SensorAxes {
+  x: number
+  y: number
+  z: number
+}
 
-// 加速度计数据
+interface RawSensorAxes {
+  x?: number | string | null
+  y?: number | string | null
+  z?: number | string | null
+}
+
+interface DeviceMotionPayload {
+  acceleration?: RawSensorAxes | null
+}
+
+interface CompassPayload {
+  direction?: number | string | null
+}
+
+interface UniSensorApi {
+  onCompassChange?: (callback: (payload: CompassPayload) => void) => void
+  offCompassChange?: () => void
+  onCompass?: (callback: (payload: CompassPayload) => void) => void
+  offCompass?: () => void
+  onAccelerometerChange?: (callback: (payload: RawSensorAxes) => void) => void
+  offAccelerometerChange?: () => void
+  onAccelerometer?: (callback: (payload: RawSensorAxes) => void) => void
+  offAccelerometer?: () => void
+  onDeviceMotionChange?: (callback: (payload: DeviceMotionPayload) => void) => void
+  offDeviceMotionChange?: () => void
+  stopCompass?: () => void
+  stopAccelerometer?: () => void
+}
+
+const LEVEL_THRESHOLD = 5
+const LEVEL_OFFSET_LIMIT = 180
+const LEVEL_OFFSET_MULTIPLIER = 2
+const SENSOR_START_DELAY = 300
+const FULL_CIRCLE = 360
+const DEBUG_SENSOR_LOGS = false
+
+const uniSensorApi = uni as typeof uni & UniSensorApi
+
+const compassAngle = ref(0)
 const accelerometer = reactive({
   x: 0,
   y: 0,
   z: 0
 })
-
-// 磁力计角度
 const magnetic = ref(0)
-
-// 水平状态
 const isLevel = ref(false)
 const levelOffsetX = ref(0)
 const levelOffsetY = ref(0)
+const sensorStatus = ref('等待传感器')
+const currentDirection = ref('北')
 
-// 定位信息
-const location = ref('--')
+let sensorStartupTimer: ReturnType<typeof setTimeout> | null = null
+let sensorDebugTimer: ReturnType<typeof setInterval> | null = null
 
-// 获取方向描述
+const debugLog = (...args: unknown[]) => {
+  if (DEBUG_SENSOR_LOGS) {
+    console.log('[compass]', ...args)
+  }
+}
+
+const toFiniteNumber = (value: unknown) => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value
+  }
+
+  if (typeof value === 'string' && value.trim()) {
+    const parsed = Number.parseFloat(value)
+
+    if (Number.isFinite(parsed)) {
+      return parsed
+    }
+  }
+
+  return null
+}
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
+const roundToOne = (value: number) => Math.round(value * 10) / 10
+const normalizeAngle = (angle: number) => (angle % FULL_CIRCLE + FULL_CIRCLE) % FULL_CIRCLE
+
 const getDirectionName = (angle: number): string => {
+  const safeAngle = normalizeAngle(angle)
   const directions = [
-    { name: '北', min: 337.5, max: 360 },
+    { name: '北', min: 337.5, max: FULL_CIRCLE },
     { name: '北', min: 0, max: 22.5 },
     { name: '东北', min: 22.5, max: 67.5 },
     { name: '东', min: 67.5, max: 112.5 },
@@ -164,205 +229,131 @@ const getDirectionName = (angle: number): string => {
   ]
 
   for (const dir of directions) {
-    if (angle >= dir.min && angle <= dir.max) {
+    if (safeAngle >= dir.min && safeAngle <= dir.max) {
       return dir.name
     }
   }
+
   return '北'
 }
 
-const currentDirection = ref('北')
-
-// 更新方向名称
 const updateDirection = (angle: number) => {
   currentDirection.value = getDirectionName(angle)
 }
 
-// 初始化罗盘画布（不再使用Canvas，改用CSS）
-const initCompassCanvas = () => {
-  // 使用CSS绘制，不需要Canvas初始化
-  console.log('罗盘已初始化')
+const applyCompassDirection = (angle: number) => {
+  const safeAngle = normalizeAngle(angle)
+  compassAngle.value = safeAngle
+  magnetic.value = safeAngle
+  updateDirection(safeAngle)
 }
 
-// 监听罗盘事件
-const startCompassListener = () => {
-  const uniAny = uni as any
-  // 使用 onCompassChange 替代 onCompass（微信小程序标准API）
-  if (typeof uniAny.onCompassChange === 'function') {
-    uniAny.onCompassChange((res: any) => {
-      if (res && typeof res.direction === 'number') {
-        compassAngle.value = res.direction
-        magnetic.value = res.direction
-        updateDirection(res.direction)
-      }
-    })
-  } else if (typeof uniAny.onCompass === 'function') {
-    // 备选方案
-    uniAny.onCompass((res: any) => {
-      if (res && typeof res.direction === 'number') {
-        compassAngle.value = res.direction
-        magnetic.value = res.direction
-        updateDirection(res.direction)
-      }
-    })
-  } else {
-    console.warn('罗盘API不可用')
+const resolveSensorAxes = (payload: RawSensorAxes | DeviceMotionPayload | null | undefined): SensorAxes | null => {
+  if (!payload || typeof payload !== 'object') {
+    return null
   }
-}
 
-// 处理加速度数据
-const handleAccelerometerData = (res: any) => {
-  try {
-    if (!res) {
-      console.warn('⚠️ 收到空数据')
-      return
-    }
-    
-    let x = 0, y = 0, z = 0
-    let dataSource = '未知'
-    
-    // 处理 onAccelerometerChange 或 onAccelerometer 的数据结构 - 直接包含 x,y,z
-    if (typeof res.x === 'number' && typeof res.y === 'number' && typeof res.z === 'number') {
-      x = parseFloat(res.x)
-      y = parseFloat(res.y)
-      z = parseFloat(res.z)
-      dataSource = 'x,y,z直接结构'
-    } 
-    // 处理 onDeviceMotionChange 的数据结构 - 嵌套在 acceleration 中
-    else if (res.acceleration && typeof res.acceleration === 'object') {
-      x = parseFloat(res.acceleration.x) || 0
-      y = parseFloat(res.acceleration.y) || 0
-      z = parseFloat(res.acceleration.z) || 0
-      dataSource = 'acceleration嵌套结构'
-    }
-    else {
-      console.warn('⚠️ 无法识别的数据结构:', JSON.stringify(res).substring(0, 100))
-      return
-    }
-    
-    // 加速度计返回的z轴是相反的（向下为负），需要反转
-    const roll = Math.atan2(y, Math.sqrt(x * x + z * z)) * (180 / Math.PI)    // 绕X轴: 左右倾斜
-    const pitch = Math.atan2(-x, Math.sqrt(y * y + z * z)) * (180 / Math.PI)  // 绕Y轴: 前后倾斜
-    const yaw = Math.atan2(z, Math.sqrt(x * x + y * y)) * (180 / Math.PI)     // 绕Z轴
-    
-    // 更新响应式数据
-    accelerometer.x = Math.round(pitch * 10) / 10
-    accelerometer.y = Math.round(roll * 10) / 10
-    accelerometer.z = Math.round(yaw * 10) / 10
-    
-    // 判断是否水平：X轴和Y轴倾斜都很小
-    isLevel.value = Math.abs(pitch) < 5 && Math.abs(roll) < 5
-    
-    // 水平仪偏移（二维）
-    // X 轴偏移（左右）：基于 roll，范围 -90 到 90，映射到 -180 到 180px
-    const newOffsetX = Math.max(-180, Math.min(180, roll * 2))
-    levelOffsetX.value = newOffsetX
-    
-    // Y 轴偏移（上下）：基于 pitch，范围 -90 到 90，映射到 -180 到 180px
-    const newOffsetY = Math.max(-180, Math.min(180, pitch * 2))
-    levelOffsetY.value = newOffsetY
-    
-    // 每次都输出日志
-    console.log(`📊 ${dataSource} | raw:(${x.toFixed(3)},${y.toFixed(3)},${z.toFixed(3)}) | pitch:${pitch.toFixed(1)}° roll:${roll.toFixed(1)}° | offsetX:${newOffsetX.toFixed(0)}px offsetY:${newOffsetY.toFixed(0)}px | level:${isLevel.value}`)
-  } catch (e) {
-    console.warn('❌ 处理加速度数据出错:', e)
+  const source =
+    'acceleration' in payload && payload.acceleration
+      ? payload.acceleration
+      : (payload as RawSensorAxes)
+  const x = toFiniteNumber(source.x)
+  const y = toFiniteNumber(source.y)
+  const z = toFiniteNumber(source.z)
+
+  if (x === null || y === null || z === null) {
+    return null
   }
+
+  return { x, y, z }
 }
 
-onMounted(() => {
-  // 初始化罗盘
-  initCompassCanvas()
+const handleCompassChange = (payload: CompassPayload) => {
+  const direction = toFiniteNumber(payload.direction)
 
-  // 延迟启动传感器监听，确保页面加载完成
-  setTimeout(() => {
-    // 启动陀螺仪/罗盘
-    uni.startCompass({
-      success: () => {
-        console.log('✓ 陀螺仪已启动')
-        startCompassListener()
-        uni.showToast({
-          title: '罗盘已就绪',
-          icon: 'success',
-          duration: 1000
-        })
-      },
-      fail: (err: any) => {
-        console.warn('❌ 陀螺仪启动失败:', err)
-        uni.showToast({
-          title: '设备不支持罗盘',
-          icon: 'none'
-        })
-      }
-    })
+  if (direction === null) {
+    return
+  }
 
-    // 启动加速度计
-    startAccelerometerWithRetry()
-    
-    // 定期检查加速度计数据状态（用于诊断） - 修复 window 问题
-    const statusCheckInterval = setInterval(() => {
-      console.log(`⏱️ 加速度计状态检查 | x:${accelerometer.x}° y:${accelerometer.y}° z:${accelerometer.z}°`)
-    }, 3000)
-    
-    // 保存到对象而不是 window
-    const globalState = { statusCheckInterval }
-    ;(globalThis as any).__compassStatusCheckInterval = globalState
-  }, 500)
-})
+  applyCompassDirection(direction)
+}
 
-// 启动加速度计,带重试机制
+const handleAccelerometerData = (payload: RawSensorAxes | DeviceMotionPayload) => {
+  const axes = resolveSensorAxes(payload)
+
+  if (!axes) {
+    return
+  }
+
+  const { x, y, z } = axes
+  const roll = Math.atan2(y, Math.sqrt(x * x + z * z)) * (180 / Math.PI)
+  const pitch = Math.atan2(-x, Math.sqrt(y * y + z * z)) * (180 / Math.PI)
+  const yaw = Math.atan2(z, Math.sqrt(x * x + y * y)) * (180 / Math.PI)
+
+  accelerometer.x = roundToOne(pitch)
+  accelerometer.y = roundToOne(roll)
+  accelerometer.z = roundToOne(yaw)
+
+  isLevel.value = Math.abs(pitch) < LEVEL_THRESHOLD && Math.abs(roll) < LEVEL_THRESHOLD
+  levelOffsetX.value = clamp(roll * LEVEL_OFFSET_MULTIPLIER, -LEVEL_OFFSET_LIMIT, LEVEL_OFFSET_LIMIT)
+  levelOffsetY.value = clamp(pitch * LEVEL_OFFSET_MULTIPLIER, -LEVEL_OFFSET_LIMIT, LEVEL_OFFSET_LIMIT)
+
+  debugLog('accelerometer', { x, y, z, pitch, roll, yaw })
+}
+
+const registerCompassListener = () => {
+  if (typeof uniSensorApi.onCompassChange === 'function') {
+    uniSensorApi.onCompassChange(handleCompassChange)
+    return true
+  }
+
+  if (typeof uniSensorApi.onCompass === 'function') {
+    uniSensorApi.onCompass(handleCompassChange)
+    return true
+  }
+
+  return false
+}
+
+const registerAccelerometerListener = () => {
+  if (typeof uniSensorApi.onAccelerometerChange === 'function') {
+    uniSensorApi.onAccelerometerChange(handleAccelerometerData)
+    return true
+  }
+
+  if (typeof uniSensorApi.onAccelerometer === 'function') {
+    uniSensorApi.onAccelerometer(handleAccelerometerData)
+    return true
+  }
+
+  if (typeof uniSensorApi.onDeviceMotionChange === 'function') {
+    uniSensorApi.onDeviceMotionChange(handleAccelerometerData)
+    return true
+  }
+
+  return false
+}
+
 const startAccelerometerWithRetry = () => {
-  console.log('>> 启动加速度计流程开始')
-  const uniAny = uni as any
-  
-  // 先注册监听器
-  try {
-    // 尝试方式1: onAccelerometerChange (WeChat mini program)
-    if (typeof uniAny.onAccelerometerChange === 'function') {
-      console.log('>> 注册 onAccelerometerChange 监听')
-      uniAny.onAccelerometerChange((res: any) => {
-        console.log('📱 onAccelerometerChange 触发:', res)
-        handleAccelerometerData(res)
-      })
-    } 
-    // 尝试方式2: onAccelerometer
-    else if (typeof uniAny.onAccelerometer === 'function') {
-      console.log('>> 注册 onAccelerometer 监听')
-      uniAny.onAccelerometer((res: any) => {
-        console.log('📱 onAccelerometer 触发:', res)
-        handleAccelerometerData(res)
-      })
-    }
-    // 尝试方式3: onDeviceMotionChange
-    else if (typeof uniAny.onDeviceMotionChange === 'function') {
-      console.log('>> 注册 onDeviceMotionChange 监听')
-      uniAny.onDeviceMotionChange((res: any) => {
-        console.log('📱 onDeviceMotionChange 触发:', res)
-        handleAccelerometerData(res)
-      })
-    }
-    else {
-      console.warn('⚠️ 没有找到任何加速度计监听API')
-    }
-  } catch (e) {
-    console.warn('注册监听时出错:', e)
+  if (!registerAccelerometerListener()) {
+    uni.showToast({
+      title: '设备不支持加速度计',
+      icon: 'none'
+    })
+    return
   }
-  
-  // 然后启动加速度计
-  console.log('>> 调用 startAccelerometer')
+
   uni.startAccelerometer({
     interval: 'normal',
     success: () => {
-      console.log('✅ 加速度计启动成功 (normal)')
+      debugLog('accelerometer started')
     },
-    fail: (err: any) => {
-      console.warn('❌ normal interval 失败，尝试无参数:', err)
-      
+    fail: () => {
       uni.startAccelerometer({
         success: () => {
-          console.log('✅ 加速度计启动成功 (无参数)')
+          debugLog('accelerometer started without interval')
         },
-        fail: (err2: any) => {
-          console.warn('❌ 加速度计启动完全失败:', err2)
+        fail: () => {
           uni.showToast({
             title: '设备不支持加速度计',
             icon: 'none'
@@ -373,52 +364,91 @@ const startAccelerometerWithRetry = () => {
   })
 }
 
+const clearSensorTimers = () => {
+  if (sensorStartupTimer) {
+    clearTimeout(sensorStartupTimer)
+    sensorStartupTimer = null
+  }
+
+  if (sensorDebugTimer) {
+    clearInterval(sensorDebugTimer)
+    sensorDebugTimer = null
+  }
+}
+
+const stopCompassListener = () => {
+  if (typeof uniSensorApi.offCompassChange === 'function') {
+    uniSensorApi.offCompassChange()
+  } else if (typeof uniSensorApi.offCompass === 'function') {
+    uniSensorApi.offCompass()
+  }
+}
+
+const stopAccelerometerListener = () => {
+  if (typeof uniSensorApi.offAccelerometerChange === 'function') {
+    uniSensorApi.offAccelerometerChange()
+  } else if (typeof uniSensorApi.offAccelerometer === 'function') {
+    uniSensorApi.offAccelerometer()
+  } else if (typeof uniSensorApi.offDeviceMotionChange === 'function') {
+    uniSensorApi.offDeviceMotionChange()
+  }
+}
+
+const startSensors = () => {
+  if (!registerCompassListener()) {
+    sensorStatus.value = '罗盘不可用'
+    uni.showToast({
+      title: '设备不支持罗盘',
+      icon: 'none'
+    })
+  } else {
+    uni.startCompass({
+      success: () => {
+        sensorStatus.value = '罗盘已就绪'
+        uni.showToast({
+          title: '罗盘已就绪',
+          icon: 'success',
+          duration: 1000
+        })
+      },
+      fail: () => {
+        sensorStatus.value = '罗盘不可用'
+        stopCompassListener()
+        uni.showToast({
+          title: '设备不支持罗盘',
+          icon: 'none'
+        })
+      }
+    })
+  }
+
+  startAccelerometerWithRetry()
+
+  if (DEBUG_SENSOR_LOGS) {
+    sensorDebugTimer = setInterval(() => {
+      debugLog('status', {
+        compass: compassAngle.value,
+        accelerometer: { ...accelerometer }
+      })
+    }, 3000)
+  }
+}
+
+onMounted(() => {
+  sensorStartupTimer = setTimeout(startSensors, SENSOR_START_DELAY)
+})
 
 onBeforeUnmount(() => {
-  // 停止监听 - 使用微信小程序标准API
-  console.log('>> 清理传感器监听')
-  try {
-    const uniAny = uni as any
-    
-    // 关闭罗盘监听
-    if (typeof uniAny.offCompassChange === 'function') {
-      uniAny.offCompassChange()
-      console.log('>> 已关闭 offCompassChange')
-    } else if (typeof uniAny.offCompass === 'function') {
-      uniAny.offCompass()
-      console.log('>> 已关闭 offCompass')
-    }
-    
-    // 关闭加速度计监听
-    if (typeof uniAny.offAccelerometerChange === 'function') {
-      uniAny.offAccelerometerChange()
-      console.log('>> 已关闭 offAccelerometerChange')
-    } else if (typeof uniAny.offAccelerometer === 'function') {
-      uniAny.offAccelerometer()
-      console.log('>> 已关闭 offAccelerometer')
-    } else if (typeof uniAny.offDeviceMotionChange === 'function') {
-      uniAny.offDeviceMotionChange()
-      console.log('>> 已关闭 offDeviceMotionChange')
-    }
-    
-    // 停止传感器
-    if (typeof uniAny.stopCompass === 'function') {
-      uniAny.stopCompass()
-      console.log('>> 已停止陀螺仪')
-    }
-    if (typeof uniAny.stopAccelerometer === 'function') {
-      uniAny.stopAccelerometer()
-      console.log('>> 已停止加速度计')
-    }
-    
-    // 清理状态检查定时器
-    const globalState = (globalThis as any).__compassStatusCheckInterval
-    if (globalState && globalState.statusCheckInterval) {
-      clearInterval(globalState.statusCheckInterval)
-      console.log('>> 已清理状态检查定时器')
-    }
-  } catch (e) {
-    console.warn('清理传感器监听时出错:', e)
+  clearSensorTimers()
+  stopCompassListener()
+  stopAccelerometerListener()
+
+  if (typeof uniSensorApi.stopCompass === 'function') {
+    uniSensorApi.stopCompass()
+  }
+
+  if (typeof uniSensorApi.stopAccelerometer === 'function') {
+    uniSensorApi.stopAccelerometer()
   }
 })
 </script>

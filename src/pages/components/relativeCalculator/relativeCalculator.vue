@@ -96,7 +96,6 @@ export default {
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
-// @ts-ignore
 import relationship from 'relationship.js'
 
 // 文字输入模式

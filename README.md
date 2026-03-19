@@ -141,6 +141,20 @@ npm run build:app
 npm run type-check
 ```
 
+### 配置同步
+
+在修改根目录 `pages.json` 或 `manifest.json` 后，执行：
+
+```bash
+npm run sync:config
+```
+
+如果只想检查根目录配置和 `src/` 副本是否漂移，执行：
+
+```bash
+npm run check:config-sync
+```
+
 ## 构建输出
 
 - H5: `dist/build/h5/`
@@ -206,16 +220,7 @@ import PageHeader from '@/components/PageHeader.vue'
 
 ### 2. 注册页面路由
 
-把新页面加入 `src/pages.json`：
-
-```json
-{
-  "path": "pages/components/demoTool/demoTool",
-  "type": "page"
-}
-```
-
-同时同步到根目录 `pages.json`，补上导航标题：
+先在根目录 `pages.json` 里补上页面配置和导航标题：
 
 ```json
 {
@@ -226,6 +231,14 @@ import PageHeader from '@/components/PageHeader.vue'
   }
 }
 ```
+
+然后执行：
+
+```bash
+npm run sync:config
+```
+
+这样会自动更新 `src/pages.json` 里的页面路径与 `type` 元信息。
 
 ### 3. 接入首页工具列表
 
@@ -254,6 +267,10 @@ import PageHeader from '@/components/PageHeader.vue'
 新增页面后，至少执行一次：
 
 ```bash
+npm run sync:config
+```
+
+```bash
 npm run type-check
 ```
 
@@ -271,6 +288,8 @@ npm run build:h5
 
 ## 维护说明
 
-- 页面清单当前维护在 `src/pages.json`，根目录 `pages.json` 保持与其同步，方便不同 uni-app 工具链使用。
-- `manifest.json` 与 `src/manifest.json` 需要保持一致，避免多端配置漂移。
+- 根目录 `pages.json` 与 `manifest.json` 作为主配置。
+- `src/pages.json` 只保留工具链需要的页面路径与 `type` 元信息，不建议手动编辑。
+- 修改配置后用 `npm run sync:config` 更新 `src/manifest.json` 和 `src/pages.json` 的派生内容。
+- `npm run check:config-sync` 可用于 CI 或提交前检查配置漂移。
 - 本仓库未附带 `LICENSE` 文件，如需开源发布，建议补充正式许可证声明。

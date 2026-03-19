@@ -68,15 +68,13 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { nextTick, ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import drawQrcode from 'weapp-qrcode'
 
 // 类型定义
 interface CanvasTempFileResult {
   tempFilePath: string
-  errMsg: string
 }
 
 interface QrcodeConfig {
@@ -89,12 +87,66 @@ interface QrcodeConfig {
   correctLevel: number
 }
 
+interface UniErrorLike {
+  errMsg?: string
+  message?: string
+}
+
+const QR_CODE_CANVAS_ID = 'qrcodeCanvas'
+const QR_CODE_SIZE = 250
+const EXPORT_RETRY_DELAYS = [0, 80, 160, 320]
+
 const inputText = ref('')
 const qrcodeUrl = ref('')
 
-onLoad(() => {
-  console.log('二维码分享页面加载')
-})
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+const getErrorMessage = (error: unknown, fallback: string) => {
+  if (typeof error === 'object' && error !== null) {
+    const { errMsg, message } = error as UniErrorLike
+
+    if (typeof errMsg === 'string' && errMsg.trim()) {
+      return errMsg
+    }
+
+    if (typeof message === 'string' && message.trim()) {
+      return message
+    }
+  }
+
+  return fallback
+}
+
+const exportCanvasToTempFile = () =>
+  new Promise<string>((resolve, reject) => {
+    uni.canvasToTempFilePath({
+      canvasId: QR_CODE_CANVAS_ID,
+      destWidth: QR_CODE_SIZE,
+      destHeight: QR_CODE_SIZE,
+      success: (res: CanvasTempFileResult) => {
+        resolve(res.tempFilePath)
+      },
+      fail: reject
+    })
+  })
+
+const exportQrcodeImage = async () => {
+  let lastError: unknown
+
+  for (const delay of EXPORT_RETRY_DELAYS) {
+    if (delay > 0) {
+      await wait(delay)
+    }
+
+    try {
+      return await exportCanvasToTempFile()
+    } catch (error) {
+      lastError = error
+    }
+  }
+
+  throw lastError ?? new Error('生成失败，请重试')
+}
 
 const scanQrcode = async () => {
   try {
@@ -157,50 +209,31 @@ const generateQrcode = async () => {
 
     // 配置二维码参数
     const config: QrcodeConfig = {
-      width: 250,
-      height: 250,
-      canvasId: 'qrcodeCanvas',
+      width: QR_CODE_SIZE,
+      height: QR_CODE_SIZE,
+      canvasId: QR_CODE_CANVAS_ID,
       text: inputText.value,
       colorDark: '#000000',
       colorLight: '#ffffff',
       correctLevel: 2 // H级纠错
     }
 
-    // 直接调用 weapp-qrcode 绘制到 canvas
     drawQrcode(config)
+    await nextTick()
 
-    // 绘制完成后导出为临时文件
-    setTimeout(() => {
-      uni.canvasToTempFilePath({
-        canvasId: 'qrcodeCanvas',
-        destWidth: 250,
-        destHeight: 250,
-        success: (res: CanvasTempFileResult) => {
-          qrcodeUrl.value = res.tempFilePath
-          uni.hideLoading()
-          uni.showToast({
-            title: '生成成功',
-            icon: 'success',
-            duration: 1500
-          })
-        },
-        fail: (err: any) => {
-          uni.hideLoading()
-          console.error('Canvas to temp file error:', err)
-          uni.showToast({
-            title: err.errMsg || '生成失败，请重试',
-            icon: 'error'
-          })
-        }
-      })
-    }, 200)
-  } catch (e: any) {
-    uni.hideLoading()
-    console.error('QR Code generation error:', e)
+    qrcodeUrl.value = await exportQrcodeImage()
     uni.showToast({
-      title: e?.message || '生成失败，请重试',
+      title: '生成成功',
+      icon: 'success',
+      duration: 1500
+    })
+  } catch (error) {
+    uni.showToast({
+      title: getErrorMessage(error, '生成失败，请重试'),
       icon: 'error'
     })
+  } finally {
+    uni.hideLoading()
   }
 }
 
