@@ -70,7 +70,6 @@ const emit = defineEmits<Emits>()
 
 const localInput = ref(props.inputValue)
 
-// 监听 prop 变化
 watch(
   () => props.inputValue,
   newVal => {
@@ -78,12 +77,10 @@ watch(
   }
 )
 
-// 当 localInput 变化时，触发 update:input 事件
 watch(localInput, newVal => {
   emit('update:input', newVal)
 })
 
-// 计算字节长度
 const getByteLength = (str: string): number => {
   let byteLength = 0
   for (let i = 0; i < str.length; i++) {
@@ -234,7 +231,6 @@ const getByteLength = (str: string): number => {
   line-height: 1.6;
   padding: 16rpx;
 
-  // 美化滚动条
   &::-webkit-scrollbar {
     width: 8rpx;
   }

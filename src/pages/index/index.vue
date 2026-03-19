@@ -12,7 +12,12 @@
     <view class="page-content">
       <!-- 工具网格 -->
       <view class="tools-grid">
-        <view class="tool-item" v-for="(item, index) in toolsList" :key="index" @click="gotoPage(item)">
+        <view
+          v-for="(item, index) in toolsList"
+          :key="`${item.url}-${index}`"
+          class="tool-item"
+          @click="gotoPage(item)"
+        >
           <view class="tool-icon">{{ item.icon }}</view>
           <text class="tool-name">{{ item.title }}</text>
         </view>
@@ -23,43 +28,49 @@
 
 <script lang="ts">
 import { getShareConfig } from '@/utils/useShare'
-import { getToolsList, getVisibleTools } from '@/utils/toolsManager'
 
 export default {
   ...getShareConfig({
     title: 'DM工具箱 - 不实用的工具',
     path: '/pages/index/index',
     imageUrl: '/static/dm-logo.png'
-  }),
-  data() {
-    return {
-      toolsList: []
-    }
-  },
-  onLoad() {
-    this.loadTools()
-  },
-  onShow() {
-    // 每次页面显示时重新加载工具列表（包括从其他页面返回）
-    this.loadTools()
-  },
-  methods: {
-    async loadTools() {
-      try {
-        const allTools = await getToolsList()
-        this.toolsList = getVisibleTools(allTools)
-      } catch (e) {
-        console.error('加载工具列表失败:', e)
-      }
-    },
-    gotoPage(item: any) {
-      if (!item.url) return
-      uni.navigateTo({
-        url: item.url
-      })
-    }
+  })
+}
+</script>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { onLoad, onShow } from '@dcloudio/uni-app'
+import { getToolsList, getVisibleTools, type ToolItem } from '@/utils/toolsManager'
+
+const toolsList = ref<ToolItem[]>([])
+
+const loadTools = async () => {
+  try {
+    const allTools = await getToolsList()
+    toolsList.value = getVisibleTools(allTools)
+  } catch (error) {
+    console.error('加载工具列表失败:', error)
   }
 }
+
+const gotoPage = (item: ToolItem) => {
+  if (!item.url) {
+    return
+  }
+
+  uni.navigateTo({
+    url: item.url
+  })
+}
+
+onLoad(() => {
+  void loadTools()
+})
+
+onShow(() => {
+  void loadTools()
+})
 </script>
 
 <style lang="scss" scoped>

@@ -64,7 +64,7 @@ export default {
 <script setup lang="ts">
 import { reactive } from 'vue'
 import EncodeUtils from './endecode-lib.js'
-import ConversionCard from './ConversionCard.vue'
+import ConversionCard from '@/components/base64Conver/ConversionCard.vue'
 import PageHeader from '@/components/PageHeader.vue'
 
 // 统一管理所有转换类型的状态
