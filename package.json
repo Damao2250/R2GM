@@ -2,6 +2,7 @@
   "name": "r2dm-uniapp",
   "version": "1.0.0",
   "description": "R2DM - UniApp Project",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "uni",

@@ -292,4 +292,4 @@ npm run build:h5
 - `src/pages.json` 只保留工具链需要的页面路径与 `type` 元信息，不建议手动编辑。
 - 修改配置后用 `npm run sync:config` 更新 `src/manifest.json` 和 `src/pages.json` 的派生内容。
 - `npm run check:config-sync` 可用于 CI 或提交前检查配置漂移。
-- 本仓库未附带 `LICENSE` 文件，如需开源发布，建议补充正式许可证声明。
+- 本仓库当前采用 `MIT` License，详见根目录 [LICENSE](./LICENSE)。
