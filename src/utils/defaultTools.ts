@@ -108,13 +108,13 @@ export function getDefaultToolsList(): ToolItem[] {
     },
     {
       title: '灵感罗盘',
-      url: '/pages/components/compass/compass',
+      url: '/pkg-device/compass/compass',
       icon: '🧭',
       visible: true
     },
     {
       title: 'BMI计算',
-      url: '/pages/components/bmiCalculator/bmiCalculator',
+      url: '/pkg-health/bmiCalculator/bmiCalculator',
       icon: '⚖️',
       visible: true
     },

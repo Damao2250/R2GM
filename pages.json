@@ -34,20 +34,6 @@
       }
     },
     {
-      "path": "pages/components/bmiCalculator/bmiCalculator",
-      "style": {
-        "navigationBarTitleText": "BMI计算器",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/components/compass/compass",
-      "style": {
-        "navigationBarTitleText": "灵感罗盘",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
       "path": "pages/components/convertCurrency/convertCurrency",
       "style": {
         "navigationBarTitleText": "金额转大写",
@@ -151,6 +137,32 @@
         "navigationBarTitleText": "单位转换",
         "enablePullDownRefresh": false
       }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pkg-health",
+      "pages": [
+        {
+          "path": "bmiCalculator/bmiCalculator",
+          "style": {
+            "navigationBarTitleText": "BMI计算器",
+            "enablePullDownRefresh": false
+          }
+        }
+      ]
+    },
+    {
+      "root": "pkg-device",
+      "pages": [
+        {
+          "path": "compass/compass",
+          "style": {
+            "navigationBarTitleText": "灵感罗盘",
+            "enablePullDownRefresh": false
+          }
+        }
+      ]
     }
   ],
   "uniIdRouter": {}

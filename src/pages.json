@@ -25,14 +25,6 @@
       "type": "page"
     },
     {
-      "path": "pages/components/bmiCalculator/bmiCalculator",
-      "type": "page"
-    },
-    {
-      "path": "pages/components/compass/compass",
-      "type": "page"
-    },
-    {
       "path": "pages/components/convertCurrency/convertCurrency",
       "type": "page"
     },
@@ -93,5 +85,32 @@
       "type": "page"
     }
   ],
-  "subPackages": []
+  "subPackages": [
+    {
+      "root": "pkg-health",
+      "pages": [
+        {
+          "path": "bmiCalculator/bmiCalculator",
+          "style": {
+            "navigationBarTitleText": "BMI计算器",
+            "enablePullDownRefresh": false
+          },
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "root": "pkg-device",
+      "pages": [
+        {
+          "path": "compass/compass",
+          "style": {
+            "navigationBarTitleText": "灵感罗盘",
+            "enablePullDownRefresh": false
+          },
+          "type": "page"
+        }
+      ]
+    }
+  ]
 }

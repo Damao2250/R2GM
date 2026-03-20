@@ -7,8 +7,6 @@ interface NavigateToOptions {
   url: "/pages/index/index" |
        "/pages/components/base64Conver/base64Conver" |
        "/pages/components/birthdayCalculator/birthdayCalculator" |
-       "/pages/components/bmiCalculator/bmiCalculator" |
-       "/pages/components/compass/compass" |
        "/pages/components/convertCurrency/convertCurrency" |
        "/pages/components/countdown/countdown" |
        "/pages/components/deviceInfo/deviceInfo" |
@@ -23,7 +21,9 @@ interface NavigateToOptions {
        "/pages/components/systemSettings/systemSettings" |
        "/pages/components/timeNow/timeNow" |
        "/pages/components/toolsManager/toolsManager" |
-       "/pages/components/unitConvert/unitConvert";
+       "/pages/components/unitConvert/unitConvert" |
+       "/pkg-health/bmiCalculator/bmiCalculator" |
+       "/pkg-device/compass/compass";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 

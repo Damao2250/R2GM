@@ -24,7 +24,13 @@ const buildSrcPagesConfig = rootPagesConfig => {
       path: page.path,
       type: page.path === homePagePath || index === 0 ? 'home' : 'page'
     })),
-    subPackages: rootPagesConfig.subPackages ?? []
+    subPackages: (rootPagesConfig.subPackages ?? []).map((subPackage) => ({
+      ...subPackage,
+      pages: (subPackage.pages ?? []).map((page) => ({
+        ...page,
+        type: 'page'
+      }))
+    }))
   }
 }
 

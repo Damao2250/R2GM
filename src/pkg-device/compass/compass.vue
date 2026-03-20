@@ -113,13 +113,22 @@
   </view>
 </template>
 
+<route lang="json5">
+{
+  style: {
+    navigationBarTitleText: '灵感罗盘',
+    enablePullDownRefresh: false
+  }
+}
+</route>
+
 <script lang="ts">
 import { getShareConfig } from '@/utils/useShare'
 
 export default {
   ...getShareConfig({
     title: '灵感罗盘 - DM工具箱',
-    path: '/pages/components/compass/compass'
+    path: '/pkg-device/compass/compass'
   })
 }
 </script>
@@ -454,7 +463,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-@use '../../../styles/theme.scss' as *;
+@use '../../styles/theme.scss' as *;
 
 .container {
   min-height: 100vh;

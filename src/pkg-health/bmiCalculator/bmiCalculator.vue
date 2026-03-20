@@ -49,13 +49,22 @@
   </view>
 </template>
 
+<route lang="json5">
+{
+  style: {
+    navigationBarTitleText: 'BMI计算器',
+    enablePullDownRefresh: false
+  }
+}
+</route>
+
 <script lang="ts">
 import { getShareConfig } from '@/utils/useShare'
 
 export default {
   ...getShareConfig({
     title: 'BMI计算器 - DM工具箱',
-    path: '/pages/components/bmiCalculator/bmiCalculator'
+    path: '/pkg-health/bmiCalculator/bmiCalculator'
   })
 }
 </script>
