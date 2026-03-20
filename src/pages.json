@@ -11,6 +11,34 @@
       "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
     }
   },
+  "subPackages": [
+    {
+      "root": "pkg-health",
+      "pages": [
+        {
+          "path": "bmiCalculator/bmiCalculator",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "BMI计算器",
+            "enablePullDownRefresh": false
+          }
+        }
+      ]
+    },
+    {
+      "root": "pkg-device",
+      "pages": [
+        {
+          "path": "compass/compass",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "灵感罗盘",
+            "enablePullDownRefresh": false
+          }
+        }
+      ]
+    }
+  ],
   "pages": [
     {
       "path": "pages/index/index",
@@ -83,34 +111,6 @@
     {
       "path": "pages/components/unitConvert/unitConvert",
       "type": "page"
-    }
-  ],
-  "subPackages": [
-    {
-      "root": "pkg-health",
-      "pages": [
-        {
-          "path": "bmiCalculator/bmiCalculator",
-          "style": {
-            "navigationBarTitleText": "BMI计算器",
-            "enablePullDownRefresh": false
-          },
-          "type": "page"
-        }
-      ]
-    },
-    {
-      "root": "pkg-device",
-      "pages": [
-        {
-          "path": "compass/compass",
-          "style": {
-            "navigationBarTitleText": "灵感罗盘",
-            "enablePullDownRefresh": false
-          },
-          "type": "page"
-        }
-      ]
     }
   ]
 }
