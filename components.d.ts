@@ -8,6 +8,11 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ConversionCard: typeof import('./src/components/base64Conver/ConversionCard.vue')['default']
+    FenceCalculator: typeof import('./src/components/fenceCalculator/fenceCalculator.vue')['default']
+    MatrixEvolver: typeof import('./src/components/matrixEvolver/matrixEvolver.vue')['default']
     PageHeader: typeof import('./src/components/PageHeader.vue')['default']
+    TerrainAnalyzer: typeof import('./src/components/terrainAnalyzer/terrainAnalyzer.vue')['default']
+    WdButton: typeof import('wot-design-uni/components/wd-button/wd-button.vue')['default']
+    WdInput: typeof import('wot-design-uni/components/wd-input/wd-input.vue')['default']
   }
 }
