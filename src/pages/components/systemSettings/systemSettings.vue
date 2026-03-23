@@ -158,7 +158,7 @@ interface SystemInfo {
 }
 
 const storageSize = ref('计算中...')
-const appVersion = ref('0.1.8')
+const appVersion = ref('0.1.9')
 const isCheckingUpdate = ref(false)
 const systemInfo = ref<SystemInfo>({
   platform: '',
