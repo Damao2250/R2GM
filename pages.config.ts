@@ -22,5 +22,9 @@ export default defineUniPages({
       root: 'pkg-device',
       pages: [],
     },
+    {
+      root: 'pkg-more',
+      pages: [],
+    },
   ],
 })

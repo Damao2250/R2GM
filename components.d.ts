@@ -12,6 +12,7 @@ declare module 'vue' {
     MatrixEvolver: typeof import('./src/components/matrixEvolver/matrixEvolver.vue')['default']
     PageHeader: typeof import('./src/components/PageHeader.vue')['default']
     TerrainAnalyzer: typeof import('./src/components/terrainAnalyzer/terrainAnalyzer.vue')['default']
+    ToolGrid: typeof import('./src/components/ToolGrid.vue')['default']
     WdButton: typeof import('wot-design-uni/components/wd-button/wd-button.vue')['default']
     WdInput: typeof import('wot-design-uni/components/wd-input/wd-input.vue')['default']
   }

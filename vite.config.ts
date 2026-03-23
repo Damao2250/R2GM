@@ -18,7 +18,7 @@ export default async ({ command, mode }: ConfigEnv): Promise<UserConfig> => {
     envDir: './env',
     plugins: [
       UniPages({
-        subPackages: ['src/pkg-health', 'src/pkg-device']
+        subPackages: ['src/pkg-health', 'src/pkg-device', 'src/pkg-more']
       }),
       UniComponents({
         resolvers: [WotResolver()]

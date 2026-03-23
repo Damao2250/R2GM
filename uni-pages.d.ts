@@ -23,7 +23,17 @@ interface NavigateToOptions {
        "/pages/components/toolsManager/toolsManager" |
        "/pages/components/unitConvert/unitConvert" |
        "/pkg-health/bmiCalculator/bmiCalculator" |
-       "/pkg-device/compass/compass";
+       "/pkg-device/compass/compass" |
+       "/pkg-more/destinyPanel/destinyPanel" |
+       "/pkg-more/directionEasterEgg/directionEasterEgg" |
+       "/pkg-more/emergencyShow/emergencyShow" |
+       "/pkg-more/localPersona/localPersona" |
+       "/pkg-more/moreTools/moreTools" |
+       "/pkg-more/procrastinationStarter/procrastinationStarter" |
+       "/pkg-more/resultCardFactory/resultCardFactory" |
+       "/pkg-more/reverseDecider/reverseDecider" |
+       "/pkg-more/timeCapsule/timeCapsule" |
+       "/pkg-more/toolBlindBox/toolBlindBox";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 

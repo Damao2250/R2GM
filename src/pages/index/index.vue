@@ -3,25 +3,15 @@
     <!-- 页面头部 -->
     <view class="page-header">
       <view class="header-content">
-        <image class="logo" src="/static/dm-logo.png"></image>
+        <image class="logo" src="/static/dm-logo.png" @longpress="openBlindBox"></image>
         <text class="page-title">DM工具箱</text>
+        <text class="page-tip">长按 Logo 可直接打开工具盲盒</text>
       </view>
     </view>
 
     <!-- 页面内容 -->
     <view class="page-content">
-      <!-- 工具网格 -->
-      <view class="tools-grid">
-        <view
-          v-for="(item, index) in toolsList"
-          :key="`${item.url}-${index}`"
-          class="tool-item"
-          @click="gotoPage(item)"
-        >
-          <view class="tool-icon">{{ item.icon }}</view>
-          <text class="tool-name">{{ item.title }}</text>
-        </view>
-      </view>
+      <ToolGrid :items="toolsList" @select="gotoPage" />
     </view>
   </view>
 </template>
@@ -41,7 +31,9 @@ export default {
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
+import ToolGrid from '@/components/ToolGrid.vue'
 import { getToolsList, getVisibleTools, type ToolItem } from '@/utils/toolsManager'
+import { recordToolUsage } from '@/utils/toolUsage'
 
 const toolsList = ref<ToolItem[]>([])
 
@@ -59,8 +51,26 @@ const gotoPage = (item: ToolItem) => {
     return
   }
 
+  recordToolUsage({
+    title: item.title,
+    url: item.url
+  }, 'home')
+
   uni.navigateTo({
     url: item.url
+  })
+}
+
+const openBlindBox = () => {
+  const blindBoxUrl = '/pkg-more/toolBlindBox/toolBlindBox'
+
+  recordToolUsage({
+    title: '工具盲盒',
+    url: blindBoxUrl
+  }, 'home-logo')
+
+  uni.navigateTo({
+    url: blindBoxUrl
   })
 }
 
@@ -116,54 +126,17 @@ onShow(() => {
       line-height: 1.2;
       color: white;
     }
+
+    .page-tip {
+      margin-top: 12rpx;
+      font-size: 24rpx;
+      line-height: 1.5;
+      opacity: 0.92;
+    }
   }
 }
 
 .page-content {
   padding: 30rpx;
-}
-
-.tools-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30rpx;
-  margin-top: 20rpx;
-
-  .tool-item {
-    background-color: white;
-    border-radius: 20rpx;
-    padding: 30rpx;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    flex: 1;
-    min-width: 120px;
-    min-height: 90px;
-    border: 2px solid #e0e0e0;
-    /* #ifndef MP */
-    transition: all 0.3s ease;
-    /* #endif */
-
-    &:active {
-      /* #ifdef H5 */
-      transform: scale(0.95);
-      /* #endif */
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .tool-icon {
-      font-size: 28px;
-      margin-bottom: 4px;
-    }
-
-    .tool-name {
-      font-size: 28rpx;
-      color: #333;
-      font-weight: 500;
-    }
-  }
 }
 </style>

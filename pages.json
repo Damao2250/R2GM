@@ -163,6 +163,81 @@
           }
         }
       ]
+    },
+    {
+      "root": "pkg-more",
+      "pages": [
+        {
+          "path": "moreTools/moreTools",
+          "style": {
+            "navigationBarTitleText": "更多工具",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "toolBlindBox/toolBlindBox",
+          "style": {
+            "navigationBarTitleText": "工具盲盒",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "resultCardFactory/resultCardFactory",
+          "style": {
+            "navigationBarTitleText": "结果卡片工厂",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "destinyPanel/destinyPanel",
+          "style": {
+            "navigationBarTitleText": "今日命运面板",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "timeCapsule/timeCapsule",
+          "style": {
+            "navigationBarTitleText": "时间胶囊",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "directionEasterEgg/directionEasterEgg",
+          "style": {
+            "navigationBarTitleText": "方向彩蛋",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "reverseDecider/reverseDecider",
+          "style": {
+            "navigationBarTitleText": "反向决策器",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "procrastinationStarter/procrastinationStarter",
+          "style": {
+            "navigationBarTitleText": "拖延启动器",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "localPersona/localPersona",
+          "style": {
+            "navigationBarTitleText": "本地人格画像",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "emergencyShow/emergencyShow",
+          "style": {
+            "navigationBarTitleText": "紧急演出模式",
+            "enablePullDownRefresh": false
+          }
+        }
+      ]
     }
   ],
   "uniIdRouter": {}

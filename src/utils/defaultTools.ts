@@ -119,6 +119,12 @@ export function getDefaultToolsList(): ToolItem[] {
       visible: true
     },
     {
+      title: '更多工具',
+      url: '/pkg-more/moreTools/moreTools',
+      icon: '🪄',
+      visible: true
+    },
+    {
       title: '系统设置',
       url: '/pages/components/systemSettings/systemSettings',
       icon: '⚙️',

@@ -11,6 +11,119 @@
       "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
     }
   },
+  "subPackages": [
+    {
+      "root": "pkg-health",
+      "pages": [
+        {
+          "path": "bmiCalculator/bmiCalculator",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "BMI计算器",
+            "enablePullDownRefresh": false
+          }
+        }
+      ]
+    },
+    {
+      "root": "pkg-device",
+      "pages": [
+        {
+          "path": "compass/compass",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "灵感罗盘",
+            "enablePullDownRefresh": false
+          }
+        }
+      ]
+    },
+    {
+      "root": "pkg-more",
+      "pages": [
+        {
+          "path": "destinyPanel/destinyPanel",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "今日命运面板",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "directionEasterEgg/directionEasterEgg",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "方向彩蛋",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "emergencyShow/emergencyShow",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "紧急演出模式",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "localPersona/localPersona",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "本地人格画像",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "moreTools/moreTools",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "更多工具",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "procrastinationStarter/procrastinationStarter",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "拖延启动器",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "resultCardFactory/resultCardFactory",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "结果卡片工厂",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "reverseDecider/reverseDecider",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "反向决策器",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "timeCapsule/timeCapsule",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "时间胶囊",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "toolBlindBox/toolBlindBox",
+          "type": "page",
+          "style": {
+            "navigationBarTitleText": "工具盲盒",
+            "enablePullDownRefresh": false
+          }
+        }
+      ]
+    }
+  ],
   "pages": [
     {
       "path": "pages/index/index",
@@ -83,34 +196,6 @@
     {
       "path": "pages/components/unitConvert/unitConvert",
       "type": "page"
-    }
-  ],
-  "subPackages": [
-    {
-      "root": "pkg-health",
-      "pages": [
-        {
-          "path": "bmiCalculator/bmiCalculator",
-          "style": {
-            "navigationBarTitleText": "BMI计算器",
-            "enablePullDownRefresh": false
-          },
-          "type": "page"
-        }
-      ]
-    },
-    {
-      "root": "pkg-device",
-      "pages": [
-        {
-          "path": "compass/compass",
-          "style": {
-            "navigationBarTitleText": "灵感罗盘",
-            "enablePullDownRefresh": false
-          },
-          "type": "page"
-        }
-      ]
     }
   ]
 }

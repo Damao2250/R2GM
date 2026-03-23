@@ -11,20 +11,52 @@ export { getDefaultToolsList } from './defaultTools'
 
 const TOOLS_CONFIG_KEY = 'tools_config'
 
+const mergeToolsWithDefaults = (savedTools: ToolItem[], defaultTools: ToolItem[]): ToolItem[] => {
+  const defaultToolMap = new Map(defaultTools.map((tool) => [tool.url, tool]))
+  const mergedTools: ToolItem[] = []
+  const existingUrls = new Set<string>()
+
+  for (const savedTool of savedTools) {
+    const defaultTool = defaultToolMap.get(savedTool.url)
+
+    if (!defaultTool || existingUrls.has(savedTool.url)) {
+      continue
+    }
+
+    mergedTools.push({
+      ...defaultTool,
+      visible: savedTool.visible
+    })
+    existingUrls.add(savedTool.url)
+  }
+
+  for (const defaultTool of defaultTools) {
+    if (existingUrls.has(defaultTool.url)) {
+      continue
+    }
+
+    mergedTools.push(defaultTool)
+  }
+
+  return mergedTools
+}
+
 /**
  * 获取工具列表（按用户配置顺序）
  */
 export async function getToolsList(): Promise<ToolItem[]> {
+  const defaultTools = getDefaultToolsList()
+
   try {
     const config = await uni.getStorage({ key: TOOLS_CONFIG_KEY })
-    if (config.data && config.data.tools) {
-      return config.data.tools
+    if (config.data && Array.isArray(config.data.tools)) {
+      return mergeToolsWithDefaults(config.data.tools, defaultTools)
     }
   } catch (e) {
     // 配置不存在，使用默认列表
   }
 
-  return getDefaultToolsList()
+  return defaultTools
 }
 
 /**
