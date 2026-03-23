@@ -70,9 +70,9 @@ export default {
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import dayjs from '@/utils/dayjs'
-import { moreToolIdeas } from '@/utils/moreTools'
+import { moreToolIdeas } from '../utils/moreTools'
 import { getToolsList, getVisibleTools } from '@/utils/toolsManager'
-import { createSensorApi, registerAccelerometerListener, startAccelerometerSensor, stopAccelerometerSensor, type SensorAxes } from '@/utils/motionSensor'
+import { createSensorApi, registerAccelerometerListener, startAccelerometerSensor, stopAccelerometerSensor, type SensorAxes } from '../utils/motionSensor'
 import { recordPersonaSignal, recordToolUsage } from '@/utils/toolUsage'
 
 interface BlindBoxTool {

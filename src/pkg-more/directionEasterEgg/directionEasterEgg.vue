@@ -71,7 +71,7 @@ export default {
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
-import { createSensorApi, getDirectionName, getTiltFromAxes, registerAccelerometerListener, registerCompassListener, startAccelerometerSensor, startCompassSensor, stopAccelerometerSensor, stopCompassSensor, type SensorAxes } from '@/utils/motionSensor'
+import { createSensorApi, getDirectionName, getTiltFromAxes, registerAccelerometerListener, registerCompassListener, startAccelerometerSensor, startCompassSensor, stopAccelerometerSensor, stopCompassSensor, type SensorAxes } from '../utils/motionSensor'
 import { recordPersonaSignal } from '@/utils/toolUsage'
 
 type RoomId = 'north' | 'east' | 'south' | 'west'

@@ -96,7 +96,7 @@ export default {
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import dayjs from '@/utils/dayjs'
-import { createSensorApi, getDirectionName, registerCompassListener, startCompassSensor, stopCompassSensor } from '@/utils/motionSensor'
+import { createSensorApi, getDirectionName, registerCompassListener, startCompassSensor, stopCompassSensor } from '../utils/motionSensor'
 import { recordPersonaSignal } from '@/utils/toolUsage'
 
 interface FortuneScore {

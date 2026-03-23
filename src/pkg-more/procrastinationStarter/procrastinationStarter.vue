@@ -69,7 +69,7 @@ export default {
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
-import { moreToolIdeas } from '@/utils/moreTools'
+import { moreToolIdeas } from '../utils/moreTools'
 import { getToolsList, getVisibleTools } from '@/utils/toolsManager'
 import { recordPersonaSignal, recordToolUsage } from '@/utils/toolUsage'
 

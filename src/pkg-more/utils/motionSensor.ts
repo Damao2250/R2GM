@@ -218,19 +218,24 @@ export const startAccelerometerSensor = async (api: ReturnType<typeof createSens
 export const stopCompassListener = (api: ReturnType<typeof createSensorApi>) => {
   if (typeof api.offCompassChange === 'function') {
     api.offCompassChange()
-  } else if (typeof api.offCompass === 'function') {
-    api.offCompass()
+    return
   }
+
+  api.offCompass?.()
 }
 
 export const stopAccelerometerListener = (api: ReturnType<typeof createSensorApi>) => {
   if (typeof api.offAccelerometerChange === 'function') {
     api.offAccelerometerChange()
-  } else if (typeof api.offAccelerometer === 'function') {
-    api.offAccelerometer()
-  } else if (typeof api.offDeviceMotionChange === 'function') {
-    api.offDeviceMotionChange()
+    return
   }
+
+  if (typeof api.offAccelerometer === 'function') {
+    api.offAccelerometer()
+    return
+  }
+
+  api.offDeviceMotionChange?.()
 }
 
 export const stopCompassSensor = (api: ReturnType<typeof createSensorApi>) => {

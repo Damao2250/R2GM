@@ -85,7 +85,7 @@ export default {
 import { computed, onMounted, ref, watch } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import dayjs from '@/utils/dayjs'
-import { drawRoundedRect, exportCanvasImage, flushCanvasDraw, getErrorMessage, wrapCanvasText } from '@/utils/canvasTools'
+import { drawRoundedRect, exportCanvasImage, flushCanvasDraw, getErrorMessage, wrapCanvasText } from '../utils/canvasTools'
 import { recordPersonaSignal } from '@/utils/toolUsage'
 
 interface CardTemplate {

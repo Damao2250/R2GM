@@ -81,7 +81,7 @@ export default {
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import drawQrcode from 'weapp-qrcode'
 import PageHeader from '@/components/PageHeader.vue'
-import { exportCanvasImage, getErrorMessage } from '@/utils/canvasTools'
+import { exportCanvasImage, getErrorMessage } from '../utils/canvasTools'
 import { recordPersonaSignal } from '@/utils/toolUsage'
 
 type ShowTab = 'board' | 'qr' | 'sos' | 'morse'

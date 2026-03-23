@@ -42,7 +42,7 @@ export default {
 
 <script setup lang="ts">
 import ToolGrid from '@/components/ToolGrid.vue'
-import { moreToolIdeas, type MoreToolIdeaItem } from '@/utils/moreTools'
+import { moreToolIdeas, type MoreToolIdeaItem } from '../utils/moreTools'
 import { recordToolUsage } from '@/utils/toolUsage'
 
 const openTool = (item: MoreToolIdeaItem) => {
