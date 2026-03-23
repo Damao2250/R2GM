@@ -1,3 +1,5 @@
+import dayjs from './dayjs'
+
 export interface ToolUsageRecord {
   title: string
   url: string
@@ -59,12 +61,14 @@ export const recordToolUsage = (
   source = 'unknown'
 ) => {
   const history = readList<ToolUsageRecord>(TOOL_USAGE_KEY)
+  const now = dayjs()
+
   history.unshift({
     title: item.title,
     url: item.url,
     source,
-    openedAt: Date.now(),
-    hour: new Date().getHours()
+    openedAt: now.valueOf(),
+    hour: now.hour()
   })
 
   writeList(TOOL_USAGE_KEY, history.slice(0, MAX_TOOL_HISTORY))
@@ -79,7 +83,7 @@ export const recordPersonaSignal = (type: string, meta?: string) => {
   history.unshift({
     type,
     meta,
-    createdAt: Date.now()
+    createdAt: dayjs().valueOf()
   })
 
   writeList(PERSONA_SIGNAL_KEY, history.slice(0, MAX_SIGNAL_HISTORY))

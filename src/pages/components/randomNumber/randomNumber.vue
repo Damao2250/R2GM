@@ -216,6 +216,7 @@ export default {
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import dayjs from '@/utils/dayjs'
 
 // 随机数生成相关
 const minValue = ref('1')
@@ -255,7 +256,7 @@ const diceSum = computed(() => {
  */
 const getSecureRandom = () => {
   // 方法1: 使用Date的毫秒时间戳
-  const now = Date.now()
+  const now = dayjs().valueOf()
   const timeSeed = (now * Math.random()) % 1
 
   // 方法2: 使用多次Math.random()混合
@@ -266,7 +267,7 @@ const getSecureRandom = () => {
   mixedRandom = mixedRandom % 1
 
   // 方法3: 使用JSON.stringify的对象引用作为额外随机源
-  const objSeed = (Math.random() + new Date().getMilliseconds() / 1000) % 1
+  const objSeed = (Math.random() + dayjs().millisecond() / 1000) % 1
 
   // 混合所有随机源
   const combined = (timeSeed + mixedRandom + objSeed) / 3

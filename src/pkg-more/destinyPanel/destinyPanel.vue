@@ -95,6 +95,7 @@ export default {
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import dayjs from '@/utils/dayjs'
 import { createSensorApi, getDirectionName, registerCompassListener, startCompassSensor, stopCompassSensor } from '@/utils/motionSensor'
 import { recordPersonaSignal } from '@/utils/toolUsage'
 
@@ -174,12 +175,11 @@ const getConstellation = (birthdayText: string) => {
 }
 
 const seedValue = (offset: number) => {
-  const now = new Date()
   const nameSeed = Array.from(userName.value || '匿名工具人').reduce((total, char) => total + char.charCodeAt(0), 0)
   const birthdaySeed = birthday.value
     ? birthday.value.replace(/-/g, '').split('').reduce((total, char) => total + Number.parseInt(char, 10), 0)
     : 17
-  const baseSeed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate()
+  const baseSeed = Number(dayjs().format('YYYYMMDD'))
   const mixed = Math.sin(baseSeed + birthdaySeed * 13 + nameSeed * 7 + offset * 17) * 10000
 
   return mixed - Math.floor(mixed)

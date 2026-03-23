@@ -144,6 +144,7 @@ export default {
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import dayjs from '@/utils/dayjs'
 
 interface WifiInfo {
   SSID?: string
@@ -279,7 +280,7 @@ const checkDnsAvailability = async () => {
 // 检测网络延迟
 const checkNetworkLatency = async () => {
   try {
-    const startTime = Date.now()
+    const startTime = dayjs().valueOf()
     // 使用百度首页检测延迟（国内访问较快）
     await uni.request({
       url: 'https://www.baidu.com/',
@@ -287,19 +288,19 @@ const checkNetworkLatency = async () => {
       timeout: 8000,
       withCredentials: false
     })
-    const endTime = Date.now()
+    const endTime = dayjs().valueOf()
     networkLatency.value = endTime - startTime
   } catch (e) {
     // 尝试备选地址
     try {
-      const startTime = Date.now()
+      const startTime = dayjs().valueOf()
       await uni.request({
         url: 'https://www.qq.com',
         method: 'HEAD',
         timeout: 8000,
         withCredentials: false
       })
-      const endTime = Date.now()
+      const endTime = dayjs().valueOf()
       networkLatency.value = endTime - startTime
     } catch (err) {
       networkLatency.value = null

@@ -148,9 +148,10 @@ export default {
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import dayjs, { type Dayjs } from '@/utils/dayjs'
 
 // 时间相关的 ref
-const currentTime = ref(new Date())
+const currentTime = ref<Dayjs>(dayjs())
 let timer: number | null = null
 
 // UI 状态
@@ -182,42 +183,37 @@ onBeforeUnmount(() => {
 
 // 时间更新函数
 const updateTime = () => {
-  currentTime.value = new Date()
+  currentTime.value = dayjs()
 }
 
 // 通用时间分量提取和格式化
-const getTimeParts = (time: Date) => {
+const getTimeParts = (time: Dayjs) => {
   return {
-    year: time.getFullYear(),
-    month: String(time.getMonth() + 1).padStart(2, '0'),
-    day: String(time.getDate()).padStart(2, '0'),
-    hours: String(time.getHours()).padStart(2, '0'),
-    minutes: String(time.getMinutes()).padStart(2, '0'),
-    seconds: String(time.getSeconds()).padStart(2, '0'),
-    milliseconds: String(time.getMilliseconds()).padStart(3, '0')
+    year: time.year(),
+    month: time.format('MM'),
+    day: time.format('DD'),
+    hours: time.format('HH'),
+    minutes: time.format('mm'),
+    seconds: time.format('ss'),
+    milliseconds: time.format('SSS')
   }
 }
 
 // 完整格式：YYYY-MM-DD HH:MM:SS.mmm
-const formatFull = (time: Date): string => {
+const formatFull = (time: Dayjs): string => {
   const { year, month, day, hours, minutes, seconds, milliseconds } = getTimeParts(time)
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`
 }
 
 // 简洁格式：YYYY-MM-DD HH:MM:SS
-const formatShort = (time: Date): string => {
+const formatShort = (time: Dayjs): string => {
   const { year, month, day, hours, minutes, seconds } = getTimeParts(time)
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
 
 // 12小时制：MM-DD HH:MM:SS AM/PM
-const format12Hour = (time: Date): string => {
-  const { month, day, minutes, seconds } = getTimeParts(time)
-  let hours = time.getHours()
-  const ampm = hours >= 12 ? 'PM' : 'AM'
-  hours = hours % 12 || 12
-  const hoursStr = String(hours).padStart(2, '0')
-  return `${month}-${day} ${hoursStr}:${minutes}:${seconds} ${ampm}`
+const format12Hour = (time: Dayjs): string => {
+  return time.format('MM-DD hh:mm:ss A')
 }
 
 // 格式化主显示时间
@@ -239,22 +235,19 @@ const DAYS_OF_WEEK = ['星期日', '星期一', '星期二', '星期三', '星�
 
 // 计算属性
 const dayOfWeek = computed(() => {
-  return DAYS_OF_WEEK[currentTime.value.getDay()]
+  return DAYS_OF_WEEK[currentTime.value.day()]
 })
 
 const dayOfYear = computed(() => {
-  const time = currentTime.value
-  const start = new Date(time.getFullYear(), 0, 0)
-  const diff = time.getTime() - start.getTime()
-  return Math.floor(diff / 86400000)
+  return currentTime.value.diff(currentTime.value.startOf('year'), 'day') + 1
 })
 
 const timestamp = computed(() => {
-  return Math.floor(currentTime.value.getTime() / 1000).toString()
+  return currentTime.value.unix().toString()
 })
 
 const timezone = computed(() => {
-  const offset = -currentTime.value.getTimezoneOffset()
+  const offset = currentTime.value.utcOffset()
   const hours = Math.floor(Math.abs(offset) / 60)
   const minutes = Math.abs(offset) % 60
   const sign = offset >= 0 ? '+' : '-'
@@ -262,16 +255,16 @@ const timezone = computed(() => {
 })
 
 const currentYear = computed(() => {
-  return currentTime.value.getFullYear().toString()
+  return currentTime.value.format('YYYY')
 })
 
 const currentMonth = computed(() => {
-  const month = currentTime.value.getMonth() + 1
+  const month = currentTime.value.month() + 1
   return `${month}月`
 })
 
 const season = computed(() => {
-  const month = currentTime.value.getMonth() + 1
+  const month = currentTime.value.month() + 1
   if (month >= 3 && month <= 5) return '春季'
   if (month >= 6 && month <= 8) return '夏季'
   if (month >= 9 && month <= 11) return '秋季'
@@ -279,28 +272,16 @@ const season = computed(() => {
 })
 
 const weekNumber = computed(() => {
-  const time = currentTime.value
-  const first = new Date(time.getFullYear(), 0, 1)
-  const days = Math.floor((time.getTime() - first.getTime()) / 86400000)
-  return Math.ceil((days + first.getDay() + 1) / 7)
+  return currentTime.value.week()
 })
 
 // 完整格式分行显示
 const formattedDate = computed(() => {
-  const time = currentTime.value
-  const year = time.getFullYear()
-  const month = String(time.getMonth() + 1).padStart(2, '0')
-  const day = String(time.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
+  return currentTime.value.format('YYYY-MM-DD')
 })
 
 const formattedTime = computed(() => {
-  const time = currentTime.value
-  const hours = String(time.getHours()).padStart(2, '0')
-  const minutes = String(time.getMinutes()).padStart(2, '0')
-  const seconds = String(time.getSeconds()).padStart(2, '0')
-  const milliseconds = String(time.getMilliseconds()).padStart(3, '0')
-  return `${hours}:${minutes}:${seconds}.${milliseconds}`
+  return currentTime.value.format('HH:mm:ss.SSS')
 })
 
 // 复制函数
@@ -411,24 +392,18 @@ const worldCities = [
 
 const worldCitiesInfo = computed(() => {
   const time = currentTime.value
-  const localOffset = -time.getTimezoneOffset() / 60
-  
-  // 获取 UTC 时间
-  const utcHours = time.getUTCHours()
-  const utcMinutes = time.getUTCMinutes()
-  const utcSeconds = time.getUTCSeconds()
-  const milliseconds = time.getMilliseconds()
+  const localOffset = time.utcOffset() / 60
 
   return worldCities.map(city => {
-    // 计算目标时区的时间 = UTC时间 + 时区偏移
-    // 使用 ((x % 24) + 24) % 24 来正确处理负数
-    const hours = ((utcHours + city.offset) % 24 + 24) % 24
-    const minutes = utcMinutes
-    const seconds = utcSeconds
-    
+    const cityTime = time.utc().utcOffset(city.offset * 60)
+    const hours = cityTime.hour()
+    const minutes = cityTime.minute()
+    const seconds = cityTime.second()
+    const milliseconds = cityTime.millisecond()
+
     // Day or Night (6:00 - 18:00 is Day)
     const isDay = hours >= 6 && hours < 18
-    
+
     // Offset diff
     const diffHours = city.offset - localOffset
     let diffText = ''
@@ -439,17 +414,17 @@ const worldCitiesInfo = computed(() => {
     } else {
       diffText = `比本地慢 ${Math.round(Math.abs(diffHours))} 小时`
     }
-    
+
     // Analog clock degrees
     const secondFull = seconds + milliseconds / 1000
     const secondDeg = secondFull * 6
     const minuteDeg = minutes * 6 + secondFull * 0.1
     const hourDeg = (hours % 12) * 30 + minutes * 0.5
-    
+
     return {
       ...city,
       isDay,
-      timeStr: `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`,
+      timeStr: cityTime.format('HH:mm'),
       diffText,
       secondDeg,
       minuteDeg,

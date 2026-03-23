@@ -85,6 +85,7 @@ export default {
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import dayjs from '@/utils/dayjs'
 import { recordPersonaSignal } from '@/utils/toolUsage'
 
 interface CapsuleSnapshot {
@@ -118,33 +119,17 @@ const snapshotPreview = ref<CapsuleSnapshot>({
 })
 
 const getDefaultOpenDate = () => {
-  const date = new Date(Date.now() + 86400000)
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
+  return dayjs().add(1, 'day').format('YYYY-MM-DD')
 }
 
 const minOpenDate = computed(() => getDefaultOpenDate())
 
 const formatDate = (timestamp: number) => {
-  const date = new Date(timestamp)
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-
-  return `${year}-${month}-${day}`
+  return dayjs(timestamp).format('YYYY-MM-DD')
 }
 
 const formatDateTime = (timestamp: number) => {
-  const date = new Date(timestamp)
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-
-  return `${year}-${month}-${day} ${hours}:${minutes}`
+  return dayjs(timestamp).format('YYYY-MM-DD HH:mm')
 }
 
 const loadCapsules = () => {
@@ -172,8 +157,7 @@ const saveCapsules = () => {
 }
 
 const captureSnapshot = async () => {
-  const now = new Date()
-  const timeText = formatDateTime(now.getTime())
+  const timeText = dayjs().format('YYYY-MM-DD HH:mm')
 
   try {
     const [systemInfo, networkInfo] = await Promise.all([
@@ -202,12 +186,18 @@ const refreshSnapshotPreview = async () => {
 }
 
 const isUnlocked = (capsule: TimeCapsuleRecord) => {
-  return Date.now() >= capsule.openAt
+  return dayjs().valueOf() >= capsule.openAt
 }
 
 const handleDateChange = (event: { detail?: { value?: string } }) => {
   const nextOpenDate = event.detail?.value || minOpenDate.value
-  openDate.value = nextOpenDate < minOpenDate.value ? minOpenDate.value : nextOpenDate
+  const selectedOpenDate = dayjs(nextOpenDate)
+  const minDate = dayjs(minOpenDate.value)
+
+  openDate.value =
+    !selectedOpenDate.isValid() || selectedOpenDate.isBefore(minDate, 'day')
+      ? minOpenDate.value
+      : selectedOpenDate.format('YYYY-MM-DD')
 }
 
 const createCapsule = async () => {
@@ -219,7 +209,10 @@ const createCapsule = async () => {
     return
   }
 
-  if (!openDate.value || openDate.value < minOpenDate.value) {
+  const selectedOpenDate = dayjs(openDate.value)
+  const minDate = dayjs(minOpenDate.value)
+
+  if (!selectedOpenDate.isValid() || selectedOpenDate.isBefore(minDate, 'day')) {
     openDate.value = minOpenDate.value
     uni.showToast({
       title: '开启日期至少要从明天开始',
@@ -229,9 +222,10 @@ const createCapsule = async () => {
   }
 
   const snapshot = await captureSnapshot()
-  const openAt = new Date(`${openDate.value}T09:00:00`).getTime()
+  const now = dayjs()
+  const openAt = selectedOpenDate.hour(9).minute(0).second(0).millisecond(0).valueOf()
 
-  if (openAt <= Date.now()) {
+  if (openAt <= now.valueOf()) {
     openDate.value = minOpenDate.value
     uni.showToast({
       title: '请选择未来日期',
@@ -240,11 +234,12 @@ const createCapsule = async () => {
     return
   }
 
+  const createdAt = now.valueOf()
   const capsule: TimeCapsuleRecord = {
-    id: `${Date.now()}`,
+    id: `${createdAt}`,
     title: capsuleTitle.value.trim(),
     note: capsuleNote.value.trim(),
-    createdAt: Date.now(),
+    createdAt,
     openAt,
     snapshot
   }

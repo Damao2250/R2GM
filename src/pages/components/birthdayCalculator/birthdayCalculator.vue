@@ -155,6 +155,7 @@ export default {
 <script setup lang="ts">
 import { ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import dayjs from '@/utils/dayjs'
 
 const birthDate = ref('')
 const isLunar = ref(false)
@@ -249,10 +250,10 @@ const calculateZodiac = () => {
     return
   }
 
-  const date = new Date(birthDate.value)
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const year = date.getFullYear()
+  const birth = dayjs(birthDate.value)
+  const month = birth.month() + 1
+  const day = birth.date()
+  const year = birth.year()
 
   // 计算星座
   const zodiac = getZodiacByDate(month, day)
@@ -266,8 +267,8 @@ const calculateZodiac = () => {
   traits.value = zodiac.traits
 
   // 计算年龄
-  const today = new Date()
-  age.value = today.getFullYear() - year - (today.getMonth() + 1 < month || (today.getMonth() + 1 === month && today.getDate() < day) ? 1 : 0)
+  const today = dayjs()
+  age.value = today.diff(birth, 'year')
 
   // 计算生肖
   chineseZodiac.value = getChineseZodiac(year)
@@ -276,11 +277,11 @@ const calculateZodiac = () => {
   zodiacDateRange.value = `${zodiac.startMonth}.${zodiac.startDay} - ${zodiac.endMonth}.${zodiac.endDay}`
 
   // 计算距离下一个生日的天数
-  let nextBirthday = new Date(today.getFullYear(), month - 1, day)
-  if (nextBirthday <= today) {
-    nextBirthday = new Date(today.getFullYear() + 1, month - 1, day)
+  let nextBirthday = birth.year(today.year())
+  if (!nextBirthday.isAfter(today, 'day')) {
+    nextBirthday = nextBirthday.add(1, 'year')
   }
-  daysUntilBirthday.value = Math.ceil((nextBirthday.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  daysUntilBirthday.value = nextBirthday.startOf('day').diff(today.startOf('day'), 'day')
 
   showResult.value = true
 

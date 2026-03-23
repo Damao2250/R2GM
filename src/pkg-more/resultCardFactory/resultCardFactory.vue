@@ -84,6 +84,7 @@ export default {
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import dayjs from '@/utils/dayjs'
 import { drawRoundedRect, exportCanvasImage, flushCanvasDraw, getErrorMessage, wrapCanvasText } from '@/utils/canvasTools'
 import { recordPersonaSignal } from '@/utils/toolUsage'
 
@@ -105,6 +106,29 @@ const CANVAS_ID = 'resultCardCanvas'
 const CANVAS_WIDTH = 720
 const CANVAS_HEIGHT = 920
 
+const getCountdownDefaults = () => {
+  const today = dayjs().startOf('day')
+  const weekday = today.day()
+
+  if (weekday === 0 || weekday === 6) {
+    return {
+      title: '距离周末还有',
+      value: '00 天',
+      summary: '周末已经开始了，先把休息和快乐认真安排上。',
+      footer: 'DM工具箱 · 倒数结果'
+    }
+  }
+
+  const daysUntilWeekend = 6 - weekday
+
+  return {
+    title: '距离周末还有',
+    value: `${String(daysUntilWeekend).padStart(2, '0')} 天`,
+    summary: `再认真撑 ${daysUntilWeekend} 天，周末就会准时来接你。`,
+    footer: 'DM工具箱 · 倒数结果'
+  }
+}
+
 const templateOptions: CardTemplate[] = [
   {
     id: 'countdown',
@@ -112,12 +136,7 @@ const templateOptions: CardTemplate[] = [
     icon: '📅',
     preview: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
     colors: ['#4f46e5', '#7c3aed'],
-    defaults: {
-      title: '距离周末还有',
-      value: '02 天',
-      summary: '把最后两天认真撑过去，周末会准时来。',
-      footer: 'DM工具箱 · 倒数结果'
-    }
+    defaults: getCountdownDefaults()
   },
   {
     id: 'birthday',
@@ -179,26 +198,21 @@ const applyTemplate = (templateId: string) => {
     return
   }
 
+  const defaults = template.id === 'countdown' ? getCountdownDefaults() : template.defaults
+
   selectedTemplateId.value = template.id
-  cardTitle.value = template.defaults.title
-  cardValue.value = template.defaults.value
-  cardSummary.value = template.defaults.summary
-  cardFooter.value = template.defaults.footer
+  cardTitle.value = defaults.title
+  cardValue.value = defaults.value
+  cardSummary.value = defaults.summary
+  cardFooter.value = defaults.footer
 }
 
 const toggleCardFooter = () => {
   showCardFooter.value = !showCardFooter.value
 }
 
-const formatDateTime24Hour = (date: Date) => {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  const seconds = String(date.getSeconds()).padStart(2, '0')
-
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+const formatDateTime24Hour = () => {
+  return dayjs().format('YYYY-MM-DD HH:mm:ss')
 }
 
 const measureCanvasText = (ctx: any, text: string, fontSize: number) => {
@@ -308,7 +322,7 @@ const generateCard = async () => {
       ctx.setFillStyle('rgba(255,255,255,0.78)')
       ctx.fillText(footerLayout.text, 66, footerStartY)
       ctx.setFontSize(24)
-      ctx.fillText(`生成时间 ${formatDateTime24Hour(new Date())}`, 66, footerStartY + 42)
+      ctx.fillText(`生成时间 ${formatDateTime24Hour()}`, 66, footerStartY + 42)
     }
 
     await flushCanvasDraw(ctx)

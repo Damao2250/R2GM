@@ -69,6 +69,7 @@ export default {
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import dayjs from '@/utils/dayjs'
 import { moreToolIdeas } from '@/utils/moreTools'
 import { getToolsList, getVisibleTools } from '@/utils/toolsManager'
 import { createSensorApi, registerAccelerometerListener, startAccelerometerSensor, stopAccelerometerSensor, type SensorAxes } from '@/utils/motionSensor'
@@ -122,8 +123,7 @@ const pickDailyOddball = (items: BlindBoxTool[]) => {
     return null
   }
 
-  const today = new Date()
-  const dayKey = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
+  const dayKey = dayjs().format('YYYY-M-D')
   let hash = 0
 
   for (const char of dayKey) {
@@ -227,8 +227,10 @@ const handleMotion = (axes: SensorAxes) => {
 
   lastAxes = axes
 
-  if (delta >= SHAKE_THRESHOLD && Date.now() - lastShakeAt > SHAKE_COOLDOWN) {
-    lastShakeAt = Date.now()
+  const now = dayjs().valueOf()
+
+  if (delta >= SHAKE_THRESHOLD && now - lastShakeAt > SHAKE_COOLDOWN) {
+    lastShakeAt = now
     openBlindBox('shake')
   }
 }

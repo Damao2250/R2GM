@@ -98,6 +98,7 @@ export default {
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
+import dayjs from '@/utils/dayjs'
 
 const currencyValue = ref('')
 const convertValue = ref('')
@@ -164,7 +165,7 @@ const addToHistory = (numeric: string, chinese: string) => {
   const newRecord = {
     numeric: numeric.replace(/,/g, ''),
     chinese: chinese,
-    timestamp: Date.now()
+    timestamp: dayjs().valueOf()
   }
 
   // 避免重复添加
@@ -243,19 +244,18 @@ const loadHistory = () => {
 
 // 格式化时间显示
 const formatTime = (timestamp: number): string => {
-  const date = new Date(timestamp)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffMins = Math.floor(diffMs / 60000)
-  const diffHours = Math.floor(diffMs / 3600000)
-  const diffDays = Math.floor(diffMs / 86400000)
+  const date = dayjs(timestamp)
+  const now = dayjs()
+  const diffMins = now.diff(date, 'minute')
+  const diffHours = now.diff(date, 'hour')
+  const diffDays = now.diff(date, 'day')
 
   if (diffMins < 1) return '刚刚'
   if (diffMins < 60) return `${diffMins}分钟前`
   if (diffHours < 24) return `${diffHours}小时前`
   if (diffDays < 7) return `${diffDays}天前`
 
-  return `${date.getMonth() + 1}月${date.getDate()}日`
+  return date.format('M月D日')
 }
 
 // 批量转换

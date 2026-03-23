@@ -5,6 +5,7 @@
  */
 
 import { getDefaultToolsList, type ToolItem } from './defaultTools'
+import dayjs from './dayjs'
 
 export type { ToolItem } from './defaultTools'
 export { getDefaultToolsList } from './defaultTools'
@@ -68,7 +69,7 @@ export async function saveToolsOrder(tools: ToolItem[]): Promise<void> {
       key: TOOLS_CONFIG_KEY,
       data: {
         tools,
-        timestamp: Date.now()
+        timestamp: dayjs().valueOf()
       }
     })
   } catch (e) {
