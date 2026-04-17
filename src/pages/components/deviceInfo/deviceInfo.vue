@@ -75,6 +75,18 @@
           <text class="info-label">设备像素比</text>
           <text class="info-value">{{ deviceInfo.devicePixelRatio }}</text>
         </view>
+        <view class="info-item">
+          <text class="info-label">屏幕像素宽</text>
+          <text class="info-value">{{ deviceInfo.screenPixelWidth }}px</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">屏幕像素高</text>
+          <text class="info-value">{{ deviceInfo.screenPixelHeight }}px</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">总像素数</text>
+          <text class="info-value">{{ deviceInfo.totalPixels }}</text>
+        </view>
       </view>
 
       <!-- 应用信息 -->
@@ -161,6 +173,9 @@ interface DeviceInfoType {
   language: string
   statusBarHeight: number
   safeArea?: any
+  screenPixelWidth: number
+  screenPixelHeight: number
+  totalPixels: string
 }
 
 const deviceInfo = reactive<DeviceInfoType>({
@@ -176,7 +191,10 @@ const deviceInfo = reactive<DeviceInfoType>({
   appName: 'DM工具箱',
   appVersion: '1.0.0',
   language: '',
-  statusBarHeight: 0
+  statusBarHeight: 0,
+  screenPixelWidth: 0,
+  screenPixelHeight: 0,
+  totalPixels: '0'
 })
 
 onLoad(() => {
@@ -186,6 +204,10 @@ onLoad(() => {
 const loadDeviceInfo = () => {
   uni.getSystemInfo({
     success: (res: any) => {
+      const pixelWidth = res.screenWidth * res.devicePixelRatio
+      const pixelHeight = res.screenHeight * res.devicePixelRatio
+      const totalPixels = pixelWidth * pixelHeight
+      
       Object.assign(deviceInfo, {
         platform: res.platform,
         system: res.system,
@@ -198,7 +220,10 @@ const loadDeviceInfo = () => {
         devicePixelRatio: res.devicePixelRatio,
         language: res.language,
         statusBarHeight: res.statusBarHeight,
-        safeArea: res.safeArea
+        safeArea: res.safeArea,
+        screenPixelWidth: Math.round(pixelWidth),
+        screenPixelHeight: Math.round(pixelHeight),
+        totalPixels: (totalPixels / 1000000).toFixed(2) + 'MP'
       })
     }
   })
@@ -217,6 +242,9 @@ const copyDeviceInfo = () => {
 【屏幕信息】
 屏幕宽度: ${deviceInfo.screenWidth}px
 屏幕高度: ${deviceInfo.screenHeight}px
+屏幕像素宽: ${deviceInfo.screenPixelWidth}px
+屏幕像素高: ${deviceInfo.screenPixelHeight}px
+总像素数: ${deviceInfo.totalPixels}
 窗口宽度: ${deviceInfo.windowWidth}px
 窗口高度: ${deviceInfo.windowHeight}px
 设备像素比: ${deviceInfo.devicePixelRatio}
