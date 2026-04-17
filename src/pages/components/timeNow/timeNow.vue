@@ -243,7 +243,7 @@ const dayOfYear = computed(() => {
 })
 
 const timestamp = computed(() => {
-  return currentTime.value.unix().toString()
+  return currentTime.value.valueOf().toString()
 })
 
 const timezone = computed(() => {
