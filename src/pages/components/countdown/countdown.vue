@@ -1,19 +1,19 @@
 <template>
   <view class="container">
     <!-- 页面头部 -->
-    <PageHeader title="📅 倒数日" subtitle="快速查看和计算重要日期" />
+    <PageHeader title="📅 幸运日" subtitle="快速查看和计算重要日期" />
 
     <!-- 页面内容 -->
     <view class="page-content">
       <!-- 添加新纪念日 -->
       <view class="add-section">
-        <view class="section-title">添加新倒数日</view>
+        <view class="section-title">添加新幸运日</view>
         <view class="input-card">
           <view class="input-item">
             <input 
               v-model="newEvent.title" 
               type="text" 
-              placeholder="倒数日名称 (如: 生日、纪念日)"
+              placeholder="幸运日名称 (如: 生日、纪念日)"
               class="input-field"
             />
           </view>
@@ -42,42 +42,47 @@
             <text class="quick-icon">🎂</text>
             <text class="quick-text">生日</text>
           </button>
-          <button class="quick-btn" @click="addQuickEvent('结婚纪念')">
-            <text class="quick-icon">💒</text>
-            <text class="quick-text">结婚纪念</text>
-          </button>
-          <button class="quick-btn" @click="addQuickEvent('相识纪念')">
-            <text class="quick-icon">💕</text>
-            <text class="quick-text">相识纪念</text>
+          <button class="quick-btn" @click="addQuickEvent('节日')">
+            <text class="quick-icon">🎄</text>
+            <text class="quick-text">节日</text>
           </button>
           <button class="quick-btn" @click="addQuickEvent('假期')">
             <text class="quick-icon">✈️</text>
             <text class="quick-text">假期</text>
           </button>
+          <button class="quick-btn" @click="addQuickEvent('幸运日')">
+            <text class="quick-icon"> 🎉</text>
+            <text class="quick-text">幸运日</text>
+          </button>
         </view>
       </view>
 
-      <!-- 纪念日列表 -->
+      <!-- 幸运日列表 -->
       <view class="events-section">
-        <view class="section-title">{{ events.length > 0 ? '我的纪念日' : '暂无纪念日' }}</view>
+        <view class="section-title">{{ events.length > 0 ? '我的幸运日' : '暂无幸运日' }}</view>
         
         <view v-for="(event, index) in events" :key="index" class="event-card" :style="{ '--progress': event.progressPercent / 100 }">
           <!-- 删除按钮 -->
           <view class="delete-btn" @click="deleteEvent(index)">
             <text>✕</text>
           </view>
-
+          
           <!-- 主内容区 -->
           <view class="event-main">
 
             <!-- 事件信息 -->
             <view class="event-info">
-              <text class="event-title">{{ event.title }}<text class="event-date">（{{ event.date }}）</text></text>
+              <text class="event-title">{{ event.title }}<text class="event-date">（{{ event.date }}）</text>
+              <!-- 编辑按钮 -->
+              <!-- <text > -->
+                <text class="edit-btn" @click="startEdit(index)">✎</text>
+              <!-- </text> -->
+              </text>
               
               <view class="event-details">
                 <view v-if="event.daysUntil >= 0" class="detail-item">
                   <text class="detail-label">距今</text>
-                  <text class="detail-value">{{ Math.abs(event.daysPassed) }}天</text>
+                  <text class="detail-value">{{ event.daysUntil }}天</text>
                 </view>
                 <view v-else class="detail-item">
                   <text class="detail-label">已过</text>
@@ -111,6 +116,40 @@
         </view>
       </view>
     </view>
+
+    <!-- 编辑对话框 -->
+    <view v-if="editingIndex !== null" class="modal-overlay" @click="cancelEdit">
+      <view class="modal-content" @click.stop>
+        <view class="modal-title">编辑幸运日</view>
+        
+        <view class="modal-body">
+          <view class="modal-input-item">
+            <text class="modal-label">名称</text>
+            <input 
+              v-model="editingEvent.title" 
+              type="text" 
+              placeholder="幸运日名称"
+              class="modal-input"
+            />
+          </view>
+
+          <view class="modal-input-item">
+            <text class="modal-label">日期</text>
+            <picker mode="date" :value="editingEvent.date" @change="(e: any) => editingEvent.date = e.detail.value">
+              <view class="modal-date-picker">
+                <text>{{ editingEvent.date || '请选择日期' }}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+        </view>
+
+        <view class="modal-actions">
+          <button class="modal-btn cancel-btn" @click="cancelEdit">取消</button>
+          <button class="modal-btn confirm-btn" @click="saveEdit">保存</button>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -120,7 +159,7 @@ import { getShareConfig } from '@/utils/useShare'
 export default {
   name: 'Countdown',
   ...getShareConfig({
-    title: '倒数日/纪念日 - DM工具箱',
+    title: '幸运日/纪念日 - DM工具箱',
     path: '/pages/components/countdown/countdown'
   })
 }
@@ -135,7 +174,6 @@ interface Event {
   title: string
   date: string
   daysUntil: number
-  daysPassed: number
   yearsPassed: number
   monthsPassed: number
   daysInMonth: number
@@ -145,6 +183,12 @@ interface Event {
 const events = ref<Event[]>([])
 
 const newEvent = ref({
+  title: '',
+  date: ''
+})
+
+const editingIndex = ref<number | null>(null)
+const editingEvent = ref({
   title: '',
   date: ''
 })
@@ -201,8 +245,8 @@ const calculateDays = (dateString: string) => {
  * 计算年份差异
  */
 const calculateYears = (dateString: string) => {
-  const targetDate = dayjs(dateString)
-  const today = dayjs()
+  const targetDate = dayjs(dateString).startOf('day')
+  const today = dayjs().startOf('day')
   
   const isFuture = targetDate.isAfter(today)
   const [start, end] = isFuture ? [today, targetDate] : [targetDate, today]
@@ -214,8 +258,8 @@ const calculateYears = (dateString: string) => {
  * 计算月份差异（不包括整年的月份）
  */
 const calculateMonths = (dateString: string) => {
-  const targetDate = dayjs(dateString)
-  const today = dayjs()
+  const targetDate = dayjs(dateString).startOf('day')
+  const today = dayjs().startOf('day')
   
   const isFuture = targetDate.isAfter(today)
   const [start, end] = isFuture ? [today, targetDate] : [targetDate, today]
@@ -231,8 +275,8 @@ const calculateMonths = (dateString: string) => {
  * 计算月内天数（不包括整月的天数）
  */
 const calculateDaysInMonth = (dateString: string) => {
-  const targetDate = dayjs(dateString)
-  const today = dayjs()
+  const targetDate = dayjs(dateString).startOf('day')
+  const today = dayjs().startOf('day')
   
   const isFuture = targetDate.isAfter(today)
   const [start, end] = isFuture ? [today, targetDate] : [targetDate, today]
@@ -249,11 +293,11 @@ const calculateDaysInMonth = (dateString: string) => {
  * 计算进度百分比
  */
 const calculateProgress = (dateString: string) => {
-  const targetDate = dayjs(dateString)
-  const today = dayjs()
+  const targetDate = dayjs(dateString).startOf('day')
+  const today = dayjs().startOf('day')
   
   // 找到这一年或去年的纪念日
-  let startDate = dayjs().year(today.year()).month(targetDate.month()).date(targetDate.date())
+  let startDate = dayjs().year(today.year()).month(targetDate.month()).date(targetDate.date()).startOf('day')
   let endDate = startDate.add(1, 'year')
   
   if (today.isAfter(startDate)) {
@@ -274,7 +318,6 @@ const updateAllEvents = () => {
   events.value = events.value.map(event => ({
     ...event,
     daysUntil: calculateDays(event.date),
-    daysPassed: calculateDays(event.date),
     yearsPassed: calculateYears(event.date),
     monthsPassed: calculateMonths(event.date),
     daysInMonth: calculateDaysInMonth(event.date),
@@ -297,7 +340,7 @@ const addEvent = async () => {
   
   if (!title) {
     uni.showToast({
-      title: '请输入倒数日名称',
+      title: '请输入幸运日名称',
       icon: 'none'
     })
     return
@@ -325,7 +368,6 @@ const addEvent = async () => {
     title,
     date: newEvent.value.date,
     daysUntil,
-    daysPassed: daysUntil,
     yearsPassed: calculateYears(newEvent.value.date),
     monthsPassed: calculateMonths(newEvent.value.date),
     daysInMonth: calculateDaysInMonth(newEvent.value.date),
@@ -360,9 +402,89 @@ const addQuickEvent = (title: string) => {
   newEvent.value.title = title
   // 打开日期选择器
   uni.showToast({
-    title: '请先选择日期',
+    title: `已填入"${title}"，请选择日期`,
     icon: 'none'
   })
+}
+
+/**
+ * 开始编辑事件
+ */
+const startEdit = (index: number) => {
+  editingIndex.value = index
+  editingEvent.value = {
+    title: events.value[index].title,
+    date: events.value[index].date
+  }
+}
+
+/**
+ * 保存编辑
+ */
+const saveEdit = async () => {
+  if (!editingEvent.value.title.trim()) {
+    uni.showToast({
+      title: '请输入幸运日名称',
+      icon: 'none'
+    })
+    return
+  }
+  
+  if (editingEvent.value.title.length > 20) {
+    uni.showToast({
+      title: '名称最多20个字符',
+      icon: 'none'
+    })
+    return
+  }
+  
+  if (!editingEvent.value.date) {
+    uni.showToast({
+      title: '请选择日期',
+      icon: 'none'
+    })
+    return
+  }
+
+  if (editingIndex.value !== null) {
+    const index = editingIndex.value
+    events.value[index].title = editingEvent.value.title.trim()
+    events.value[index].date = editingEvent.value.date
+    events.value[index].daysUntil = calculateDays(editingEvent.value.date)
+    events.value[index].yearsPassed = calculateYears(editingEvent.value.date)
+    events.value[index].monthsPassed = calculateMonths(editingEvent.value.date)
+    events.value[index].daysInMonth = calculateDaysInMonth(editingEvent.value.date)
+    events.value[index].progressPercent = calculateProgress(editingEvent.value.date)
+
+    // 编辑后重新排序
+    events.value.sort((a, b) => {
+      if (a.daysUntil >= 0 && b.daysUntil >= 0) {
+        return a.daysUntil - b.daysUntil
+      } else if (a.daysUntil < 0 && b.daysUntil < 0) {
+        return b.daysUntil - a.daysUntil
+      } else {
+        return a.daysUntil >= 0 ? -1 : 1
+      }
+    })
+
+    await saveEvents()
+    
+    uni.showToast({
+      title: '已保存',
+      duration: 1000
+    })
+    
+    editingIndex.value = null
+    editingEvent.value = { title: '', date: '' }
+  }
+}
+
+/**
+ * 取消编辑
+ */
+const cancelEdit = () => {
+  editingIndex.value = null
+  editingEvent.value = { title: '', date: '' }
 }
 
 /**
@@ -507,6 +629,10 @@ const clearAll = () => {
   &:disabled {
     opacity: 0.5;
   }
+
+  .btn-text {
+    color: #fff;
+  }
 }
 
 .btn-icon {
@@ -572,6 +698,12 @@ const clearAll = () => {
   &:active {
     background: #efefef;
   }
+}
+
+.edit-btn {
+  font-size: 24rpx;
+  color: #667eea;
+  margin-left: 20rpx;
 }
 
 .days-display {
@@ -754,5 +886,111 @@ const clearAll = () => {
   font-size: 24rpx;
   line-height: 1.6;
   color: #666;
+}
+
+/* 编辑对话框 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  width: 90%;
+  max-width: 600rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  text-align: center;
+}
+
+.modal-body {
+  margin-bottom: 28rpx;
+}
+
+.modal-input-item {
+  margin-bottom: 20rpx;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.modal-label {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 10rpx;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 12rpx 14rpx;
+  font-size: 28rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  background: #fafafa;
+  height: 56rpx;
+
+  &:focus {
+    border-color: #667eea;
+    background: white;
+  }
+}
+
+.modal-date-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 14rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  background: #fafafa;
+  height: 56rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12rpx;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 56rpx;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-btn {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.confirm-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
 }
 </style>

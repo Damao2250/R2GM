@@ -23,7 +23,7 @@ export function getDefaultToolsList(): ToolItem[] {
       visible: true
     },
     {
-      title: '倒数日',
+      title: '幸运日',
       url: '/pages/components/countdown/countdown',
       icon: '📅',
       visible: true
