@@ -38,6 +38,10 @@
       <view class="quick-add-section">
         <view class="section-title">快捷添加</view>
         <view class="quick-buttons">
+          <button class="quick-btn" @click="addQuickEvent('幸运日')">
+            <text class="quick-icon"> 🎉</text>
+            <text class="quick-text">幸运日</text>
+          </button>
           <button class="quick-btn" @click="addQuickEvent('生日')">
             <text class="quick-icon">🎂</text>
             <text class="quick-text">生日</text>
@@ -49,10 +53,6 @@
           <button class="quick-btn" @click="addQuickEvent('假期')">
             <text class="quick-icon">✈️</text>
             <text class="quick-text">假期</text>
-          </button>
-          <button class="quick-btn" @click="addQuickEvent('幸运日')">
-            <text class="quick-icon"> 🎉</text>
-            <text class="quick-text">幸运日</text>
           </button>
         </view>
       </view>
@@ -74,9 +74,7 @@
             <view class="event-info">
               <text class="event-title">{{ event.title }}<text class="event-date">（{{ event.date }}）</text>
               <!-- 编辑按钮 -->
-              <!-- <text > -->
-                <text class="edit-btn" @click="startEdit(index)">✎</text>
-              <!-- </text> -->
+              <text class="edit-btn" @click="startEdit(index)">✏️</text>
               </text>
               
               <view class="event-details">
@@ -701,9 +699,14 @@ const clearAll = () => {
 }
 
 .edit-btn {
+  display: inline-block;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
   font-size: 24rpx;
   color: #667eea;
-  margin-left: 20rpx;
+  margin-left: 12rpx;
 }
 
 .days-display {
@@ -974,7 +977,7 @@ const clearAll = () => {
 
 .modal-btn {
   flex: 1;
-  height: 56rpx;
+  height: 80rpx;
   border: none;
   border-radius: 8rpx;
   font-size: 28rpx;
