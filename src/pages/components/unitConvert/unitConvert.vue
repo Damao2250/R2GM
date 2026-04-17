@@ -443,14 +443,15 @@ const applyQuickConvert = (item: QuickConvert) => {
 
 .value-input {
     flex: 1;
-    padding: 24rpx;
+    padding: 16rpx 24rpx;
     border: 2rpx solid #e0e0e0;
     border-radius: 12rpx;
     font-size: 32rpx;
     background: #fafafa;
     box-sizing: border-box;
-    display: block;
     min-height: 88rpx;
+    line-height: 56rpx;
+    vertical-align: middle;
 }
 
 .result-value {

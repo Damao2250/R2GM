@@ -165,10 +165,12 @@ const calculateBMI = () => {
 
     .input {
       height: 80rpx;
+      line-height: 80rpx;
       border-radius: 8rpx;
       border: 2rpx solid #eee;
       padding: 0 20rpx;
       font-size: 32rpx;
+      vertical-align: middle;
     }
   }
 }

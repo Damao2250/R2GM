@@ -583,16 +583,15 @@ const rollDice = () => {
 
   .input-field {
     width: 100%;
-    padding: 24rpx;
+    padding: 16rpx 24rpx;
     background: #f5f5f5;
     border-radius: 12rpx;
     font-size: 32rpx;
     border: 2rpx solid #e0e0e0;
     box-sizing: border-box;
     height: 88rpx;
-    line-height: 40rpx;
-    display: flex;
-    align-items: center;
+    line-height: 56rpx;
+    vertical-align: middle;
   }
 }
 
