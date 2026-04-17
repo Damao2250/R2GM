@@ -167,7 +167,7 @@ const clearFlashTimer = () => {
 }
 
 const adjustBoardSize = (delta: number) => {
-  boardSize.value = Math.min(140, Math.max(48, boardSize.value + delta))
+  boardSize.value = Math.min(500, Math.max(12, boardSize.value + delta))
 }
 
 const generateQrcode = async () => {
@@ -394,6 +394,9 @@ onBeforeUnmount(() => {
   text-align: center;
   line-height: 1.25;
   padding: 24rpx;
+  word-break: break-all;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .hidden-canvas {
