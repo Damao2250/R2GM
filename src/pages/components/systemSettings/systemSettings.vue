@@ -230,7 +230,7 @@ interface SystemInfo {
 }
 
 const storageSize = ref('计算中...')
-const appVersion = ref('0.1.9')
+const appVersion = ref('0.2.0')
 const isCheckingUpdate = ref(false)
 const lastBackupTime = ref('从未备份')
 const backupReminderDays = ref(30)
