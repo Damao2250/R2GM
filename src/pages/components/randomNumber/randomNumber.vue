@@ -12,21 +12,11 @@
         <view class="input-group">
           <view class="input-item">
             <text class="input-label">最小值</text>
-            <input
-              class="input-field"
-              type="number"
-              v-model="minValue"
-              placeholder="请输入最小值"
-            />
+            <input class="input-field" type="number" v-model="minValue" placeholder="请输入最小值" />
           </view>
           <view class="input-item">
             <text class="input-label">最大值</text>
-            <input
-              class="input-field"
-              type="number"
-              v-model="maxValue"
-              placeholder="请输入最大值"
-            />
+            <input class="input-field" type="number" v-model="maxValue" placeholder="请输入最大值" />
           </view>
         </view>
 
@@ -58,13 +48,8 @@
         <view class="result-area" v-if="randomResults.length > 0">
           <view class="result-title">{{ isGenerating ? '正在生成...' : '生成结果' }}</view>
           <view class="result-numbers">
-            <view
-              class="number-item"
-              :class="{ rolling: isGenerating, final: !isGenerating }"
-              v-for="(num, index) in randomResults"
-              :key="index"
-              :style="{ animationDelay: index * 0.05 + 's' }"
-            >
+            <view class="number-item" :class="{ rolling: isGenerating, final: !isGenerating }"
+              v-for="(num, index) in randomResults" :key="index" :style="{ animationDelay: index * 0.05 + 's' }">
               {{ num }}
             </view>
           </view>
@@ -108,33 +93,32 @@
         <view class="card-title">🎲 掷骰子</view>
 
         <view class="dice-selector">
-          <text class="selector-label">骰子数量</text>
-          <view class="dice-count-buttons">
-            <view
-              class="count-btn"
-              v-for="num in [1, 2, 3]"
-              :key="num"
-              :class="{ active: diceCount === num }"
-              @click="diceCount = num"
-            >
-              {{ num }}
+          <view class="selector-header">
+            <text class="selector-label">骰子数量</text>
+            <text class="count-display">{{ diceCount }} 个</text>
+          </view>
+          <view class="slider-wrapper">
+            <button class="btn-minus" :disabled="diceCount <= 1" @click="decrementDice"
+              @touchstart="startLongPress('minus')" @touchend="endLongPress" @touchcancel="endLongPress">−</button>
+            <view class="slider-container" @click="handleSliderClick" @touchstart="startDragSlider"
+              @touchmove="dragSlider" @touchend="endDragSlider" @touchcancel="endDragSlider">
+              <view class="slider-track">
+                <view class="slider-progress" :style="{ width: (diceCount - 1) / 8 * 100 + '%' }"></view>
+              </view>
+              <view class="slider-thumb" :class="{ dragging: isDragging }"
+                :style="{ left: (diceCount - 1) / 8 * 100 + '%' }"></view>
             </view>
+            <button class="btn-plus" :disabled="diceCount >= 9" @click="incrementDice"
+              @touchstart="startLongPress('plus')" @touchend="endLongPress" @touchcancel="endLongPress">+</button>
           </view>
         </view>
 
         <view class="dice-container">
-          <view
-            class="dice-wrapper"
-            v-for="(value, index) in diceResults"
-            :key="index"
-          >
-            <view 
-              class="dice"
-              :class="{ rolling: isRolling, ['show-' + value]: !isRolling, [diceAnimations[index]]: isRolling }"
-              :style="{ 
+          <view class="dice-wrapper" v-for="(value, index) in diceResults" :key="index">
+            <view class="dice"
+              :class="{ rolling: isRolling, ['show-' + value]: !isRolling, [diceAnimations[index]]: isRolling }" :style="{
                 animationDelay: index * 0.1 + 's'
-              }"
-            >
+              }">
               <!-- 面1 (前面) -->
               <view class="dice-face face-1">
                 <view class="dice-dots dots-1">
@@ -197,6 +181,11 @@
         <button class="action-btn" @click="rollDice" :disabled="isRolling">
           {{ isRolling ? '投掷中...' : '🎲 掷骰子' }}
         </button>
+
+        <view class="dice-stats" v-if="rollCount > 0">
+          <text class="stats-text">已掷骰子 {{ rollCount }} 次</text>
+        </view>
+
       </view>
     </view>
   </view>
@@ -234,10 +223,14 @@ const isFlipping = ref(false)
 const coinStats = ref({ heads: 0, tails: 0, total: 0 })
 
 // 掷骰子相关
-const diceCount = ref(1)
+const diceCount = ref(3)
 const diceResults = ref<number[]>([1])
 const diceAnimations = ref<string[]>([])  // 为每个骰子存储不同的动画名称
 const isRolling = ref(false)
+const isDragging = ref(false)
+const rollCount = ref(0)  // 掷骰子次数统计
+let longPressTimer: any = null
+let sliderRect: any = null  // 缓存滑块容器位置信息
 
 // 监听骰子数量变化，自动更新显示
 watch(diceCount, (newCount) => {
@@ -277,7 +270,7 @@ const getSecureRandom = () => {
   seed ^= seed << 13
   seed ^= seed >> 17
   seed ^= seed << 5
-  
+
   return Math.abs(seed / 0xffffffff)
 }
 
@@ -350,7 +343,7 @@ const generateRandomNumbers = () => {
     // Fisher-Yates 洗牌
     for (let i = available.length - 1; i > 0; i--) {
       const j = Math.floor(getSecureRandom() * (i + 1))
-      ;[available[i], available[j]] = [available[j], available[i]]
+        ;[available[i], available[j]] = [available[j], available[i]]
     }
 
     // 取前 num 个
@@ -361,7 +354,7 @@ const generateRandomNumbers = () => {
   if (!generateOneByOne.value) {
     // 一次全部生成模式 - 所有数字同时滚动
     randomResults.value = new Array(num).fill(0)
-    
+
     let rollCount = 0
     const maxRolls = 15 // 滚动15次
     generateTimer = setInterval(() => {
@@ -402,12 +395,12 @@ const generateRandomNumbers = () => {
         rollCount++
         if (rollCount >= maxRolls) {
           clearInterval(generateTimer)
-          
+
           // 显示最终数字
           const finalTemp = [...randomResults.value]
           finalTemp[currentIndex] = finalResults[currentIndex]
           randomResults.value = finalTemp
-          
+
           // 延迟后显示下一个
           currentIndex++
           generateTimer = setTimeout(showNextNumber, 150)
@@ -480,7 +473,7 @@ const flipCoin = () => {
     const randomValue = Math.random()
     // 严格的 50/50 概率：< 0.5 为正面，>= 0.5 为反面
     const result = randomValue < 0.5 ? 'heads' : 'tails'
-    
+
     coinResult.value = result
     isFlipping.value = false
 
@@ -506,22 +499,111 @@ const resetCoinStats = () => {
 }
 
 /**
+ * 滑块处理函数
+ */
+const handleSliderClick = (event: any) => {
+  updateDiceCountFromEvent(event)
+}
+
+const updateDiceCountFromEvent = (event: any) => {
+  const query = uni.createSelectorQuery()
+  query.select('.slider-container').boundingClientRect((rect: any) => {
+    if (rect) {
+      let clickX: number
+      if (event.detail && event.detail.x !== undefined) {
+        // 点击事件
+        clickX = event.detail.x - rect.left
+      } else if (event.touches && event.touches.length > 0) {
+        // 触摸事件
+        clickX = event.touches[0].clientX - rect.left
+      } else {
+        return
+      }
+      const percent = Math.max(0, Math.min(1, clickX / rect.width))
+      diceCount.value = Math.round(percent * 8) + 1
+    }
+  }).exec()
+}
+
+const startDragSlider = (event: any) => {
+  if (event.touches.length === 0) return
+
+  // 缓存滑块容器位置信息，避免拖动过程中频繁查询
+  const query = uni.createSelectorQuery()
+  query.select('.slider-container').boundingClientRect((rect: any) => {
+    sliderRect = rect
+    isDragging.value = true
+  }).exec()
+}
+
+const dragSlider = (event: any) => {
+  if (!isDragging.value || event.touches.length === 0 || !sliderRect) return
+
+  // 使用缓存的位置信息，提高响应性
+  const touchX = event.touches[0].clientX - sliderRect.left
+  const percent = Math.max(0, Math.min(1, touchX / sliderRect.width))
+  diceCount.value = Math.round(percent * 8) + 1
+}
+
+const endDragSlider = () => {
+  isDragging.value = false
+  sliderRect = null  // 清除缓存
+}
+
+const decrementDice = () => {
+  if (diceCount.value > 1) {
+    diceCount.value--
+  }
+}
+
+const incrementDice = () => {
+  if (diceCount.value < 9) {
+    diceCount.value++
+  }
+}
+
+const startLongPress = (direction: 'minus' | 'plus') => {
+  longPressTimer = setTimeout(() => {
+    const step = () => {
+      if (direction === 'minus' && diceCount.value > 1) {
+        diceCount.value--
+        longPressTimer = setTimeout(step, 100)
+      } else if (direction === 'plus' && diceCount.value < 9) {
+        diceCount.value++
+        longPressTimer = setTimeout(step, 100)
+      }
+    }
+    step()
+  }, 500)
+}
+
+const endLongPress = () => {
+  if (longPressTimer) {
+    clearTimeout(longPressTimer)
+    longPressTimer = null
+  }
+}
+
+/**
  * 掷骰子
  */
 const rollDice = () => {
   if (isRolling.value) return
 
+  // 增加掷骰子次数
+  rollCount.value++
+
   // 先生成最终结果
   const results: number[] = []
   const animations: string[] = []
   const animationTypes = ['roll3d-v1', 'roll3d-v2', 'roll3d-v3']
-  
+
   for (let i = 0; i < diceCount.value; i++) {
     results.push(getRandomInt(1, 6))
     // 为每个骰子随机选择不同的旋转动画
     animations.push(animationTypes[Math.floor(Math.random() * animationTypes.length)])
   }
-  
+
   // 初始化显示为全1，准备动画
   diceResults.value = new Array(diceCount.value).fill(1)
   diceAnimations.value = animations
@@ -807,54 +889,158 @@ const rollDice = () => {
   }
 }
 
-/* ===== 掷骰子 ===== */
-.dice-selector {
-  margin-bottom: 40rpx;
+.dice-stats {
+  margin-top: 20rpx;
+  padding: 16rpx 20rpx;
+  background: #f0f4ff;
+  border-radius: 12rpx;
+  border: 2rpx solid #e0e5ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  .selector-label {
-    display: block;
-    font-size: 28rpx;
-    color: #666;
-    margin-bottom: 16rpx;
+  .stats-text {
+    font-size: 26rpx;
+    color: #667eea;
     font-weight: 500;
   }
 
-  .dice-count-buttons {
+  .reset-stats-btn {
+    padding: 10rpx 20rpx;
+    background: white;
+    border: 2rpx solid #667eea;
+    border-radius: 8rpx;
+    font-size: 22rpx;
+    color: #667eea;
+
+    &:active {
+      background: #f0f4ff;
+    }
+  }
+}
+
+/* ===== 掷骰子 ===== */
+.dice-selector {
+  margin-bottom: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+
+  .selector-header {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .selector-label {
+      font-size: 28rpx;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .count-display {
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #667eea;
+      background: #f0f4ff;
+      padding: 8rpx 16rpx;
+      border-radius: 8rpx;
+    }
+  }
+
+  .slider-wrapper {
+    display: flex;
+    align-items: center;
     gap: 20rpx;
   }
 
-  .count-btn {
+  .slider-container {
     flex: 1;
-    padding: 24rpx;
-    background: #f5f5f5;
+    position: relative;
+    height: 44rpx;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    margin: 0 12rpx;
+  }
+
+  .slider-track {
+    position: absolute;
+    width: 100%;
+    height: 8rpx;
+    background: #e8e8e8;
+    border-radius: 4rpx;
+    top: 50%;
+    transform: translateY(-50%);
+    overflow: hidden;
+  }
+
+  .slider-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4rpx;
+    transition: width 0.08s ease-out;
+  }
+
+  .slider-thumb {
+    position: absolute;
+    width: 32rpx;
+    height: 32rpx;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 3rpx solid white;
+    border-radius: 50%;
+    box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.3);
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    transition: all 0.1s ease-out;
+
+    &.dragging {
+      width: 40rpx;
+      height: 40rpx;
+      box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.5);
+    }
+  }
+
+  .btn-minus,
+  .btn-plus {
+    width: 60rpx;
+    height: 60rpx;
+    padding: 0;
+    margin: 0 8rpx;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
     border-radius: 12rpx;
-    border: 2rpx solid #e0e0e0;
     font-size: 32rpx;
     font-weight: bold;
-    color: #666;
-    text-align: center;
-    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    flex-shrink: 0;
 
-    &.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border-color: transparent;
+    &:active:not(:disabled) {
+      transform: scale(0.92);
+      box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.4);
     }
 
-    &:active {
-      transform: scale(0.95);
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
   }
 }
 
 .dice-container {
-  display: flex;
-  justify-content: center;
-  gap: 60rpx;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 60rpx 40rpx;
   margin: 40rpx 0;
   min-height: 240rpx;
   align-items: center;
+  justify-items: center;
   perspective: 1000rpx;
 }
 
@@ -916,7 +1102,7 @@ const rollDice = () => {
   background: linear-gradient(145deg, #ffffff, #f0f0f0);
   border-radius: 16rpx;
   box-shadow: inset 0 0 8rpx rgba(0, 0, 0, 0.1),
-              0 8rpx 24rpx rgba(0, 0, 0, 0.2);
+    0 8rpx 24rpx rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1042,6 +1228,7 @@ const rollDice = () => {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
@@ -1140,31 +1327,31 @@ const rollDice = () => {
   0% {
     transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
   }
-  
+
   5% {
     transform: rotateX(36deg) rotateY(36deg) rotateZ(18deg);
   }
-  
+
   10% {
     transform: rotateX(72deg) rotateY(72deg) rotateZ(36deg);
   }
-  
+
   20% {
     transform: rotateX(144deg) rotateY(144deg) rotateZ(72deg);
   }
-  
+
   35% {
     transform: rotateX(252deg) rotateY(252deg) rotateZ(126deg);
   }
-  
+
   50% {
     transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg);
   }
-  
+
   65% {
     transform: rotateX(468deg) rotateY(468deg) rotateZ(234deg);
   }
-  
+
   80% {
     transform: rotateX(576deg) rotateY(576deg) rotateZ(288deg);
   }
@@ -1178,31 +1365,31 @@ const rollDice = () => {
   0% {
     transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
   }
-  
+
   5% {
     transform: rotateX(40deg) rotateY(35deg) rotateZ(15deg);
   }
-  
+
   10% {
     transform: rotateX(80deg) rotateY(70deg) rotateZ(30deg);
   }
-  
+
   20% {
     transform: rotateX(160deg) rotateY(140deg) rotateZ(60deg);
   }
-  
+
   35% {
     transform: rotateX(280deg) rotateY(245deg) rotateZ(105deg);
   }
-  
+
   50% {
     transform: rotateX(400deg) rotateY(350deg) rotateZ(150deg);
   }
-  
+
   65% {
     transform: rotateX(520deg) rotateY(455deg) rotateZ(195deg);
   }
-  
+
   80% {
     transform: rotateX(640deg) rotateY(560deg) rotateZ(240deg);
   }
@@ -1216,31 +1403,31 @@ const rollDice = () => {
   0% {
     transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
   }
-  
+
   5% {
     transform: rotateX(35deg) rotateY(45deg) rotateZ(25deg);
   }
-  
+
   10% {
     transform: rotateX(70deg) rotateY(90deg) rotateZ(50deg);
   }
-  
+
   20% {
     transform: rotateX(140deg) rotateY(180deg) rotateZ(100deg);
   }
-  
+
   35% {
     transform: rotateX(245deg) rotateY(315deg) rotateZ(175deg);
   }
-  
+
   50% {
     transform: rotateX(350deg) rotateY(450deg) rotateZ(250deg);
   }
-  
+
   65% {
     transform: rotateX(455deg) rotateY(585deg) rotateZ(325deg);
   }
-  
+
   80% {
     transform: rotateX(560deg) rotateY(720deg) rotateZ(400deg);
   }
