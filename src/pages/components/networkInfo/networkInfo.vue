@@ -68,6 +68,7 @@
             <text class="detail-label">运营商</text>
             <text class="detail-value" user-select>{{ operatorInfo || '-' }}</text>
           </view>
+
         </view>
       </view>
 
@@ -104,13 +105,11 @@
           </view>
 
           <view class="diagnosis-item" v-if="networkType === 'wifi'">
-            <view class="diagnosis-status" :class="wifiInfo.secure ? 'status-success' : 'status-warning'">
+            <view class="diagnosis-status" :class="getWifiSecurityStatus() === '已加密' ? 'status-success' : 'status-warning'">
               <text class="status-dot"></text>
             </view>
             <text class="diagnosis-label">安全连接</text>
-            <text class="diagnosis-value">{{
-              wifiInfo.secure ? '已加密' : wifiInfo.SSID ? '未加密' : '-'
-              }}</text>
+            <text class="diagnosis-value">{{ getWifiSecurityStatus() }}</text>
           </view>
         </view>
       </view>
@@ -191,6 +190,14 @@ onMounted(() => {
 onUnmounted(() => {
   // 页面卸载时移除监听
   uni.offNetworkStatusChange(networkStatusChangeHandler)
+  
+  // 停止 WiFi 模块
+  if (typeof uni.stopWifi === 'function') {
+    uni.stopWifi({
+      success: () => console.log('WiFi 模块已关闭'),
+      fail: (err) => console.log('关闭 WiFi 模块失败:', err)
+    })
+  }
 })
 
 const getNetworkInfo = async () => {
@@ -200,26 +207,40 @@ const getNetworkInfo = async () => {
     const network = await uni.getNetworkType()
     networkType.value = network.networkType
 
-    // 获取本地 IP
-    uni.getLocalIPAddress({
-      success: res => {
-        localip.value = res.localip || '-'
-      },
-      fail: () => {
+    // 获取本地 IP - 使用 Promise 包装
+    try {
+      const ipRes = await new Promise<any>((resolve, reject) => {
+        if (typeof uni.getLocalIPAddress === 'function') {
+          uni.getLocalIPAddress({
+            success: (res: any) => resolve(res),
+            fail: (err: any) => reject(err)
+          })
+        } else {
+          reject(new Error('getLocalIPAddress not available'))
+        }
+      })
+      localip.value = ipRes.localip || '-'
+    } catch (e) {
+      // 备选方案：如果 getLocalIPAddress 失败，尝试通过网络请求获取
+      try {
+        const response = await uni.request({
+          url: 'https://api.ipify.org?format=json',
+          timeout: 3000,
+          withCredentials: false
+        })
+        if (response.data && typeof response.data === 'object' && 'ip' in response.data) {
+          localip.value = (response.data as any).ip
+        } else {
+          localip.value = '-'
+        }
+      } catch (err) {
         localip.value = '-'
       }
-    })
+    }
 
     // 获取 WiFi 信息
     if (networkType.value === 'wifi') {
-      try {
-        const wifiInfoRes = await uni.getConnectedWifi()
-        if (wifiInfoRes.wifi) {
-          wifiInfo.value = wifiInfoRes.wifi
-        }
-      } catch (e) {
-        // 错误处理
-      }
+      await getWifiInfo()
     } else {
       // 获取运营商信息（移动网络）
       getOperatorInfo()
@@ -232,9 +253,87 @@ const getNetworkInfo = async () => {
     // 检测网络延迟
     checkNetworkLatency()
   } catch (e) {
-    // 错误处理
+    uni.showToast({
+      title: '获取网络信息失败',
+      icon: 'none'
+    })
   } finally {
     isLoading.value = false
+  }
+}
+
+// 获取 WiFi 信息
+const getWifiInfo = async () => {
+  try {
+    // 先启动 WiFi 模块
+    if (typeof uni.startWifi === 'function') {
+      try {
+        await new Promise<void>((resolve) => {
+          uni.startWifi({
+            success: () => resolve(),
+            fail: () => resolve() // 即使失败也继续，可能已经启动
+          })
+        })
+      } catch (e) {
+        console.log('startWifi 错误:', e)
+      }
+    }
+
+    // 然后尝试获取 WiFi 信息
+    const wifiInfoRes = await uni.getConnectedWifi()
+    if (wifiInfoRes && wifiInfoRes.wifi) {
+      wifiInfo.value = wifiInfoRes.wifi
+      return
+    }
+  } catch (e: any) {
+    // 如果失败，检查是否是权限问题
+    console.log('WiFi 获取失败:', e)
+  }
+
+  // 备选方案：显示用户手动查看选项
+  wifiInfo.value = {
+    SSID: '需要权限',
+    BSSID: '-'
+  }
+
+  // 在 Android 上，如果仍然失败，可能需要请求权限
+  if (uni.getSystemInfoSync?.().platform === 'android') {
+    try {
+      // 尝试请求权限
+      const permissions = ['android.permission.ACCESS_FINE_LOCATION']
+      const requestPermissionsFn = (uni as any).requestPermissions
+      
+      if (typeof requestPermissionsFn === 'function') {
+        const res = await requestPermissionsFn({
+          permissionID: permissions
+        })
+        
+        if (res?.granted?.length > 0) {
+          // 权限获取成功，重新尝试
+          try {
+            // 再次启动 WiFi 模块
+            if (typeof uni.startWifi === 'function') {
+              await new Promise<void>((resolve) => {
+                uni.startWifi({
+                  success: () => resolve(),
+                  fail: () => resolve()
+                })
+              })
+            }
+            
+            const retryRes = await uni.getConnectedWifi()
+            if (retryRes && retryRes.wifi) {
+              wifiInfo.value = retryRes.wifi
+            }
+          } catch (err) {
+            wifiInfo.value = { SSID: '无法获取', BSSID: '-' }
+          }
+        }
+      }
+    } catch (err) {
+      // 权限请求失败或被拒绝
+      console.log('权限请求失败:', err)
+    }
   }
 }
 
@@ -249,6 +348,36 @@ const getOperatorInfo = () => {
     '5g': '5G 运营商'
   }
   operatorInfo.value = operatorMap[networkType.value] || '-'
+}
+
+// 获取 WiFi 安全状态
+const getWifiSecurityStatus = (): string => {
+  // 如果没有 WiFi 信息，返回 '-'
+  if (!wifiInfo.value.SSID) {
+    return '-'
+  }
+
+  // 检查 secure 字段（iOS 和某些 Android 版本）
+  if (wifiInfo.value.secure !== undefined && wifiInfo.value.secure !== null) {
+    return wifiInfo.value.secure ? '已加密' : '未加密'
+  }
+
+  // 检查是否有加密类型信息（某些 Android 版本）
+  if ((wifiInfo.value as any).encryptionType) {
+    const encType = (wifiInfo.value as any).encryptionType
+    if (encType === 'NONE' || encType === 0) {
+      return '未加密'
+    }
+    return '已加密'
+  }
+
+  // 检查 signalStrength（某些版本用这个表示是否有加密）
+  if ((wifiInfo.value as any).level !== undefined) {
+    return (wifiInfo.value as any).level > 0 ? '已加密' : '未加密'
+  }
+
+  // 默认返回未知
+  return '-'
 }
 
 // 检测网络连接可用性
